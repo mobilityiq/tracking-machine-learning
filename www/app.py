@@ -91,6 +91,7 @@ def predict():
             mode_probabilities[label] = []
         mode_probabilities[label].append(probability)
 
+
     # Calculate the average probability for each mode
     average_probabilities = {
         mode: np.mean(probabilities)
@@ -99,6 +100,10 @@ def predict():
 
     # Sort the mode probabilities in descending order
     sorted_probabilities = sorted(average_probabilities.items(), key=lambda x: x[1], reverse=True)
+
+    # Print the average probabilities
+    for mode, probability in sorted_probabilities:
+        print(f"Mode: {mode}, Average Probability: {probability}")
 
     # Return the predicted mode as a string
     predicted_mode = predicted_labels[0]  # Assuming only one prediction is made
