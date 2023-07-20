@@ -28,14 +28,16 @@ data_file = sys.argv[1]
 # Load data from the text file
 data = np.genfromtxt(data_file, delimiter=',', dtype=str)
 
+# Move the first column to the end of each line
+data = np.roll(data, -1, axis=1)
+
 # Extract relevant information from the loaded data
+modes = data[:, -1]  # transportation modes
 timestamps = data[:, 0].astype(float)  # timestamps
-speed = data[:,1].astype(float)  # speed
+speed = data[:, 1].astype(float)  # speed
 x = data[:, 2].astype(float)  # x coordinate
 y = data[:, 3].astype(float)  # y coordinate
 z = data[:, 4].astype(float)  # z coordinate
-modes = data[:, 5]  # transportation modes
-
 
 # Perform any necessary preprocessing steps
 # For example, you can normalize the sensor values
@@ -121,17 +123,4 @@ with open('../model/metadata.json', 'w') as f:
     f.write(metadata_json)
 
 # Convert the model to Core ML format with a single input
-# input_shape = (1, features.shape[1])
-# input_feature = ct.TensorType(shape=input_shape)
-
-# coreml_model = ct.convert(model, inputs=[input_feature], source='tensorflow')
-coreml_model = ct.convert(model)
-
-# Add the metadata to the model as user-defined metadata
-coreml_model.user_defined_metadata['preprocessing_metadata'] = metadata_json
-
-# Set the prediction_type to "probability"
-# coreml_model.user_defined_metadata['prediction_type'] = 'probability'
-
-# Save the Core ML model
-coreml_model.save('../model/TransitModePredictor.mlmodel')
+# input_shape =
