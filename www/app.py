@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import tensorflow as tf
+from datetime import datetime
 from flask import Flask, request
 from sklearn.preprocessing import LabelEncoder
 
@@ -109,6 +110,27 @@ def predict():
     predicted_mode = predicted_labels[0]  # Assuming only one prediction is made
     return predicted_mode
 
+@app.route('/upload', methods=['POST'])
+def upload():
+    # Check if a file is uploaded
+    if 'file' not in request.files:
+        return 'No file uploaded.'
 
+    file = request.files['file']
+
+    # Check if the file has an allowed extension
+    if not file.filename.lower().endswith(('.txt')):
+        return 'Invalid file extension. Only .txt files are allowed.'
+
+    # Generate a unique filename with the current date and time
+    current_datetime = datetime.now().strftime("%Y%m%d%H%M%S")
+    filename = f"uploaded_file_{current_datetime}.txt"
+
+    # Save the uploaded file to the uploads folder with the generated filename
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(file_path)
+
+    return 'File uploaded successfully.'
+    
 if __name__ == "__main__":
     app.run(host='192.168.18.200', port=8000, debug=True)

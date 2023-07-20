@@ -15,7 +15,7 @@ class TransportationMode(Enum):
     BUS = 'bus'
     SUBWAY = 'metro'
     TRAM = 'tram'
-    ESCOOTER = 'e-scooter'
+    # ESCOOTER = 'e-scooter'
 
 # Check if the data file is provided as a command-line argument
 if len(sys.argv) < 2:
