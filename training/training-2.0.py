@@ -29,12 +29,13 @@ data_file = sys.argv[1]
 data = np.genfromtxt(data_file, delimiter=',', dtype=str)
 
 # Extract relevant information from the loaded data
-modes = data[:, 0]  # transportation modes
-timestamps = data[:, 1].astype(float)  # timestamps
-speed = data[:, 2].astype(float)  # speed
-x = data[:, 3].astype(float)  # x coordinate
-y = data[:, 4].astype(float)  # y coordinate
-z = data[:, 5].astype(float)  # z coordinate
+timestamps = data[:, 0].astype(float)  # timestamps
+speed = data[:,1].astype(float)  # speed
+x = data[:, 2].astype(float)  # x coordinate
+y = data[:, 3].astype(float)  # y coordinate
+z = data[:, 4].astype(float)  # z coordinate
+modes = data[:, 5]  # transportation modes
+
 
 # Perform any necessary preprocessing steps
 # For example, you can normalize the sensor values
