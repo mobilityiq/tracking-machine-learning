@@ -29,7 +29,7 @@ data_file = sys.argv[1]
 data = np.genfromtxt(data_file, delimiter=',', dtype=str)
 
 # Move the first column to the end of each line
-data = np.roll(data, -1, axis=1)
+# data = np.roll(data, -1, axis=1)
 
 # Extract relevant information from the loaded data
 modes = data[:, -1]  # transportation modes
@@ -38,6 +38,7 @@ speed = data[:, 1].astype(float)  # speed
 x = data[:, 2].astype(float)  # x coordinate
 y = data[:, 3].astype(float)  # y coordinate
 z = data[:, 4].astype(float)  # z coordinate
+
 
 # Perform any necessary preprocessing steps
 # For example, you can normalize the sensor values
