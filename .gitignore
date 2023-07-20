@@ -4,9 +4,7 @@ training/*.txt
 # Ignore all text files in the root directory
 *.txt
 
-model/*.npy
-model/*.json
-model/*.mlmodel
+model/*.*
 
 www/uploads/*.*
 
