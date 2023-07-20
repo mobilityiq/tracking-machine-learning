@@ -1,4 +1,5 @@
 import sys
+import os
 import numpy as np
 import tensorflow as tf
 from sklearn.preprocessing import LabelEncoder
@@ -22,7 +23,7 @@ y = new_data[:, 3]
 z = new_data[:, 4]
 
 # Load the trained model
-loaded_model = tf.keras.models.load_model('../model/trained_model-2.0.h5')
+loaded_model = tf.keras.models.load_model(os.path.join(os.path.dirname(__file__), '..', 'model', 'trained_model-2.0.h5'))
 
 # Load the label encoder
 label_encoder = LabelEncoder()
