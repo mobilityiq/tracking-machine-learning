@@ -15,5 +15,5 @@ if [ ! -f "$file" ]; then
 fi
 
 # Perform the count using awk
-awk -F',' '{ count[$1]++ } END { for (type in count) print type, count[type] }' "$file"
+awk -F',' '{ count[$6]++ } END { for (type in count) print type, count[type] }' "$file"
 
