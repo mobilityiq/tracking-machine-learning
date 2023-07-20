@@ -1,18 +1,15 @@
-# Ignore training data text files
-training/*.txt
-
 # Ignore all text files in the root directory
 *.txt
+*.csv
 
 model/*.*
 
 www/uploads/*.*
 
-# Ignore test data text files inside the predict/tests directory
-predict/tests/*.txt
-
 # Ignore training data text files inside the training directory
 training/*.txt
+training/*.csv
 
 # Ignore uploaded text files inside the www/uploads directory
 www/uploads/*.txt
+www/uploads/*.csv
