@@ -4,6 +4,12 @@ training/*.txt
 # Ignore all text files in the root directory
 *.txt
 
+model/*.npy
+model/*.json
+model/*.mlmodel
+
+www/uploads/*.*
+
 # Ignore test data text files inside the predict/tests directory
 predict/tests/*.txt
 
