@@ -9,7 +9,7 @@ UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Define the path to the second script
-second_script_path = '../predict/predict.py'
+second_script_path = '../predict/predict-2.0.py'
 
 @app.route('/predict', methods=['POST'])
 def predict():
