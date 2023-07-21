@@ -9,7 +9,7 @@ UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Define the path to the second script
-second_script_path = '../predict/predict.py'
+second_script_path = '../predict/predict-2.0.py'
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -32,8 +32,24 @@ def predict():
     # Call the second script for prediction
     command = f"python {second_script_path} {file_path}"
     prediction = os.popen(command).read()
+    print(prediction)
+    
+    # Extract the mode probabilities from the prediction output
+    mode_probabilities_index = prediction.find("Mode Probabilities:")
+    if mode_probabilities_index == -1:
+        return "No mode probabilities found."
 
-    return prediction
+    start_index = mode_probabilities_index + len("Mode Probabilities:") + 1
+    end_index = prediction.find("\n", start_index)
+    mode_probabilities_line = prediction[start_index:end_index]
+
+    # Get the first word after "Mode Probabilities:" and remove the colon (:) if present
+    mode = mode_probabilities_line.split()[0].rstrip(":")
+
+    # Delete the uploaded file after making the prediction
+    os.remove(file_path)
+
+    return mode
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -56,4 +72,4 @@ def upload():
     return 'File uploaded successfully.'
 
 if __name__ == "__main__":
-    app.run(host='192.168.18.200', port=8000, debug=True)
+    app.run(host='51.68.196.15', port=8000, debug=True)

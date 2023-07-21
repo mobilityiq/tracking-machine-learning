@@ -1,0 +1,132 @@
+2023-07-20 16:39:03.267789: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-20 16:39:03.358164: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-20 16:39:03.358984: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-20 16:39:05.377999: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+ * Serving Flask app 'app'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://51.68.196.15:8000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+2023-07-20 16:39:08.065754: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-20 16:39:08.159830: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-20 16:39:08.160883: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-20 16:39:10.041818: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+ * Debugger is active!
+ * Debugger PIN: 543-684-216
+2023-07-20 16:40:33.127328: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-20 16:40:33.228208: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-20 16:40:33.229080: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-20 16:40:34.949243: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [20/Jul/2023 16:40:40] "POST /predict HTTP/1.1" 200 -
+103.203.57.20 - - [20/Jul/2023 17:23:37] "[33mGET / HTTP/1.1[0m" 404 -
+152.32.168.136 - - [20/Jul/2023 19:06:51] "[33mGET / HTTP/1.1[0m" 404 -
+152.32.168.136 - - [20/Jul/2023 19:06:52] code 400, message Bad request version ('À\x13À')
+152.32.168.136 - - [20/Jul/2023 19:06:52] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03ÁS\x13QÌÕö8\x04h\x11\x99X=Ä$x\x90\x9c\x8d\x80ø%Ù:\x85º-×\x14áÚ ¼\x12ÙãKG\x14÷:Çx4ð(\x14}º·?\x1dKó¨\x89\x83\x84ío\x16OÓº\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -
+165.154.119.27 - - [20/Jul/2023 19:09:31] "[33mGET / HTTP/1.1[0m" 404 -
+165.154.119.27 - - [20/Jul/2023 19:09:31] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+165.154.119.27 - - [20/Jul/2023 19:09:31] "[33mGET /robots.txt HTTP/1.1[0m" 404 -
+165.154.119.27 - - [20/Jul/2023 19:09:31] "[33mGET /sitemap.xml HTTP/1.1[0m" 404 -
+139.59.58.140 - - [20/Jul/2023 19:12:55] "[33mGET /aaa9 HTTP/1.1[0m" 404 -
+139.59.58.140 - - [20/Jul/2023 19:12:55] "[33mGET /aab8 HTTP/1.1[0m" 404 -
+139.59.58.140 - - [20/Jul/2023 19:12:56] "[33mGET / HTTP/1.1[0m" 404 -
+2023-07-20 19:25:06.051259: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-20 19:25:06.146151: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-20 19:25:06.146954: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-20 19:25:06.271356: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-20 19:25:06.376372: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-20 19:25:06.377106: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-20 19:25:07.776365: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2023-07-20 19:25:08.443198: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [20/Jul/2023 19:25:14] "POST /predict HTTP/1.1" 200 -
+45.149.183.158 - - [20/Jul/2023 19:25:16] "POST /predict HTTP/1.1" 200 -
+198.199.97.219 - - [20/Jul/2023 19:39:48] code 400, message Bad request version ('À\x14À')
+198.199.97.219 - - [20/Jul/2023 19:39:48] "[35m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03¡²¼\x93\x1d§ ®×OÕ\x13\x80\x10ë\x14ôà\x95%\x85a7\x92\x0fkXDc\x88\x8aÓ\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+80.66.75.74 - - [20/Jul/2023 20:01:14] code 400, message Bad request syntax ('\x01\x01æ')
+80.66.75.74 - - [20/Jul/2023 20:01:14] "[35m[1m\x01\x01æ[0m" HTTPStatus.BAD_REQUEST -
+45.147.250.222 - - [20/Jul/2023 22:36:57] code 400, message Bad request version ('À\x14À')
+45.147.250.222 - - [20/Jul/2023 22:36:57] "[35m[1m\x16\x03\x01\x00u\x01\x00\x00q\x03\x03«®7swÕµr{\\$\x19\x1d\x1c\x97¬\x00\x8e\x1dPOì\x96=®*i\x16\x18H.ö\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+205.210.31.223 - - [21/Jul/2023 01:10:55] "[33mGET / HTTP/1.1[0m" 404 -
+198.199.117.129 - - [21/Jul/2023 06:30:45] code 400, message Bad request version ('À\x14À')
+198.199.117.129 - - [21/Jul/2023 06:30:45] "[35m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03üô\x89ÚÖä-A¶\x9f\x81»0-²|ñöd*á\x92QÃ@È\x09ÎÞLÅ\x0d\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+2023-07-21 07:23:40.697611: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 07:23:40.806124: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 07:23:40.806979: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-21 07:23:40.948110: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 07:23:41.071118: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 07:23:41.071980: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-21 07:23:42.455942: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2023-07-21 07:23:42.992656: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [21/Jul/2023 07:23:48] "POST /predict HTTP/1.1" 200 -
+45.149.183.158 - - [21/Jul/2023 07:23:48] "POST /predict HTTP/1.1" 200 -
+64.62.197.196 - - [21/Jul/2023 07:25:23] "[33mGET / HTTP/1.1[0m" 404 -
+64.62.197.183 - - [21/Jul/2023 07:25:44] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+64.62.197.187 - - [21/Jul/2023 07:25:47] "[33mGET http://api.ipify.org/?format=json HTTP/1.1[0m" 404 -
+64.62.197.183 - - [21/Jul/2023 07:25:51] "[33mCONNECT www.shadowserver.org:443 HTTP/1.1[0m" 404 -
+ * Detected change in '/home/debian/python/tracking-machine-learning/www/app.py', reloading
+
+ 1/16 [>.............................] - ETA: 22s
+ 9/16 [===============>..............] - ETA: 0s 
+16/16 [==============================] - 2s 6ms/step
+Mode Probabilities:
+DRIVING: 0.999931275844574
+
+
+ 1/16 [>.............................] - ETA: 30s
+ 4/16 [======>.......................] - ETA: 0s 
+10/16 [=================>............] - ETA: 0s
+16/16 [==============================] - 2s 10ms/step
+Mode Probabilities:
+DRIVING: 0.999990701675415
+
+
+ 1/16 [>.............................] - ETA: 27s
+11/16 [===================>..........] - ETA: 0s 
+16/16 [==============================] - 2s 6ms/step
+Mode Probabilities:
+DRIVING: 0.999990701675415
+
+
+ 1/16 [>.............................] - ETA: 21s
+ 8/16 [==============>...............] - ETA: 0s 
+16/16 [==============================] - 2s 7ms/step
+Mode Probabilities:
+DRIVING: 0.999990701675415
+
+
+ 1/16 [>.............................] - ETA: 21s
+ 9/16 [===============>..............] - ETA: 0s 
+16/16 [==============================] - 2s 7ms/step
+Mode Probabilities:
+DRIVING: 0.999990701675415
+
+ * Restarting with stat
+2023-07-21 07:32:14.453296: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 07:32:14.567207: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 07:32:14.568094: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-21 07:32:16.364789: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+ * Debugger is active!
+ * Debugger PIN: 543-684-216
+ * Detected change in '/home/debian/python/tracking-machine-learning/www/app.py', reloading
+ * Restarting with stat
+2023-07-21 07:34:38.837404: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 07:34:38.922937: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 07:34:38.923719: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-21 07:34:40.724391: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+ * Debugger is active!
+ * Debugger PIN: 543-684-216
+ * Detected change in '/home/debian/python/tracking-machine-learning/www/app.py', reloading
+ * Restarting with stat
+2023-07-21 07:34:49.776307: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 07:34:49.880100: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 07:34:49.880992: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
