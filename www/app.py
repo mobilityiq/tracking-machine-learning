@@ -60,12 +60,12 @@ def upload():
     file = request.files['file']
 
     # Check if the file has an allowed extension
-    if not file.filename.lower().endswith(('.txt')):
-        return 'Invalid file extension. Only .txt files are allowed.'
+    if not file.filename.lower().endswith(('.csv')):
+        return 'Invalid file extension. Only .csv files are allowed.'
 
     # Save the uploaded file to the uploads folder with the generated filename
     current_datetime = datetime.now().strftime("%Y%m%d%H%M%S")
-    filename = f"uploaded_file_{current_datetime}.txt"
+    filename = f"uploaded_file_{current_datetime}.csv"
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(file_path)
 

@@ -137,3 +137,41 @@ To enable the following instructions: AVX2 FMA, in other operations, rebuild Ten
 162.142.125.13 - - [21/Jul/2023 07:41:30] "[33mGET / HTTP/1.1[0m" 404 -
 162.142.125.13 - - [21/Jul/2023 07:41:31] code 505, message Invalid HTTP version (2.0)
 162.142.125.13 - - [21/Jul/2023 07:41:31] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
+2023-07-21 07:52:51.358936: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 07:52:51.446932: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 07:52:51.447723: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-21 07:52:53.079706: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [21/Jul/2023 07:52:59] "POST /predict HTTP/1.1" 200 -
+2023-07-21 08:01:04.095440: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 08:01:04.196275: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 08:01:04.197042: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-21 08:01:05.917453: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [21/Jul/2023 08:01:12] "POST /predict HTTP/1.1" 200 -
+45.149.183.158 - - [21/Jul/2023 08:01:44] "POST /upload HTTP/1.1" 200 -
+ * Detected change in '/home/debian/python/tracking-machine-learning/www/app.py', reloading
+
+ 1/16 [>.............................] - ETA: 22s
+ 8/16 [==============>...............] - ETA: 0s 
+16/16 [==============================] - 2s 7ms/step
+Mode Probabilities:
+DRIVING: 0.999990701675415
+
+
+ 1/16 [>.............................] - ETA: 22s
+ 6/16 [==========>...................] - ETA: 0s 
+15/16 [===========================>..] - ETA: 0s
+16/16 [==============================] - 2s 8ms/step
+Mode Probabilities:
+DRIVING: 0.999990701675415
+
+ * Restarting with stat
+2023-07-21 08:06:32.696094: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 08:06:32.803886: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 08:06:32.805104: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-21 08:06:34.805804: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+ * Debugger is active!
+ * Debugger PIN: 543-684-216
+45.149.183.158 - - [21/Jul/2023 08:06:57] "POST /upload HTTP/1.1" 200 -
