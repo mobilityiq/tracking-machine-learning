@@ -47,7 +47,7 @@ def predict():
     mode = mode_probabilities_line.split()[0].rstrip(":")
 
     # Delete the uploaded file after making the prediction
-    os.remove(file_path)
+    # os.remove(file_path)
 
     return mode
 
