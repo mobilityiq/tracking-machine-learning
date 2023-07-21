@@ -33,6 +33,9 @@ def predict():
     command = f"python {second_script_path} {file_path}"
     prediction = os.popen(command).read()
 
+    # Delete the uploaded file after making the prediction
+    os.remove(file_path)
+    
     return prediction
 
 @app.route('/upload', methods=['POST'])
