@@ -175,3 +175,16 @@ To enable the following instructions: AVX2 FMA, in other operations, rebuild Ten
  * Debugger is active!
  * Debugger PIN: 543-684-216
 45.149.183.158 - - [21/Jul/2023 08:06:57] "POST /upload HTTP/1.1" 200 -
+198.235.24.151 - - [21/Jul/2023 08:34:42] "[33mGET / HTTP/1.1[0m" 404 -
+45.149.183.158 - - [21/Jul/2023 08:51:44] "POST /upload HTTP/1.1" 200 -
+45.149.183.158 - - [21/Jul/2023 08:53:08] "POST /upload HTTP/1.1" 200 -
+ * Detected change in '/home/debian/python/tracking-machine-learning/www/app.py', reloading
+ * Restarting with stat
+2023-07-21 08:56:04.898697: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 08:56:04.982536: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 08:56:04.983192: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-21 08:56:06.780898: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+ * Debugger is active!
+ * Debugger PIN: 543-684-216
+162.243.139.36 - - [21/Jul/2023 09:08:22] "[33mGET / HTTP/1.1[0m" 404 -

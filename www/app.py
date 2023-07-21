@@ -21,7 +21,7 @@ def predict():
 
     # Check if the file has an allowed extension
     if not file.filename.lower().endswith(('.csv')):
-        return 'Invalid file extension. Only .txt files are allowed.'
+        return 'Authentication failed. Your connection has been recorded and will be reported'
 
     # Save the uploaded file to the uploads folder
     current_datetime = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -61,7 +61,7 @@ def upload():
 
     # Check if the file has an allowed extension
     if not file.filename.lower().endswith(('.csv')):
-        return 'Invalid file extension. Only .csv files are allowed.'
+        return 'Authentication failed. Your connection has been recorded and will be reported'
 
     # Save the uploaded file to the uploads folder with the generated filename
     current_datetime = datetime.now().strftime("%Y%m%d%H%M%S")
