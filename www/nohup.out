@@ -130,3 +130,10 @@ To enable the following instructions: AVX2 FMA, in other operations, rebuild Ten
 2023-07-21 07:34:49.880100: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
 2023-07-21 07:34:49.880992: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
 To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-21 07:34:51.783551: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+ * Debugger is active!
+ * Debugger PIN: 543-684-216
+162.142.125.13 - - [21/Jul/2023 07:41:30] "[33mGET / HTTP/1.1[0m" 404 -
+162.142.125.13 - - [21/Jul/2023 07:41:30] "[33mGET / HTTP/1.1[0m" 404 -
+162.142.125.13 - - [21/Jul/2023 07:41:31] code 505, message Invalid HTTP version (2.0)
+162.142.125.13 - - [21/Jul/2023 07:41:31] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
