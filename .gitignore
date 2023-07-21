@@ -13,3 +13,6 @@ training/*.csv
 # Ignore uploaded text files inside the www/uploads directory
 www/uploads/*.txt
 www/uploads/*.csv
+
+www/nohup.out
+
