@@ -188,3 +188,766 @@ To enable the following instructions: AVX2 FMA, in other operations, rebuild Ten
  * Debugger is active!
  * Debugger PIN: 543-684-216
 162.243.139.36 - - [21/Jul/2023 09:08:22] "[33mGET / HTTP/1.1[0m" 404 -
+45.149.183.158 - - [21/Jul/2023 10:17:30] "POST /upload HTTP/1.1" 200 -
+193.32.162.189 - - [21/Jul/2023 13:05:21] "[33mGET / HTTP/1.1[0m" 404 -
+198.235.24.95 - - [21/Jul/2023 14:00:53] "[33mGET / HTTP/1.1[0m" 404 -
+107.170.236.14 - - [21/Jul/2023 14:39:27] code 400, message Bad request syntax ('MGLNDD_51.68.196.15_8000')
+107.170.236.14 - - [21/Jul/2023 14:39:27] "[35m[1mMGLNDD_51.68.196.15_8000[0m" HTTPStatus.BAD_REQUEST -
+45.79.181.104 - - [21/Jul/2023 14:50:34] code 400, message Bad request version ('À\x14À')
+45.79.181.104 - - [21/Jul/2023 14:50:34] "[35m[1m\x16\x03\x01\x00\x85\x01\x00\x00\x81\x03\x03Ú\x7fäÆw6c?Æ°\x0f"\x91f$tðÜ\x8b·¨\x9eÿ¾­\x06ù¤O\x1f¸\x88\x00\x00 À/À0À+À,Ì¨Ì©À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+45.79.168.172 - - [21/Jul/2023 15:01:57] "[33mGET / HTTP/1.1[0m" 404 -
+45.79.181.94 - - [21/Jul/2023 15:11:12] "[33mGET / HTTP/1.1[0m" 404 -
+2023-07-21 15:17:11.467340: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 15:17:11.534180: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 15:17:11.564528: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 15:17:11.565355: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-21 15:17:11.672468: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 15:17:11.673189: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-21 15:17:13.611931: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2023-07-21 15:17:13.729214: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+82.132.236.120 - - [21/Jul/2023 15:17:20] "POST /predict HTTP/1.1" 200 -
+82.132.236.120 - - [21/Jul/2023 15:17:21] "[35m[1mPOST /predict HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2213, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2193, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/debian/python/tracking-machine-learning/www/app.py", line 50, in predict
+    os.remove(file_path)
+FileNotFoundError: [Errno 2] No such file or directory: 'uploads/uploaded_file_20230721151710.csv'
+ * Detected change in '/home/debian/python/tracking-machine-learning/www/app.py', reloading
+
+ 1/16 [>.............................] - ETA: 27s
+11/16 [===================>..........] - ETA: 0s 
+16/16 [==============================] - 2s 5ms/step
+Mode Probabilities:
+DRIVING: 0.9999967217445374
+
+
+ 1/16 [>.............................] - ETA: 21s
+ 8/16 [==============>...............] - ETA: 0s 
+16/16 [==============================] - 2s 7ms/step
+Mode Probabilities:
+DRIVING: 0.9999967217445374
+
+ * Restarting with stat
+2023-07-21 15:22:09.212622: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 15:22:09.335041: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 15:22:09.335789: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-21 15:22:11.286717: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+ * Debugger is active!
+ * Debugger PIN: 543-684-216
+185.233.19.152 - - [21/Jul/2023 16:38:00] "[33mGET / HTTP/1.1[0m" 404 -
+2023-07-21 16:41:26.509095: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 16:41:26.631380: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 16:41:26.632248: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-21 16:41:28.539391: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+31.221.243.77 - - [21/Jul/2023 16:41:35] "POST /predict HTTP/1.1" 200 -
+2023-07-21 19:38:46.775685: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 19:38:46.872888: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 19:38:46.873809: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-21 19:38:48.753382: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [21/Jul/2023 19:38:55] "POST /predict HTTP/1.1" 200 -
+192.241.218.14 - - [21/Jul/2023 19:39:08] code 400, message Bad request version ('À\x14À')
+192.241.218.14 - - [21/Jul/2023 19:39:08] "[35m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03ï[\x1eez\x1b()\x8e\x10º&@õiùg@^\x19è%{kåÁÀØé\x98\x16\x81\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+205.210.31.171 - - [21/Jul/2023 20:07:02] "[33mGET / HTTP/1.1[0m" 404 -
+2023-07-21 20:40:32.190400: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 20:40:32.305694: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 20:40:32.307713: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-21 20:40:34.210615: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+31.221.243.77 - - [21/Jul/2023 20:40:40] "POST /predict HTTP/1.1" 200 -
+2023-07-21 20:51:42.146797: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 20:51:42.257216: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 20:51:42.257991: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-21 20:51:42.403585: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 20:51:42.533411: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 20:51:42.534400: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-21 20:51:42.937406: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 20:51:43.068180: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-21 20:51:43.069103: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-21 20:51:44.218516: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2023-07-21 20:51:44.300500: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2023-07-21 20:51:45.143249: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+82.31.174.197 - - [21/Jul/2023 20:51:50] "POST /predict HTTP/1.1" 200 -
+82.31.174.197 - - [21/Jul/2023 20:51:51] "POST /predict HTTP/1.1" 200 -
+82.31.174.197 - - [21/Jul/2023 20:51:52] "POST /predict HTTP/1.1" 200 -
+193.32.162.189 - - [21/Jul/2023 21:07:35] "[33mGET /doc/xml/version.xml HTTP/1.1[0m" 404 -
+185.156.72.26 - - [21/Jul/2023 21:54:01] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+185.156.72.26 - - [21/Jul/2023 21:54:01] "[35m[1m\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
+2023-07-22 00:55:01.606575: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-22 00:55:01.693428: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-22 00:55:01.694125: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-22 00:55:03.357315: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [22/Jul/2023 00:55:08] "POST /predict HTTP/1.1" 200 -
+185.156.72.26 - - [22/Jul/2023 03:19:46] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+185.156.72.26 - - [22/Jul/2023 03:19:46] "[35m[1m\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
+54.215.134.83 - - [22/Jul/2023 05:03:47] "[33mGET / HTTP/1.1[0m" 404 -
+185.224.128.17 - - [22/Jul/2023 05:42:08] "[33mCONNECT example.com:80 HTTP/1.1[0m" 404 -
+185.224.128.17 - - [22/Jul/2023 05:42:23] code 400, message Bad request syntax ('\x05\x01\x00')
+185.224.128.17 - - [22/Jul/2023 05:42:23] code 400, message Bad request syntax ('\x04\x01\x00P\x00\x00\x00\x01\x00example.com\x00')
+185.224.128.17 - - [22/Jul/2023 05:42:23] "[35m[1m\x05\x01\x00[0m" HTTPStatus.BAD_REQUEST -
+185.224.128.17 - - [22/Jul/2023 05:42:23] "[35m[1m\x04\x01\x00P\x00\x00\x00\x01\x00example.com\x00[0m" HTTPStatus.BAD_REQUEST -
+167.94.138.51 - - [22/Jul/2023 06:24:08] "[33mGET / HTTP/1.1[0m" 404 -
+167.94.138.51 - - [22/Jul/2023 06:24:08] "[33mGET / HTTP/1.1[0m" 404 -
+167.94.138.51 - - [22/Jul/2023 06:24:08] code 505, message Invalid HTTP version (2.0)
+167.94.138.51 - - [22/Jul/2023 06:24:08] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
+2023-07-22 09:40:06.717771: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-22 09:40:06.863162: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-22 09:40:06.864157: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-22 09:40:08.656210: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [22/Jul/2023 09:40:15] "POST /predict HTTP/1.1" 200 -
+45.149.183.158 - - [22/Jul/2023 09:45:30] "POST /upload HTTP/1.1" 200 -
+45.149.183.158 - - [22/Jul/2023 09:45:44] "POST /upload HTTP/1.1" 200 -
+45.149.183.158 - - [22/Jul/2023 09:46:04] "POST /upload HTTP/1.1" 200 -
+216.218.206.92 - - [22/Jul/2023 09:54:06] "[33mGET / HTTP/1.1[0m" 404 -
+216.218.206.76 - - [22/Jul/2023 09:54:37] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+216.218.206.124 - - [22/Jul/2023 09:54:59] "[33mGET http://api.ipify.org/?format=json HTTP/1.1[0m" 404 -
+216.218.206.120 - - [22/Jul/2023 09:55:22] "[33mCONNECT www.shadowserver.org:443 HTTP/1.1[0m" 404 -
+2023-07-22 10:31:31.591338: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-22 10:31:31.721226: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-22 10:31:31.722038: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-22 10:31:33.737443: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+90.218.176.154 - - [22/Jul/2023 10:31:39] "POST /predict HTTP/1.1" 200 -
+2023-07-22 13:48:37.549271: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-22 13:48:37.607806: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-22 13:48:37.666100: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-22 13:48:37.666892: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-22 13:48:37.726449: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-22 13:48:37.727270: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-22 13:48:39.251863: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2023-07-22 13:48:39.683886: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+78.86.4.1 - - [22/Jul/2023 13:48:45] "POST /predict HTTP/1.1" 200 -
+78.86.4.1 - - [22/Jul/2023 13:48:46] "POST /predict HTTP/1.1" 200 -
+185.11.61.117 - - [22/Jul/2023 14:55:23] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+185.11.61.117 - - [22/Jul/2023 14:55:23] "[35m[1m\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
+192.241.199.87 - - [22/Jul/2023 15:42:58] code 400, message Bad HTTP/0.9 request type ("\x16\x03\x01\x00{\x01\x00\x00w\x03\x03ì\x07þw\x80\x14^¦³ÉæP'º\x0fc+8|Æ\x95\x12D\x03\x12Ä$N\x92_\x14Ù\x00\x00\x1aÀ/À+À\x11À\x07À\x13À")
+192.241.199.87 - - [22/Jul/2023 15:42:58] "[35m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03ì\x07þw\x80\x14^¦³ÉæP'º\x0fc+8|Æ\x95\x12D\x03\x12Ä$N\x92_\x14Ù\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+146.200.30.50 - - [22/Jul/2023 15:55:32] code 400, message Bad HTTP/0.9 request type ('\x00\x00\x00')
+146.200.30.50 - - [22/Jul/2023 15:55:32] "[35m[1m\x00\x00\x00 c\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
+71.6.146.185 - - [22/Jul/2023 16:57:34] "[33mGET / HTTP/1.1[0m" 404 -
+71.6.146.185 - - [22/Jul/2023 16:57:35] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+71.6.134.230 - - [22/Jul/2023 17:47:17] "[33mGET / HTTP/1.1[0m" 404 -
+71.6.134.230 - - [22/Jul/2023 18:02:48] code 400, message Bad request version ('À\x14À')
+71.6.134.230 - - [22/Jul/2023 18:02:48] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03Óª?l¥lÓX\x1e\x02ã¾\x01ó³d\x90®\x15=\x82áb½\x14W\x0b</&\x19. 3I8\x83\x87éZ<\x82R¢\x01vÏÚ\x08\x92\x04÷Ô ®lÊ¢ñ?N¨¨\x95.\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+185.233.19.236 - - [22/Jul/2023 19:27:53] "[33mGET / HTTP/1.1[0m" 404 -
+185.233.19.236 - - [22/Jul/2023 19:27:54] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+162.243.141.20 - - [22/Jul/2023 19:40:56] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x00{\x01\x00\x00w\x03\x03\x99fAm\x84wEUEÕ.B1\x7få\x1a\x08\x0eÛÔ(cu8å\x90\x89¸?X÷þ\x00\x00\x1aÀ/À+À\x11À\x07À\x13À')
+162.243.141.20 - - [22/Jul/2023 19:40:56] "[35m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03\x99fAm\x84wEUEÕ.B1\x7få\x1a\x08\x0eÛÔ(cu8å\x90\x89¸?X÷þ\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+167.94.146.60 - - [22/Jul/2023 20:13:43] "[33mGET / HTTP/1.1[0m" 404 -
+167.94.146.60 - - [22/Jul/2023 20:13:43] "[33mGET / HTTP/1.1[0m" 404 -
+167.94.146.60 - - [22/Jul/2023 20:13:43] code 505, message Invalid HTTP version (2.0)
+167.94.146.60 - - [22/Jul/2023 20:13:43] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
+192.241.193.59 - - [22/Jul/2023 20:34:51] code 400, message Bad request syntax ('MGLNDD_51.68.196.15_8000')
+192.241.193.59 - - [22/Jul/2023 20:34:51] "[35m[1mMGLNDD_51.68.196.15_8000[0m" HTTPStatus.BAD_REQUEST -
+167.248.133.33 - - [22/Jul/2023 21:07:09] "[33mGET / HTTP/1.1[0m" 404 -
+167.248.133.33 - - [22/Jul/2023 21:07:09] "[33mGET / HTTP/1.1[0m" 404 -
+167.248.133.33 - - [22/Jul/2023 21:07:09] code 505, message Invalid HTTP version (2.0)
+167.248.133.33 - - [22/Jul/2023 21:07:09] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
+167.94.145.59 - - [22/Jul/2023 21:21:21] "[33mGET / HTTP/1.1[0m" 404 -
+167.94.145.59 - - [22/Jul/2023 21:21:21] "[33mGET / HTTP/1.1[0m" 404 -
+167.94.145.59 - - [22/Jul/2023 21:21:21] code 505, message Invalid HTTP version (2.0)
+167.94.145.59 - - [22/Jul/2023 21:21:21] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
+50.89.252.90 - - [22/Jul/2023 22:25:53] code 400, message Bad request version ('<XHPh9¥\\|\x07¢Ñ')
+50.89.252.90 - - [22/Jul/2023 22:25:53] "[35m[1m\x00\x00\x00àZ\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x05\x01=K\x00\x00\x01\x01\x91Î¨À\x00\x0c)üPYo\x00root\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x000\x81\x89\x02\x81\x81\x00ù\x15ó\x91ñ>J\x0e\x8cºr¬dS\x8b%/VÖ¡ôî\x9fÐmõ(\x1a\x93Ö\x0c<XHPh9¥\\|\x07¢Ñ[0m" HTTPStatus.BAD_REQUEST -
+50.89.252.90 - - [22/Jul/2023 22:25:54] code 400, message Bad request version ('+\x0f\x97¹Æ¿\x99[\x9dr\x82»9!1,\x99\x95%ì%ÕK\x00"ºº\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x00')
+50.89.252.90 - - [22/Jul/2023 22:25:54] "[35m[1m\x16\x03\x00\x02\x00\x01\x00\x01ü\x03\x03úØ7¦\x0bjð÷*]\x11\x15\x1b\x10\x12\x10\x1fà=\x7fX\x17\x8a\x9aE[ø°\x8aØ5t A¨õòpÂFS\x0d+\x0f\x97¹Æ¿\x99[\x9dr\x82»9!1,\x99\x95%ì%ÕK\x00"ºº\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x00[0m" HTTPStatus.BAD_REQUEST -
+50.89.252.90 - - [22/Jul/2023 22:25:54] "[33mGET / HTTP/1.1[0m" 404 -
+34.16.141.189 - - [22/Jul/2023 23:57:26] code 400, message Bad request syntax ('\x00\x00\x00TZ\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x04\x010I\x00\x00\x00\x00\x03\x00¶')
+34.16.141.189 - - [22/Jul/2023 23:57:26] "[35m[1m\x00\x00\x00TZ\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x04\x010I\x00\x00\x00\x00\x03\x00¶[0m" HTTPStatus.BAD_REQUEST -
+34.16.141.189 - - [22/Jul/2023 23:57:27] code 400, message Bad request syntax ('\x00\x00\x00TZ\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x04\x010I\x00\x00\x00\x00\x03\x00¶')
+34.16.141.189 - - [22/Jul/2023 23:57:27] "[35m[1m\x00\x00\x00TZ\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x04\x010I\x00\x00\x00\x00\x03\x00¶[0m" HTTPStatus.BAD_REQUEST -
+34.16.141.189 - - [22/Jul/2023 23:57:27] code 400, message Bad request syntax ('\x00\x00\x00TZ\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x04\x010I\x00\x00\x00\x00\x03\x00¶')
+34.16.141.189 - - [22/Jul/2023 23:57:27] "[35m[1m\x00\x00\x00TZ\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x04\x010I\x00\x00\x00\x00\x03\x00¶[0m" HTTPStatus.BAD_REQUEST -
+34.16.141.189 - - [22/Jul/2023 23:57:27] code 400, message Bad request syntax ('\x00\x00\x00TZ\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x04\x010I\x00\x00\x00\x00\x03\x00¶')
+34.16.141.189 - - [22/Jul/2023 23:57:27] "[35m[1m\x00\x00\x00TZ\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x04\x010I\x00\x00\x00\x00\x03\x00¶[0m" HTTPStatus.BAD_REQUEST -
+34.16.141.189 - - [22/Jul/2023 23:57:28] code 400, message Bad request syntax ('\x00\x00\x00TZ\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x04\x010I\x00\x00\x00\x00\x03\x00¶')
+34.16.141.189 - - [22/Jul/2023 23:57:28] "[35m[1m\x00\x00\x00TZ\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x04\x010I\x00\x00\x00\x00\x03\x00¶[0m" HTTPStatus.BAD_REQUEST -
+34.16.141.189 - - [22/Jul/2023 23:57:28] code 400, message Bad request syntax ('\x00\x00\x00TZ\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x04\x010I\x00\x00\x00\x00\x03\x00¶')
+34.16.141.189 - - [22/Jul/2023 23:57:28] "[35m[1m\x00\x00\x00TZ\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x04\x010I\x00\x00\x00\x00\x03\x00¶[0m" HTTPStatus.BAD_REQUEST -
+34.16.141.189 - - [22/Jul/2023 23:57:28] code 400, message Bad request syntax ('\x00\x00\x00TZ\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x04\x010I\x00\x00\x00\x00\x03\x00¶')
+34.16.141.189 - - [22/Jul/2023 23:57:28] "[35m[1m\x00\x00\x00TZ\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x04\x010I\x00\x00\x00\x00\x03\x00¶[0m" HTTPStatus.BAD_REQUEST -
+34.16.141.189 - - [22/Jul/2023 23:57:28] code 400, message Bad request syntax ('\x00\x00\x00TZ\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x04\x010I\x00\x00\x00\x00\x03\x00¶')
+34.16.141.189 - - [22/Jul/2023 23:57:28] "[35m[1m\x00\x00\x00TZ\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x04\x010I\x00\x00\x00\x00\x03\x00¶[0m" HTTPStatus.BAD_REQUEST -
+34.16.141.189 - - [22/Jul/2023 23:57:29] code 400, message Bad request syntax ('\x00\x00\x00TZ\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x04\x010I\x00\x00\x00\x00\x03\x00¶')
+34.16.141.189 - - [22/Jul/2023 23:57:29] "[35m[1m\x00\x00\x00TZ\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x04\x010I\x00\x00\x00\x00\x03\x00¶[0m" HTTPStatus.BAD_REQUEST -
+35.203.210.44 - - [23/Jul/2023 00:54:41] code 400, message Bad request syntax ('\x16\x03\x01\x00Ê\x01\x00\x00Æ\x03\x03>')
+35.203.210.44 - - [23/Jul/2023 00:54:41] "[35m[1m\x16\x03\x01\x00Ê\x01\x00\x00Æ\x03\x03>[0m" HTTPStatus.BAD_REQUEST -
+205.210.31.165 - - [23/Jul/2023 03:55:32] "[33mGET / HTTP/1.1[0m" 404 -
+87.236.176.157 - - [23/Jul/2023 04:22:52] "[33mGET / HTTP/1.1[0m" 404 -
+184.105.139.78 - - [23/Jul/2023 05:01:53] "[33mGET / HTTP/1.1[0m" 404 -
+184.105.139.126 - - [23/Jul/2023 05:02:33] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+184.105.139.94 - - [23/Jul/2023 05:02:55] "[33mGET http://api.ipify.org/?format=json HTTP/1.1[0m" 404 -
+184.105.139.110 - - [23/Jul/2023 05:03:18] "[33mCONNECT www.shadowserver.org:443 HTTP/1.1[0m" 404 -
+94.232.45.94 - - [23/Jul/2023 10:11:39] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+94.232.45.94 - - [23/Jul/2023 10:11:39] "[35m[1m\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
+46.6.137.100 - - [23/Jul/2023 13:23:35] "[33mGET / HTTP/1.1[0m" 404 -
+46.6.137.100 - - [23/Jul/2023 13:23:35] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+46.6.137.100 - - [23/Jul/2023 13:23:55] "[31m[1mGET /predict HTTP/1.1[0m" 405 -
+2023-07-23 13:41:10.164705: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 13:41:10.283444: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 13:41:10.284292: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-23 13:41:11.977588: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+78.86.34.164 - - [23/Jul/2023 13:41:18] "POST /predict HTTP/1.1" 200 -
+198.199.115.90 - - [23/Jul/2023 14:13:20] code 400, message Bad request version ('À\x14À')
+198.199.115.90 - - [23/Jul/2023 14:13:20] "[35m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03S÷!ïÎ\x1fÏÓC)©.ØÈªc^Ë\x03Ë1ÊÔé8¨ck2Ö}\x86\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+46.6.137.100 - - [23/Jul/2023 14:40:50] "[31m[1mGET /predict HTTP/1.1[0m" 405 -
+46.6.137.100 - - [23/Jul/2023 14:40:51] "[33mGET /apple-touch-icon-120x120-precomposed.png HTTP/1.1[0m" 404 -
+46.6.137.100 - - [23/Jul/2023 14:40:51] "[33mGET /apple-touch-icon-120x120.png HTTP/1.1[0m" 404 -
+46.6.137.100 - - [23/Jul/2023 14:40:51] "[33mGET /apple-touch-icon-precomposed.png HTTP/1.1[0m" 404 -
+46.6.137.100 - - [23/Jul/2023 14:40:51] "[33mGET /apple-touch-icon.png HTTP/1.1[0m" 404 -
+46.6.137.100 - - [23/Jul/2023 14:40:51] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+46.6.137.100 - - [23/Jul/2023 14:40:51] "[33mGET /apple-touch-icon-120x120-precomposed.png HTTP/1.1[0m" 404 -
+46.6.137.100 - - [23/Jul/2023 14:40:52] "[33mGET /apple-touch-icon-120x120.png HTTP/1.1[0m" 404 -
+46.6.137.100 - - [23/Jul/2023 14:40:52] "[33mGET /apple-touch-icon-precomposed.png HTTP/1.1[0m" 404 -
+46.6.137.100 - - [23/Jul/2023 14:40:52] "[33mGET /apple-touch-icon.png HTTP/1.1[0m" 404 -
+46.6.137.100 - - [23/Jul/2023 14:40:52] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+80.66.75.74 - - [23/Jul/2023 16:32:03] code 400, message Bad request syntax ('\x01\x01æ')
+80.66.75.74 - - [23/Jul/2023 16:32:03] "[35m[1m\x01\x01æ[0m" HTTPStatus.BAD_REQUEST -
+130.211.54.158 - - [23/Jul/2023 17:06:08] "[33mGET / HTTP/1.1[0m" 404 -
+95.214.55.244 - - [23/Jul/2023 17:52:41] "[33mGET / HTTP/1.1[0m" 404 -
+2023-07-23 18:27:13.249798: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 18:27:13.350780: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 18:27:13.351782: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-23 18:27:15.076488: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [23/Jul/2023 18:27:21] "POST /predict HTTP/1.1" 200 -
+2023-07-23 18:29:42.582393: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 18:29:42.682297: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 18:29:42.683123: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-23 18:29:44.642718: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [23/Jul/2023 18:29:50] "POST /predict HTTP/1.1" 200 -
+34.78.120.99 - - [23/Jul/2023 19:14:05] "[33mGET / HTTP/1.1[0m" 404 -
+2023-07-23 19:14:43.499646: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 19:14:43.603206: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 19:14:43.614812: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-23 19:14:45.415256: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [23/Jul/2023 19:14:51] "POST /predict HTTP/1.1" 200 -
+212.71.244.54 - - [23/Jul/2023 19:20:57] "[33mGET / HTTP/1.1[0m" 404 -
+2023-07-23 19:26:46.270978: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 19:26:46.391980: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 19:26:46.392992: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-23 19:26:48.162457: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+90.218.176.154 - - [23/Jul/2023 19:26:55] "POST /predict HTTP/1.1" 200 -
+167.71.186.198 - - [23/Jul/2023 19:27:05] "[33mGET / HTTP/1.0[0m" 404 -
+167.71.186.198 - - [23/Jul/2023 19:27:07] code 400, message Bad HTTP/0.9 request type ('l\x00')
+167.71.186.198 - - [23/Jul/2023 19:27:07] "[35m[1ml\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:07] "[33mGET /nice%20ports,/Trinity.txt.bak HTTP/1.0[0m" 404 -
+167.71.186.198 - - [23/Jul/2023 19:27:07] code 400, message Bad request syntax ('\x05\x04\x00\x01\x02\x80\x05\x01\x00\x03')
+167.71.186.198 - - [23/Jul/2023 19:27:07] "[35m[1m\x05\x04\x00\x01\x02\x80\x05\x01\x00\x03[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:09] code 400, message Bad request syntax ('\x04\x01\x00\x16\x7f\x00\x00\x01root\x00')
+167.71.186.198 - - [23/Jul/2023 19:27:09] "[35m[1m\x04\x01\x00\x16\x7f\x00\x00\x01root\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:09] code 400, message Bad request syntax ('#ST')
+167.71.186.198 - - [23/Jul/2023 19:27:09] "[35m[1m#ST[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:10] code 400, message Bad HTTP/0.9 request type ('\x00')
+167.71.186.198 - - [23/Jul/2023 19:27:10] "[35m[1m\x00\x0bn\x00\x00\x00\x00\x01\x04beio[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:12] code 400, message Bad request syntax ('\x00\x00\x07\x00\x08\x00\x03\x00\x04\x00\x05\x00\x06')
+167.71.186.198 - - [23/Jul/2023 19:27:12] "[35m[1m\x00\x00\x07\x00\x08\x00\x03\x00\x04\x00\x05\x00\x06[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:12] "[33mOPTIONS / HTTP/1.0[0m" 404 -
+167.71.186.198 - - [23/Jul/2023 19:27:12] code 400, message Bad request version ('RTSP/1.0')
+167.71.186.198 - - [23/Jul/2023 19:27:12] "[35m[1mOPTIONS / RTSP/1.0[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:14] code 400, message Bad request version ('\x00\x01\x97|\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
+167.71.186.198 - - [23/Jul/2023 19:27:14] "[35m[1m\x80\x00\x00(rþ\x1d\x13\x00\x00\x00\x00\x00\x00\x00\x02\x00\x01\x86 \x00\x01\x97|\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:15] code 400, message Bad HTTP/0.9 request type ('\x00')
+167.71.186.198 - - [23/Jul/2023 19:27:15] "[35m[1m\x00\x1e\x00\x06\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00\x07version\x04bind\x00\x00\x10\x00\x03[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:17] code 400, message Bad HTTP/0.9 request type ('\x00')
+167.71.186.198 - - [23/Jul/2023 19:27:17] "[35m[1m\x00\x0c\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:17] code 400, message Bad request syntax ('HELP')
+167.71.186.198 - - [23/Jul/2023 19:27:17] "[35m[1mHELP[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:17] code 400, message Bad request syntax ('\x16\x03\x00\x00S\x01\x00\x00O\x03\x00?G×÷º,îê²`~ó\x00ý\x82{¹Õ\x96Èw\x9bæÄÛ<=Ûoï\x10n\x00\x00(\x00\x16\x00\x13\x00')
+167.71.186.198 - - [23/Jul/2023 19:27:17] "[35m[1m\x16\x03\x00\x00S\x01\x00\x00O\x03\x00?G×÷º,îê²`~ó\x00ý\x82{¹Õ\x96Èw\x9bæÄÛ<=Ûoï\x10n\x00\x00(\x00\x16\x00\x13\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:17] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00*%à\x00\x00\x00\x00\x00Cookie:')
+167.71.186.198 - - [23/Jul/2023 19:27:17] "[35m[1m\x03\x00\x00*%à\x00\x00\x00\x00\x00Cookie: mstshash=beio[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:18] code 400, message Bad request version ('\x00/\x00')
+167.71.186.198 - - [23/Jul/2023 19:27:18] "[35m[1m\x16\x03\x00\x00i\x01\x00\x00e\x03\x03U\x1c§ärandom1random2random3random4\x00\x00\x0c\x00/\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:18] code 400, message Bad request syntax ('\x00\x00\x00qj\x81n0\x81k¡\x03\x02\x01\x05¢\x03\x02\x01')
+167.71.186.198 - - [23/Jul/2023 19:27:18] "[35m[1m\x00\x00\x00qj\x81n0\x81k¡\x03\x02\x01\x05¢\x03\x02\x01[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:20] code 400, message Bad request version ('0.12\x00')
+167.71.186.198 - - [23/Jul/2023 19:27:20] "[35m[1m\x00\x00\x00¤ÿSMBr\x00\x00\x00\x00\x08\x01@\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x06\x00\x00\x01\x00\x00\x81\x00\x02PC NETWORK PROGRAM 1.0\x00\x02MICROSOFT NETWORKS 1.03\x00\x02MICROSOFT NETWORKS 3.0\x00\x02LANMAN1.0\x00\x02LM1.2X002\x00\x02Samba\x00\x02NT LANMAN 1.0\x00\x02NT LM 0.12\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:21] code 400, message Bad request syntax ('\x01default')
+167.71.186.198 - - [23/Jul/2023 19:27:21] "[35m[1m\x01default[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:21] code 400, message Bad request syntax ('0\x84\x00\x00\x00-\x02\x01\x07c\x84\x00\x00\x00$\x04\x00')
+167.71.186.198 - - [23/Jul/2023 19:27:21] "[35m[1m0\x84\x00\x00\x00-\x02\x01\x07c\x84\x00\x00\x00$\x04\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:22] code 400, message Bad HTTP/0.9 request type ('0')
+167.71.186.198 - - [23/Jul/2023 19:27:22] "[35m[1m0\x0c\x02\x01\x01`\x07\x02\x01\x02\x04\x00\x80\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:22] code 400, message Bad request version ('SIP/2.0')
+167.71.186.198 - - [23/Jul/2023 19:27:22] "[35m[1mOPTIONS sip:nm SIP/2.0[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:24] code 400, message Bad request syntax ('TNMP\x04\x00\x00\x00TNME\x00\x00\x04\x00')
+167.71.186.198 - - [23/Jul/2023 19:27:24] "[35m[1mTNMP\x04\x00\x00\x00TNME\x00\x00\x04\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:26] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00')
+167.71.186.198 - - [23/Jul/2023 19:27:26] "[35m[1m\x03\x00\x00\x0b\x06à\x00\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:27] code 400, message Bad request syntax ('DmdT\x00\x00\x00\x17\x00\x00\x00\x01\x00\x00\x00\x00\x11\x11\x00ÿ\x01ÿ\x13')
+167.71.186.198 - - [23/Jul/2023 19:27:27] "[35m[1mDmdT\x00\x00\x00\x17\x00\x00\x00\x01\x00\x00\x00\x00\x11\x11\x00ÿ\x01ÿ\x13[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:29] code 400, message Bad HTTP/0.9 request type (':\x00\x00\x00/\x00\x00\x00\x02\x00\x00@\x02\x0f\x00\x01\x00=\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00/\x00\x00\x00\x00\x00\x00\x00\x00\x00@')
+167.71.186.198 - - [23/Jul/2023 19:27:29] "[35m[1m:\x00\x00\x00/\x00\x00\x00\x02\x00\x00@\x02\x0f\x00\x01\x00=\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00/\x00\x00\x00\x00\x00\x00\x00\x00\x00@\x1f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:30] code 400, message Bad request syntax ('JRMI\x00\x02K')
+167.71.186.198 - - [23/Jul/2023 19:27:30] "[35m[1mJRMI\x00\x02K[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:32] code 400, message Bad request version ('\x00{\x00\x00\x00\x00\x00A\x00A\x00\x00\x00-\x00\x00A\x00\x00\x00-\x00\x00\x00a\x00\x00-\x00A\x00A\x00\x00A\x00-\x00\x00\x00\x00\x00A\x00\x00A\x00A\x00\x00A\x00A\x00\x00}\x00\x00\x00àmß_')
+167.71.186.198 - - [23/Jul/2023 19:27:32] "[35m[1m\x01\x00\x00ýÎú\x0b° \x00\x00\x00MMS\x14\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12\x00\x00\x00\x01\x00\x03\x00ðððð\x0b\x00\x04\x00\x1c\x00\x03\x00N\x00S\x00P\x00l\x00a\x00y\x00e\x00r\x00/\x009\x00.\x00\x00.\x00\x00.\x02\x009\x008\x00\x00;\x00 \x00{\x00\x00\x00\x00\x00A\x00A\x00\x00\x00-\x00\x00A\x00\x00\x00-\x00\x00\x00a\x00\x00-\x00A\x00A\x00\x00A\x00-\x00\x00\x00\x00\x00A\x00\x00A\x00A\x00\x00A\x00A\x00\x00}\x00\x00\x00àmß_[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:34] code 400, message Bad HTTP/0.9 request type ('\x00Z\x00\x00\x01\x00\x00\x00\x016\x01,\x00\x00\x08\x00\x7fÿ\x7f\x08\x00\x00\x00\x01\x00')
+167.71.186.198 - - [23/Jul/2023 19:27:34] "[35m[1m\x00Z\x00\x00\x01\x00\x00\x00\x016\x01,\x00\x00\x08\x00\x7fÿ\x7f\x08\x00\x00\x00\x01\x00 \x00:\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04æ\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00(CONNECT_DATA=(COMMAND=version))[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:35] code 400, message Bad request version ('\x03\x00(\x00\x04ÿ\x08\x00\x01U\x00\x00\x00MSSQLServer\x00H\x0f\x00\x00')
+167.71.186.198 - - [23/Jul/2023 19:27:35] "[35m[1m\x12\x01\x004\x00\x00\x00\x00\x00\x00\x15\x00\x06\x01\x00\x1b\x00\x01\x02\x00\x1c\x00\x0c\x03\x00(\x00\x04ÿ\x08\x00\x01U\x00\x00\x00MSSQLServer\x00H\x0f\x00\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:37] code 400, message Bad request syntax ('\x00\x03\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x0f\x00')
+167.71.186.198 - - [23/Jul/2023 19:27:37] "[35m[1m\x00\x03\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x0f\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:38] code 400, message Bad request syntax ('GIOP\x01\x00\x01\x00$\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x06\x00\x00\x00abcdef\x00\x00\x04\x00\x00\x00get\x00\x00\x00\x00\x00')
+167.71.186.198 - - [23/Jul/2023 19:27:38] "[35m[1mGIOP\x01\x00\x01\x00$\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x06\x00\x00\x00abcdef\x00\x00\x04\x00\x00\x00get\x00\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:40] code 400, message Bad request syntax ('\x00\x9c\x00\x01\x1a+<M\x00\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01ÿÿ\x00\x01none\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00beio\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
+167.71.186.198 - - [23/Jul/2023 19:27:40] "[35m[1m\x00\x9c\x00\x01\x1a+<M\x00\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01ÿÿ\x00\x01none\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00beio\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:41] code 400, message Bad request syntax ('\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x08\x00\x00\x00\x01\x00\x00\x00\x00')
+167.71.186.198 - - [23/Jul/2023 19:27:41] "[35m[1m\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x08\x00\x00\x00\x01\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:43] code 400, message Bad request syntax ('\x03\x81\x00\x00\x00\x00\x00_@\x00\x017\x00\x00\x00\x00\x00\x00\x00\x01\x00\x01\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00InitiatorName=iqn.1991-05.com.microsoft:beio-iscsi-probe\x00SessionType=Discovery\x00AuthMethod=None\x00\x00')
+167.71.186.198 - - [23/Jul/2023 19:27:43] "[35m[1m\x03\x81\x00\x00\x00\x00\x00_@\x00\x017\x00\x00\x00\x00\x00\x00\x00\x01\x00\x01\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00InitiatorName=iqn.1991-05.com.microsoft:beio-iscsi-probe\x00SessionType=Discovery\x00AuthMethod=None\x00\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:45] code 400, message Bad request version ('CharruaVista')
+167.71.186.198 - - [23/Jul/2023 19:27:45] "[35m[1m\x01\x00\x00\x00\x00Í\x00\x01\x00\x00ANY-SCP\x00\x00\x00\x00\x00\x00\x00\x00\x00FINDSCU\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10\x00\x00\x151.2.840.10008.3.1.1.1 \x00\x00.\x01\x00\x00\x000\x00\x00\x111.2.840.10008.1.1@\x00\x00\x111.2.840.10008.1.2P\x00\x00:Q\x00\x00\x04\x00\x00@\x00R\x00\x00\x1e1.2.826.0.1.3680043.2.1396.999U\x00\x00\x0cCharruaVista[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:45] code 400, message Bad HTTP/0.9 request type ("\x03\x00\x00,'à\x00\x00\x00\x00\x00Cookie:")
+167.71.186.198 - - [23/Jul/2023 19:27:45] "[35m[1m\x03\x00\x00,'à\x00\x00\x00\x00\x00Cookie: mstshash=Administrator[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:46] code 400, message Bad request syntax ('\x00\x00\x00\x00\x00')
+167.71.186.198 - - [23/Jul/2023 19:27:46] "[35m[1m\x00\x00\x00\x00\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.186.198 - - [23/Jul/2023 19:27:46] code 400, message Bad request syntax ('\x01I20100')
+167.71.186.198 - - [23/Jul/2023 19:27:46] "[35m[1m\x01I20100[0m" HTTPStatus.BAD_REQUEST -
+2023-07-23 19:55:13.550543: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 19:55:13.664104: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 19:55:13.665122: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-23 19:55:15.616970: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [23/Jul/2023 19:55:22] "POST /predict HTTP/1.1" 200 -
+2023-07-23 20:08:50.612068: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 20:08:50.756132: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 20:08:50.757519: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-23 20:08:52.695966: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [23/Jul/2023 20:08:58] "POST /predict HTTP/1.1" 200 -
+2023-07-23 20:10:19.640282: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 20:10:19.738468: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 20:10:19.739347: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-23 20:10:21.429059: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [23/Jul/2023 20:10:27] "POST /predict HTTP/1.1" 200 -
+2023-07-23 20:14:44.676541: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 20:14:44.778395: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 20:14:44.779143: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-23 20:14:46.530040: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [23/Jul/2023 20:14:52] "POST /predict HTTP/1.1" 200 -
+ * Detected change in '/home/debian/python/tracking-machine-learning/www/app.py', reloading
+
+ 1/16 [>.............................] - ETA: 28s
+ 8/16 [==============>...............] - ETA: 0s 
+15/16 [===========================>..] - ETA: 0s
+16/16 [==============================] - 2s 8ms/step
+Mode Probabilities:
+DRIVING: 0.9999997615814209
+
+
+ 1/16 [>.............................] - ETA: 28s
+ 9/16 [===============>..............] - ETA: 0s 
+16/16 [==============================] - ETA: 0s
+16/16 [==============================] - 2s 7ms/step
+Mode Probabilities:
+DRIVING: 0.9999988079071045
+
+
+ 1/16 [>.............................] - ETA: 23s
+ 9/16 [===============>..............] - ETA: 0s 
+16/16 [==============================] - 2s 6ms/step
+Mode Probabilities:
+DRIVING: 0.9999953508377075
+
+
+ 1/16 [>.............................] - ETA: 23s
+ 9/16 [===============>..............] - ETA: 0s 
+15/16 [===========================>..] - ETA: 0s
+16/16 [==============================] - 2s 7ms/step
+Mode Probabilities:
+DRIVING: 0.963824987411499
+
+
+ 1/16 [>.............................] - ETA: 28s
+11/16 [===================>..........] - ETA: 0s 
+16/16 [==============================] - 2s 6ms/step
+Mode Probabilities:
+DRIVING: 0.963824987411499
+
+
+ 1/16 [>.............................] - ETA: 27s
+ 7/16 [============>.................] - ETA: 0s 
+14/16 [=========================>....] - ETA: 0s
+16/16 [==============================] - 2s 8ms/step
+Mode Probabilities:
+DRIVING: 0.9999887943267822
+
+
+ 1/16 [>.............................] - ETA: 16s
+14/16 [=========================>....] - ETA: 0s 
+16/16 [==============================] - 1s 4ms/step
+Mode Probabilities:
+DRIVING: 0.9999778866767883
+
+
+ 1/16 [>.............................] - ETA: 25s
+ 7/16 [============>.................] - ETA: 0s 
+13/16 [=======================>......] - ETA: 0s
+16/16 [==============================] - 2s 9ms/step
+Mode Probabilities:
+DRIVING: 0.9999778866767883
+
+
+ 1/16 [>.............................] - ETA: 22s
+10/16 [=================>............] - ETA: 0s 
+16/16 [==============================] - 2s 6ms/step
+Mode Probabilities:
+DRIVING: 0.9999786615371704
+
+
+ 1/16 [>.............................] - ETA: 25s
+10/16 [=================>............] - ETA: 0s 
+16/16 [==============================] - 2s 5ms/step
+Mode Probabilities:
+DRIVING: 0.9999945163726807
+
+
+ 1/16 [>.............................] - ETA: 25s
+ 9/16 [===============>..............] - ETA: 0s 
+16/16 [==============================] - 2s 6ms/step
+Mode Probabilities:
+DRIVING: 0.9999945163726807
+
+
+ 1/16 [>.............................] - ETA: 28s
+ 9/16 [===============>..............] - ETA: 0s 
+16/16 [==============================] - ETA: 0s
+16/16 [==============================] - 2s 8ms/step
+Mode Probabilities:
+DRIVING: 0.9659028053283691
+
+
+ 1/16 [>.............................] - ETA: 23s
+ 7/16 [============>.................] - ETA: 0s 
+15/16 [===========================>..] - ETA: 0s
+16/16 [==============================] - 2s 9ms/step
+Mode Probabilities:
+DRIVING: 0.992857038974762
+
+
+ 1/16 [>.............................] - ETA: 23s
+ 9/16 [===============>..............] - ETA: 0s 
+16/16 [==============================] - 2s 7ms/step
+Mode Probabilities:
+DRIVING: 0.992857038974762
+
+
+ 1/16 [>.............................] - ETA: 23s
+10/16 [=================>............] - ETA: 0s 
+16/16 [==============================] - 2s 5ms/step
+Mode Probabilities:
+DRIVING: 0.992857038974762
+
+
+ 1/16 [>.............................] - ETA: 24s
+ 8/16 [==============>...............] - ETA: 0s 
+14/16 [=========================>....] - ETA: 0s
+16/16 [==============================] - 2s 8ms/step
+Mode Probabilities:
+DRIVING: 0.9999903440475464
+
+
+ 1/16 [>.............................] - ETA: 24s
+11/16 [===================>..........] - ETA: 0s 
+16/16 [==============================] - 2s 6ms/step
+Mode Probabilities:
+DRIVING: 0.9881139993667603
+
+
+ 1/16 [>.............................] - ETA: 21s
+10/16 [=================>............] - ETA: 0s 
+16/16 [==============================] - 2s 5ms/step
+Mode Probabilities:
+DRIVING: 0.9593062996864319
+
+
+ 1/16 [>.............................] - ETA: 22s
+10/16 [=================>............] - ETA: 0s 
+16/16 [==============================] - 2s 6ms/step
+Mode Probabilities:
+DRIVING: 0.9593062996864319
+
+
+ 1/16 [>.............................] - ETA: 22s
+10/16 [=================>............] - ETA: 0s 
+16/16 [==============================] - 2s 7ms/step
+Mode Probabilities:
+DRIVING: 0.9593062996864319
+
+ * Restarting with stat
+2023-07-23 20:17:41.991017: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 20:17:42.098364: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 20:17:42.099241: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-23 20:17:44.157614: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+ * Debugger is active!
+ * Debugger PIN: 543-684-216
+2023-07-23 20:18:02.146110: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 20:18:02.294104: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-23 20:18:02.295099: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-23 20:18:04.615602: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [23/Jul/2023 20:18:10] "POST /predict HTTP/1.1" 200 -
+45.149.183.158 - - [23/Jul/2023 20:18:37] "POST /upload HTTP/1.1" 200 -
+45.149.183.158 - - [23/Jul/2023 20:20:58] "POST /upload HTTP/1.1" 200 -
+198.235.24.163 - - [23/Jul/2023 20:34:55] "[33mGET / HTTP/1.1[0m" 404 -
+192.241.225.16 - - [23/Jul/2023 20:44:50] code 400, message Bad request syntax ('MGLNDD_51.68.196.15_8000')
+192.241.225.16 - - [23/Jul/2023 20:44:50] "[35m[1mMGLNDD_51.68.196.15_8000[0m" HTTPStatus.BAD_REQUEST -
+94.232.45.94 - - [23/Jul/2023 21:04:52] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+94.232.45.94 - - [23/Jul/2023 21:04:52] "[35m[1m\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
+178.128.95.222 - - [23/Jul/2023 21:15:33] "[33mGET /aaa9 HTTP/1.1[0m" 404 -
+178.128.95.222 - - [23/Jul/2023 21:15:33] "[33mGET /aab8 HTTP/1.1[0m" 404 -
+178.128.95.222 - - [23/Jul/2023 21:15:34] "[33mGET / HTTP/1.1[0m" 404 -
+65.49.1.118 - - [24/Jul/2023 00:23:24] "[33mGET / HTTP/1.1[0m" 404 -
+65.49.1.119 - - [24/Jul/2023 00:23:33] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+65.49.1.116 - - [24/Jul/2023 00:23:37] "[33mGET http://api.ipify.org/?format=json HTTP/1.1[0m" 404 -
+65.49.1.119 - - [24/Jul/2023 00:23:40] "[33mCONNECT www.shadowserver.org:443 HTTP/1.1[0m" 404 -
+198.199.114.75 - - [24/Jul/2023 03:32:15] "[33mGET / HTTP/1.1[0m" 404 -
+71.6.134.232 - - [24/Jul/2023 04:59:39] "[33mGET / HTTP/1.1[0m" 404 -
+71.6.134.232 - - [24/Jul/2023 05:15:10] code 400, message Bad request version ('À\x14À')
+71.6.134.232 - - [24/Jul/2023 05:15:10] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03´d®®FyÔm\x7fv\x8aô¿ùqQi"ÀÏ\x1cd\x93\x9a\x9e\x94«I\x98\x84íÝ Æ¬\x91\x91þ\x84\x141*\x05{'Àö\x0c\x91\x85\x0bdýUÖ©s¡>ó\x83êIIÔ\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+167.248.133.50 - - [24/Jul/2023 06:59:13] "[33mGET / HTTP/1.1[0m" 404 -
+167.248.133.50 - - [24/Jul/2023 06:59:13] "[33mGET / HTTP/1.1[0m" 404 -
+167.248.133.50 - - [24/Jul/2023 06:59:13] code 505, message Invalid HTTP version (2.0)
+167.248.133.50 - - [24/Jul/2023 06:59:13] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
+2023-07-24 08:18:47.566863: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:18:47.659943: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:18:47.660704: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 08:18:49.364348: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+82.31.174.197 - - [24/Jul/2023 08:18:55] "POST /predict HTTP/1.1" 200 -
+2023-07-24 08:56:10.321278: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:10.328608: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:10.363605: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:10.429128: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:10.429943: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 08:56:10.434560: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:10.435278: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 08:56:10.502822: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:10.503538: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 08:56:12.144860: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2023-07-24 08:56:12.349954: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2023-07-24 08:56:12.522952: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+90.218.176.154 - - [24/Jul/2023 08:56:19] "POST /predict HTTP/1.1" 200 -
+90.218.176.154 - - [24/Jul/2023 08:56:19] "[35m[1mPOST /predict HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2213, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2193, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/debian/python/tracking-machine-learning/www/app.py", line 50, in predict
+    os.remove(file_path)
+FileNotFoundError: [Errno 2] No such file or directory: 'uploads/uploaded_file_20230724085609.csv'
+90.218.176.154 - - [24/Jul/2023 08:56:19] "[35m[1mPOST /predict HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2213, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2193, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/debian/python/tracking-machine-learning/www/app.py", line 50, in predict
+    os.remove(file_path)
+FileNotFoundError: [Errno 2] No such file or directory: 'uploads/uploaded_file_20230724085609.csv'
+2023-07-24 08:56:53.645732: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:53.845414: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:53.846233: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 08:56:54.025888: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:54.140595: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:54.141375: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 08:56:54.194973: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:54.376297: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:54.381487: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:54.382268: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 08:56:54.480870: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:54.481612: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 08:56:55.426368: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:55.534385: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:55.535096: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 08:56:56.146074: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2023-07-24 08:56:56.538783: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2023-07-24 08:56:56.796813: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2023-07-24 08:56:56.987765: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2023-07-24 08:56:57.956488: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+82.31.174.197 - - [24/Jul/2023 08:57:05] "POST /predict HTTP/1.1" 200 -
+82.31.174.197 - - [24/Jul/2023 08:57:05] "POST /predict HTTP/1.1" 200 -
+82.31.174.197 - - [24/Jul/2023 08:57:06] "[35m[1mPOST /predict HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2213, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2193, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/debian/python/tracking-machine-learning/www/app.py", line 50, in predict
+    os.remove(file_path)
+FileNotFoundError: [Errno 2] No such file or directory: 'uploads/uploaded_file_20230724085653.csv'
+82.31.174.197 - - [24/Jul/2023 08:57:06] "[35m[1mPOST /predict HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2213, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2193, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/debian/python/tracking-machine-learning/www/app.py", line 50, in predict
+    os.remove(file_path)
+FileNotFoundError: [Errno 2] No such file or directory: 'uploads/uploaded_file_20230724085653.csv'
+82.31.174.197 - - [24/Jul/2023 08:57:06] "POST /predict HTTP/1.1" 200 -
+2023-07-24 09:52:57.014486: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 09:52:57.105965: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 09:52:57.106715: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 09:52:58.758360: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+78.86.6.147 - - [24/Jul/2023 09:53:05] "POST /predict HTTP/1.1" 200 -
+2023-07-24 09:55:54.537787: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 09:55:54.633239: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 09:55:54.633985: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 09:55:56.278037: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 09:56:02] "POST /predict HTTP/1.1" 200 -
+2023-07-24 09:56:38.956719: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 09:56:39.099221: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 09:56:39.100129: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 09:56:40.730227: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 09:56:46] "POST /predict HTTP/1.1" 200 -
+2023-07-24 09:58:57.539162: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 09:58:57.663470: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 09:58:57.664338: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 09:58:59.528632: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 09:59:05] "POST /predict HTTP/1.1" 200 -
+2023-07-24 10:08:45.513283: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:08:45.606708: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:08:45.607450: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 10:08:47.240365: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 10:08:53] "POST /predict HTTP/1.1" 200 -
+2023-07-24 10:19:18.605749: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:19:18.705566: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:19:18.706607: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 10:19:20.301402: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 10:19:26] "POST /predict HTTP/1.1" 200 -
+2023-07-24 10:21:27.640843: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:21:27.753458: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:21:27.754464: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 10:21:29.609806: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 10:21:36] "POST /predict HTTP/1.1" 200 -
+2023-07-24 10:25:19.424591: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:25:19.517764: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:25:19.527370: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 10:25:21.155110: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 10:25:27] "POST /predict HTTP/1.1" 200 -
+2023-07-24 10:29:02.823753: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:29:02.922106: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:29:02.922781: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 10:29:04.655963: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 10:29:11] "POST /predict HTTP/1.1" 200 -
+2023-07-24 10:30:10.703794: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:30:10.793138: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:30:10.793846: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 10:30:12.493129: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 10:30:18] "POST /predict HTTP/1.1" 200 -
+2023-07-24 10:32:35.494951: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:32:35.609839: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:32:35.610727: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 10:32:37.581691: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 10:32:43] "POST /predict HTTP/1.1" 200 -
+2023-07-24 11:59:27.926603: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 11:59:28.063113: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 11:59:28.063997: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 11:59:29.938202: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 11:59:36] "POST /predict HTTP/1.1" 200 -
+2023-07-24 12:54:37.210896: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 12:54:37.298082: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 12:54:37.298698: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 12:54:39.049623: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 12:54:45] "POST /predict HTTP/1.1" 200 -
+2023-07-24 13:03:21.649991: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 13:03:21.752858: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 13:03:21.753643: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 13:03:23.449648: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 13:03:30] "POST /predict HTTP/1.1" 200 -
+2023-07-24 13:28:31.367114: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 13:28:31.531004: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 13:28:31.532112: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 13:28:33.978374: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+82.132.225.8 - - [24/Jul/2023 13:28:40] "POST /predict HTTP/1.1" 200 -
+82.132.225.8 - - [24/Jul/2023 13:31:54] "POST /upload HTTP/1.1" 200 -
+185.170.144.3 - - [24/Jul/2023 13:39:55] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+185.170.144.3 - - [24/Jul/2023 13:39:55] "[35m[1m\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
