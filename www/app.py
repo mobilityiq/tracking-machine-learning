@@ -25,7 +25,7 @@ def predict():
 
     # Save the uploaded file to the uploads folder
     current_datetime = datetime.now().strftime("%Y%m%d%H%M%S")
-    filename = f"uploaded_file_{current_datetime}.csv"
+    filename = f"predict_uploaded_file_{current_datetime}.csv"
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(file_path)
 
@@ -65,7 +65,7 @@ def upload():
 
     # Save the uploaded file to the uploads folder with the generated filename
     current_datetime = datetime.now().strftime("%Y%m%d%H%M%S")
-    filename = f"uploaded_file_{current_datetime}.csv"
+    filename = f"train_uploaded_file_{current_datetime}.csv"
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(file_path)
 
