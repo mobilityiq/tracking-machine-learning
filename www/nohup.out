@@ -719,3 +719,235 @@ To enable the following instructions: AVX2 FMA, in other operations, rebuild Ten
 2023-07-23 20:18:04.615602: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
 45.149.183.158 - - [23/Jul/2023 20:18:10] "POST /predict HTTP/1.1" 200 -
 45.149.183.158 - - [23/Jul/2023 20:18:37] "POST /upload HTTP/1.1" 200 -
+45.149.183.158 - - [23/Jul/2023 20:20:58] "POST /upload HTTP/1.1" 200 -
+198.235.24.163 - - [23/Jul/2023 20:34:55] "[33mGET / HTTP/1.1[0m" 404 -
+192.241.225.16 - - [23/Jul/2023 20:44:50] code 400, message Bad request syntax ('MGLNDD_51.68.196.15_8000')
+192.241.225.16 - - [23/Jul/2023 20:44:50] "[35m[1mMGLNDD_51.68.196.15_8000[0m" HTTPStatus.BAD_REQUEST -
+94.232.45.94 - - [23/Jul/2023 21:04:52] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+94.232.45.94 - - [23/Jul/2023 21:04:52] "[35m[1m\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
+178.128.95.222 - - [23/Jul/2023 21:15:33] "[33mGET /aaa9 HTTP/1.1[0m" 404 -
+178.128.95.222 - - [23/Jul/2023 21:15:33] "[33mGET /aab8 HTTP/1.1[0m" 404 -
+178.128.95.222 - - [23/Jul/2023 21:15:34] "[33mGET / HTTP/1.1[0m" 404 -
+65.49.1.118 - - [24/Jul/2023 00:23:24] "[33mGET / HTTP/1.1[0m" 404 -
+65.49.1.119 - - [24/Jul/2023 00:23:33] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+65.49.1.116 - - [24/Jul/2023 00:23:37] "[33mGET http://api.ipify.org/?format=json HTTP/1.1[0m" 404 -
+65.49.1.119 - - [24/Jul/2023 00:23:40] "[33mCONNECT www.shadowserver.org:443 HTTP/1.1[0m" 404 -
+198.199.114.75 - - [24/Jul/2023 03:32:15] "[33mGET / HTTP/1.1[0m" 404 -
+71.6.134.232 - - [24/Jul/2023 04:59:39] "[33mGET / HTTP/1.1[0m" 404 -
+71.6.134.232 - - [24/Jul/2023 05:15:10] code 400, message Bad request version ('À\x14À')
+71.6.134.232 - - [24/Jul/2023 05:15:10] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03´d®®FyÔm\x7fv\x8aô¿ùqQi"ÀÏ\x1cd\x93\x9a\x9e\x94«I\x98\x84íÝ Æ¬\x91\x91þ\x84\x141*\x05{'Àö\x0c\x91\x85\x0bdýUÖ©s¡>ó\x83êIIÔ\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+167.248.133.50 - - [24/Jul/2023 06:59:13] "[33mGET / HTTP/1.1[0m" 404 -
+167.248.133.50 - - [24/Jul/2023 06:59:13] "[33mGET / HTTP/1.1[0m" 404 -
+167.248.133.50 - - [24/Jul/2023 06:59:13] code 505, message Invalid HTTP version (2.0)
+167.248.133.50 - - [24/Jul/2023 06:59:13] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
+2023-07-24 08:18:47.566863: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:18:47.659943: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:18:47.660704: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 08:18:49.364348: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+82.31.174.197 - - [24/Jul/2023 08:18:55] "POST /predict HTTP/1.1" 200 -
+2023-07-24 08:56:10.321278: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:10.328608: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:10.363605: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:10.429128: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:10.429943: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 08:56:10.434560: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:10.435278: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 08:56:10.502822: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:10.503538: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 08:56:12.144860: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2023-07-24 08:56:12.349954: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2023-07-24 08:56:12.522952: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+90.218.176.154 - - [24/Jul/2023 08:56:19] "POST /predict HTTP/1.1" 200 -
+90.218.176.154 - - [24/Jul/2023 08:56:19] "[35m[1mPOST /predict HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2213, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2193, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/debian/python/tracking-machine-learning/www/app.py", line 50, in predict
+    os.remove(file_path)
+FileNotFoundError: [Errno 2] No such file or directory: 'uploads/uploaded_file_20230724085609.csv'
+90.218.176.154 - - [24/Jul/2023 08:56:19] "[35m[1mPOST /predict HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2213, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2193, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/debian/python/tracking-machine-learning/www/app.py", line 50, in predict
+    os.remove(file_path)
+FileNotFoundError: [Errno 2] No such file or directory: 'uploads/uploaded_file_20230724085609.csv'
+2023-07-24 08:56:53.645732: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:53.845414: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:53.846233: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 08:56:54.025888: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:54.140595: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:54.141375: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 08:56:54.194973: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:54.376297: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:54.381487: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:54.382268: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 08:56:54.480870: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:54.481612: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 08:56:55.426368: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:55.534385: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 08:56:55.535096: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 08:56:56.146074: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2023-07-24 08:56:56.538783: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2023-07-24 08:56:56.796813: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2023-07-24 08:56:56.987765: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2023-07-24 08:56:57.956488: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+82.31.174.197 - - [24/Jul/2023 08:57:05] "POST /predict HTTP/1.1" 200 -
+82.31.174.197 - - [24/Jul/2023 08:57:05] "POST /predict HTTP/1.1" 200 -
+82.31.174.197 - - [24/Jul/2023 08:57:06] "[35m[1mPOST /predict HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2213, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2193, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/debian/python/tracking-machine-learning/www/app.py", line 50, in predict
+    os.remove(file_path)
+FileNotFoundError: [Errno 2] No such file or directory: 'uploads/uploaded_file_20230724085653.csv'
+82.31.174.197 - - [24/Jul/2023 08:57:06] "[35m[1mPOST /predict HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2213, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2193, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/debian/python/transport-insights/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/debian/python/tracking-machine-learning/www/app.py", line 50, in predict
+    os.remove(file_path)
+FileNotFoundError: [Errno 2] No such file or directory: 'uploads/uploaded_file_20230724085653.csv'
+82.31.174.197 - - [24/Jul/2023 08:57:06] "POST /predict HTTP/1.1" 200 -
+2023-07-24 09:52:57.014486: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 09:52:57.105965: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 09:52:57.106715: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 09:52:58.758360: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+78.86.6.147 - - [24/Jul/2023 09:53:05] "POST /predict HTTP/1.1" 200 -
+2023-07-24 09:55:54.537787: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 09:55:54.633239: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 09:55:54.633985: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 09:55:56.278037: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 09:56:02] "POST /predict HTTP/1.1" 200 -
+2023-07-24 09:56:38.956719: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 09:56:39.099221: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 09:56:39.100129: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 09:56:40.730227: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 09:56:46] "POST /predict HTTP/1.1" 200 -
+2023-07-24 09:58:57.539162: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 09:58:57.663470: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 09:58:57.664338: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 09:58:59.528632: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 09:59:05] "POST /predict HTTP/1.1" 200 -
+2023-07-24 10:08:45.513283: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:08:45.606708: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:08:45.607450: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 10:08:47.240365: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 10:08:53] "POST /predict HTTP/1.1" 200 -
+2023-07-24 10:19:18.605749: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:19:18.705566: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:19:18.706607: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 10:19:20.301402: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 10:19:26] "POST /predict HTTP/1.1" 200 -
+2023-07-24 10:21:27.640843: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:21:27.753458: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:21:27.754464: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 10:21:29.609806: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 10:21:36] "POST /predict HTTP/1.1" 200 -
+2023-07-24 10:25:19.424591: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:25:19.517764: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:25:19.527370: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 10:25:21.155110: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 10:25:27] "POST /predict HTTP/1.1" 200 -
+2023-07-24 10:29:02.823753: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:29:02.922106: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:29:02.922781: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 10:29:04.655963: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 10:29:11] "POST /predict HTTP/1.1" 200 -
+2023-07-24 10:30:10.703794: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:30:10.793138: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:30:10.793846: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 10:30:12.493129: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 10:30:18] "POST /predict HTTP/1.1" 200 -
+2023-07-24 10:32:35.494951: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:32:35.609839: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 10:32:35.610727: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 10:32:37.581691: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 10:32:43] "POST /predict HTTP/1.1" 200 -
+2023-07-24 11:59:27.926603: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 11:59:28.063113: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 11:59:28.063997: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 11:59:29.938202: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 11:59:36] "POST /predict HTTP/1.1" 200 -
+2023-07-24 12:54:37.210896: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 12:54:37.298082: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 12:54:37.298698: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 12:54:39.049623: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 12:54:45] "POST /predict HTTP/1.1" 200 -
+2023-07-24 13:03:21.649991: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 13:03:21.752858: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 13:03:21.753643: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 13:03:23.449648: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+45.149.183.158 - - [24/Jul/2023 13:03:30] "POST /predict HTTP/1.1" 200 -
+2023-07-24 13:28:31.367114: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 13:28:31.531004: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-07-24 13:28:31.532112: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-07-24 13:28:33.978374: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+82.132.225.8 - - [24/Jul/2023 13:28:40] "POST /predict HTTP/1.1" 200 -
+82.132.225.8 - - [24/Jul/2023 13:31:54] "POST /upload HTTP/1.1" 200 -
+185.170.144.3 - - [24/Jul/2023 13:39:55] code 400, message Bad HTTP/0.9 request type ('\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie:')
+185.170.144.3 - - [24/Jul/2023 13:39:55] "[35m[1m\x03\x00\x00/*à\x00\x00\x00\x00\x00Cookie: mstshash=Administr[0m" HTTPStatus.BAD_REQUEST -
