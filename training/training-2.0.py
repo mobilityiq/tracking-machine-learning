@@ -113,7 +113,7 @@ np.save('../model/std.npy', [std_timestamp, std_speed, std_x, std_y, std_z])
 metadata = {
     'mean': [mean_timestamp, mean_speed, mean_x, mean_y, mean_z],
     'std': [std_timestamp, std_speed, std_x, std_y, std_z],
-    'labels': ['driving','cycling','train','bus','metro','tram','e-scooter']
+    'labels': ['driving','cycling','train','bus','metro']
 }
 
 # Convert the metadata dictionary to JSON string
@@ -124,4 +124,17 @@ with open('../model/metadata.json', 'w') as f:
     f.write(metadata_json)
 
 # Convert the model to Core ML format with a single input
-# input_shape =
+# input_shape = (1, features.shape[1])
+# input_feature = ct.TensorType(shape=input_shape)
+
+# coreml_model = ct.convert(model, inputs=[input_feature], source='tensorflow')
+coreml_model = ct.convert(model)
+
+# Add the metadata to the model as user-defined metadata
+coreml_model.user_defined_metadata['preprocessing_metadata'] = metadata_json
+
+# Set the prediction_type to "probability"
+# coreml_model.user_defined_metadata['prediction_type'] = 'probability'
+
+# Save the Core ML model
+coreml_model.save('../model/TransitModePredictor.mlmodel')
