@@ -101,21 +101,26 @@ def predict():
 def upload():
     # Check if a file is uploaded
     if 'file' not in request.files:
-        return 'No file uploaded.'
+        print(f"No file uploaded")
+        return 'No file uploaded.', 400
 
     file = request.files['file']
 
     # Check if the file has an allowed extension
     if not file.filename.lower().endswith(('.csv')):
-        return 'Authentication failed. Your connection has been recorded and will be reported'
+        return 'Invalid file type. Only .csv files are allowed.', 400
 
-    # Save the uploaded file to the uploads folder with the generated filename
+    # Create a unique filename using current datetime
     current_datetime = datetime.now().strftime("%Y%m%d%H%M%S")
     filename = f"train_uploaded_file_{current_datetime}.csv"
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    file.save(file_path)
+    
+    # Create the new file and write the contents of the uploaded file into it
+    with open(file_path, 'w') as new_file:
+        new_file.write(file.read())
 
-    return 'File uploaded successfully.'
+    return 'File uploaded successfully.', 200
+
 
 if __name__ == "__main__":
     app.run(host='51.68.196.15', port=8000, debug=True)
