@@ -101,7 +101,6 @@ def predict():
 def upload():
     # Check if a file is uploaded
     if 'file' not in request.files:
-        print(f"No file uploaded")
         return 'No file uploaded.', 400
 
     file = request.files['file']
@@ -112,12 +111,12 @@ def upload():
 
     # Create a unique filename using current datetime
     current_datetime = datetime.now().strftime("%Y%m%d%H%M%S")
-    filename = f"train_uploaded_file_{current_datetime}.csv"
+    filename = f"training_uploaded_file_{current_datetime}.csv"
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     
     # Create the new file and write the contents of the uploaded file into it
     with open(file_path, 'w') as new_file:
-        new_file.write(file.read())
+        new_file.write(file.read().decode('utf-8'))
 
     return 'File uploaded successfully.', 200
 
