@@ -113,7 +113,7 @@ np.save('../model/std.npy', [std_timestamp, std_speed, std_x, std_y, std_z])
 metadata = {
     'mean': [mean_timestamp, mean_speed, mean_x, mean_y, mean_z],
     'std': [std_timestamp, std_speed, std_x, std_y, std_z],
-    'labels': ['driving','cycling','train','bus','metro']
+    'labels': ['driving','cycling','train','bus','metro', 'tram']
 }
 
 # Convert the metadata dictionary to JSON string
