@@ -2,7 +2,7 @@
 *.txt
 *.csv
 
-model/*.*
+model/*.mlmodel
 
 www/uploads/*.*
 
