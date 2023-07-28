@@ -35,9 +35,14 @@ data = np.genfromtxt(data_file, delimiter=',', dtype=str)
 modes = data[:, -1]  # transportation modes
 timestamps = data[:, 0].astype(float)  # timestamps
 speed = data[:, 1].astype(float)  # speed
-x = data[:, 2].astype(float)  # x value
-y = data[:, 3].astype(float)  # y value
-z = data[:, 4].astype(float)  # z value
+course = data[:, 2].astype(float) #course
+x = data[:, 3].astype(float)  # x accel value
+y = data[:, 4].astype(float)  # y accel
+z = data[:, 5].astype(float)  # z accel
+qx = data[:, 6].astype(float)  # qx quaternion value
+qy = data[:, 7].astype(float)  # qy quaternion
+qz = data[:, 8].astype(float)  # qz quaternion
+qw = data[:, 9].astype(float)  # qw quaternion 
 
 
 # Perform any necessary preprocessing steps
@@ -52,6 +57,10 @@ mean_speed = np.mean(speed)
 std_speed = np.std(speed)
 normalized_speed = (speed - mean_speed) / std_speed
 
+mean_course = np.mean(course)
+std_course = np.std(course)
+normalized_course = (course - mean_course) / std_course
+
 mean_x = np.mean(x)
 std_x = np.std(x)
 normalized_x = (x - mean_x) / std_x
@@ -64,6 +73,22 @@ mean_z = np.mean(z)
 std_z = np.std(z)
 normalized_z = (z - mean_z) / std_z
 
+mean_qx = np.mean(qx)
+std_qx = np.std(qx)
+normalized_qx = (qx - mean_qx) / std_qx
+
+mean_qy = np.mean(qy)
+std_qy = np.std(qy)
+normalized_qy = (qy - mean_qy) / std_qy
+
+mean_qz = np.mean(qz)
+std_qz = np.std(qz)
+normalized_qz = (qz - mean_qz) / std_qz
+
+mean_qw = np.mean(qw)
+std_qw = np.std(qw)
+normalized_qw = (qw - mean_qw) / std_qw
+
 # Encode transportation modes as numerical labels
 label_encoder = LabelEncoder()
 encoded_labels = label_encoder.fit_transform(modes)
@@ -73,7 +98,7 @@ num_classes = len(TransportationMode)
 labels = label_encoder.classes_.tolist()
 
 # Combine normalized sensor values into features
-features = np.column_stack((normalized_timestamp, normalized_speed, normalized_x, normalized_y, normalized_z))
+features = np.column_stack((normalized_timestamp, normalized_speed, normalized_x, normalized_y, normalized_z, normalized_qx, normalized_qy, normalized_qz, normalized_qw))
 
 # Split the data into training and testing sets
 train_features, test_features, train_labels, test_labels = train_test_split(features, encoded_labels, test_size=0.2)
@@ -85,11 +110,18 @@ train_features, test_features, train_labels, test_labels = train_test_split(feat
 #     tf.keras.layers.Dense(num_classes, activation='softmax')
 # ])
 
+# model = tf.keras.Sequential([
+#     tf.keras.layers.LSTM(64, return_sequences=True, input_shape=(1, 10)),
+#     tf.keras.layers.LSTM(64),
+#     tf.keras.layers.Dense(num_classes, activation='softmax')
+# ])
+
 model = tf.keras.Sequential([
-    tf.keras.layers.LSTM(64, return_sequences=True, input_shape=(features.shape[1], 1)),
-    tf.keras.layers.LSTM(64),
+    tf.keras.layers.Dense(64, activation='relu', input_shape=(features.shape[1],)),
+    tf.keras.layers.Dense(64, activation='relu'),
     tf.keras.layers.Dense(num_classes, activation='softmax')
 ])
+
 
 # Compile the model
 model.compile(optimizer='adam',
@@ -100,19 +132,19 @@ model.compile(optimizer='adam',
 model.fit(train_features, train_labels, epochs=10, batch_size=32, validation_data=(test_features, test_labels))
 
 # Save the trained model as a TensorFlow h5 file
-model.save('../model/trained_model-2.0.h5')
+model.save('../model/trained_model-3.0.h5')
 
 # Save the label encoder
 np.save('../model/label_encoder.npy', label_encoder.classes_)
 
 # Save the mean and standard deviation
-np.save('../model/mean.npy', [mean_timestamp, mean_speed, mean_x, mean_y, mean_z])
-np.save('../model/std.npy', [std_timestamp, std_speed, std_x, std_y, std_z])
+np.save('../model/mean.npy', [mean_timestamp, mean_speed, mean_course, mean_x, mean_y, mean_z, mean_qx, mean_qy, mean_z, mean_qw])
+np.save('../model/std.npy', [std_timestamp, std_speed, std_course, std_x, std_y, std_z, std_qx, std_qy, std_qz, std_qw])
 
 # Create a dictionary to hold the metadata
 metadata = {
-    'mean': [mean_timestamp, mean_speed, mean_x, mean_y, mean_z],
-    'std': [std_timestamp, std_speed, std_x, std_y, std_z],
+    'mean': [mean_timestamp, mean_speed, mean_course, mean_x, mean_y, mean_z, mean_qx, mean_qy, mean_z, mean_qw],
+    'std': [std_timestamp, std_speed, std_course, std_x, std_y, std_z, std_qx, std_qy, std_qz, std_qw],
     'labels': ['driving','cycling','train','bus','metro', 'tram']
 }
 
