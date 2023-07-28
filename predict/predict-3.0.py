@@ -29,15 +29,24 @@ loaded_model = tf.keras.models.load_model(os.path.join(os.path.dirname(__file__)
 label_encoder = LabelEncoder()
 label_encoder.classes_ = np.load('../model/label_encoder.npy')
 
-data = np.column_stack((speed, course, x, y, z, qx, qy, qz, qw))
-
 mean = np.load('../model/mean.npy')
 std = np.load('../model/std.npy')
 
-normalized_data = (data - mean[1:10]) / std[1:10]
-# normalized_data = np.reshape(normalized_data, (-1, 9))
+normalized_timestamp = (timestamps - mean[0]) / std[0]
+normalized_speed = (speed - mean[1]) / std[1]
+normalized_course = (course - mean[2]) / std[2]
+normalized_x = (x - mean[3]) / std[3]
+normalized_y = (y - mean[4]) / std[4]
+normalized_z = (z - mean[5]) / std[5]
+normalized_qx = (qx - mean[6]) / std[6]
+normalized_qy = (qy - mean[7]) / std[7]
+normalized_qz = (qz - mean[8]) / std[8]
+normalized_qw = (qw - mean[9]) / std[9]
 
-predictions = loaded_model.predict(normalized_data)
+# Include normalized features in data
+data = np.column_stack((normalized_timestamp, normalized_speed, normalized_course, normalized_x, normalized_y, normalized_z, normalized_qx, normalized_qy, normalized_qz, normalized_qw))
+
+predictions = loaded_model.predict(data)
 
 predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
 

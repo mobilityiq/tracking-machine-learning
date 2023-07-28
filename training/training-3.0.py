@@ -28,8 +28,6 @@ data_file = sys.argv[1]
 # Load data from the text file
 data = np.genfromtxt(data_file, delimiter=',', dtype=str)
 
-# Move the first column to the end of each line
-# data = np.roll(data, -1, axis=1)
 
 # Extract relevant information from the loaded data
 modes = data[:, -1]  # transportation modes
@@ -98,7 +96,7 @@ num_classes = len(TransportationMode)
 labels = label_encoder.classes_.tolist()
 
 # Combine normalized sensor values into features
-features = np.column_stack((normalized_timestamp, normalized_speed, normalized_x, normalized_y, normalized_z, normalized_qx, normalized_qy, normalized_qz, normalized_qw))
+features = np.column_stack((normalized_timestamp, normalized_speed, normalized_course, normalized_x, normalized_y, normalized_z, normalized_qx, normalized_qy, normalized_qz, normalized_qw))
 
 # Split the data into training and testing sets
 train_features, test_features, train_labels, test_labels = train_test_split(features, encoded_labels, test_size=0.2)
@@ -138,8 +136,9 @@ model.save('../model/trained_model-3.0.h5')
 np.save('../model/label_encoder.npy', label_encoder.classes_)
 
 # Save the mean and standard deviation
-np.save('../model/mean.npy', [mean_timestamp, mean_speed, mean_course, mean_x, mean_y, mean_z, mean_qx, mean_qy, mean_z, mean_qw])
+np.save('../model/mean.npy', [mean_timestamp, mean_speed, mean_course, mean_x, mean_y, mean_z, mean_qx, mean_qy, mean_qz, mean_qw])
 np.save('../model/std.npy', [std_timestamp, std_speed, std_course, std_x, std_y, std_z, std_qx, std_qy, std_qz, std_qw])
+
 
 # Create a dictionary to hold the metadata
 metadata = {
