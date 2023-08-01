@@ -165,7 +165,7 @@ coreml_model = ct.convert(model)
 coreml_model.user_defined_metadata['preprocessing_metadata'] = metadata_json
 
 # Set the prediction_type to "probability"
-# coreml_model.user_defined_metadata['prediction_type'] = 'probability'
+coreml_model.user_defined_metadata['prediction_type'] = 'probability'
 
 # Save the Core ML model
 coreml_model.save('../model/TransitModePredictor.mlmodel')
