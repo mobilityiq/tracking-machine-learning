@@ -1,11 +1,18 @@
 import sys
 import numpy as np
 import tensorflow as tf
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, LearningRateScheduler
+from tensorflow.keras import regularizers
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from enum import Enum
 import coremltools as ct
 import json
+import matplotlib.pyplot as plt
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Activation
+from tensorflow.keras.utils import to_categorical
+
 
 # Define the transportation mode Enum
 class TransportationMode(Enum):
@@ -114,20 +121,82 @@ train_features, test_features, train_labels, test_labels = train_test_split(feat
 #     tf.keras.layers.Dense(num_classes, activation='softmax')
 # ])
 
-model = tf.keras.Sequential([
-    tf.keras.layers.Dense(64, activation='relu', input_shape=(features.shape[1],)),
-    tf.keras.layers.Dense(64, activation='relu'),
-    tf.keras.layers.Dense(num_classes, activation='softmax')
-])
+def normalize(array):
+    mean = np.mean(array)
+    std = np.std(array)
+    normalized = (array - mean) / std
+    return normalized, mean, std
+
+normalized_timestamp, mean_timestamp, std_timestamp = normalize(timestamps)
+normalized_speed, mean_speed, std_speed = normalize(speed)
+normalized_course, mean_course, std_course = normalize(course)
+normalized_x, mean_x, std_x = normalize(x)
+normalized_y, mean_y, std_y = normalize(y)
+normalized_z, mean_z, std_z = normalize(z)
+normalized_qx, mean_qx, std_qx = normalize(qx)
+normalized_qy, mean_qy, std_qy = normalize(qy)
+normalized_qz, mean_qz, std_qz = normalize(qz)
+normalized_qw, mean_qw, std_qw = normalize(qw)
+
+# Define learning rate schedule function
+def lr_schedule(epoch):
+    lr = 1e-3
+    if epoch > 10:
+        lr *= 1e-1
+    elif epoch > 20:
+        lr *= 1e-2
+    print('Learning rate: ', lr)
+    return lr
+
+input_dim = features.shape[1]
 
 
-# Compile the model
-model.compile(optimizer='adam',
-              loss=tf.keras.losses.SparseCategoricalCrossentropy(),
-              metrics=['accuracy'])
+# Define model with L2 regularization
+model = tf.keras.Sequential()
+model.add(tf.keras.layers.Dense(64, input_dim=input_dim, kernel_regularizer=regularizers.l2(0.01)))
+model.add(tf.keras.layers.Activation('relu'))
+model.add(tf.keras.layers.Dense(num_classes))
+model.add(tf.keras.layers.Activation('softmax'))
 
-# Train the model
-model.fit(train_features, train_labels, epochs=10, batch_size=32, validation_data=(test_features, test_labels))
+
+# Define callbacks
+early_stopping = EarlyStopping(patience=3, restore_best_weights=True)
+checkpoint = ModelCheckpoint('model.h5', save_best_only=True)
+lr_scheduler = LearningRateScheduler(lr_schedule)
+
+# Compile and fit the model
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+
+# One-hot encode the labels
+train_labels = to_categorical(train_labels, num_classes=num_classes)
+test_labels = to_categorical(test_labels, num_classes=num_classes)
+
+history = model.fit(train_features, train_labels, epochs=20, batch_size=64, 
+                    validation_data=(test_features, test_labels),
+                    callbacks=[early_stopping, checkpoint, lr_scheduler])
+
+# Plot training & validation accuracy values
+plt.figure(figsize=(12, 4))
+
+plt.subplot(1, 2, 1)
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
+plt.title('Model accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Validation'], loc='upper left')
+
+# Plot training & validation loss values
+plt.subplot(1, 2, 2)
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('Model loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Validation'], loc='upper left')
+
+plt.show()
 
 # Save the trained model as a TensorFlow h5 file
 model.save('../model/trained_model-3.0.h5')
