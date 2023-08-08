@@ -12,7 +12,6 @@ from keras.layers import Reshape
 from keras.layers import Input, Conv1D, MaxPooling1D, BatchNormalization, Bidirectional, LSTM, Dense
 from keras.utils import to_categorical
 
-
 def apply_gaussian_filter(data, sigma=1):
     return gaussian_filter(data, sigma=sigma)
 
@@ -22,7 +21,6 @@ def spline_interpolate(data, original_sample_rate=100, desired_sample_rate=20):
     new_length = int(len(data) * desired_sample_rate / original_sample_rate)
     new_x = np.linspace(0, len(data) - 1, new_length)
     return s(new_x)
-
 
 def read_motion_data(file_path):
     return np.genfromtxt(file_path, delimiter=' ', dtype=float, usecols=[0, 1, 2, 3, 7, 8, 9])
@@ -36,7 +34,6 @@ def compute_magnitude(d):
 def compute_jerk(data):
     return [data[i+1] - data[i] for i in range(len(data)-1)] + [0]
 
-
 def create_multichannel_model(input_shapes):
     channel_inputs = []
     conv_outputs = []
@@ -46,23 +43,23 @@ def create_multichannel_model(input_shapes):
         channel_inputs.append(channel_input)
 
         # 1st Conv layer
-        conv1 = Conv1D(32, 3, activation='relu')(channel_input)
+        conv1 = Conv1D(32, 3, activation='relu', padding='same')(channel_input)
         conv1 = BatchNormalization()(conv1)
 
         # 2nd Conv layer
-        conv2 = Conv1D(64, 3, activation='relu')(conv1)
+        conv2 = Conv1D(64, 3, activation='relu', padding='same')(conv1)
         conv2 = BatchNormalization()(conv2)
 
         # 3rd Conv layer
-        conv3 = Conv1D(64, 3, activation='relu')(conv2)
+        conv3 = Conv1D(64, 3, activation='relu', padding='same')(conv2)
         conv3 = BatchNormalization()(conv3)
 
         # 4th Conv layer
-        conv4 = Conv1D(128, 3, activation='relu')(conv3)
+        conv4 = Conv1D(128, 3, activation='relu', padding='same')(conv3)
         conv4 = BatchNormalization()(conv4)
 
         # 5th Conv layer
-        conv5 = Conv1D(128, 3, activation='relu')(conv4)
+        conv5 = Conv1D(128, 3, activation='relu', padding='same')(conv4)
         conv5 = BatchNormalization()(conv5)
 
         conv_outputs.append(Flatten()(conv5))
@@ -78,14 +75,11 @@ def create_multichannel_model(input_shapes):
     fc2 = Dense(9, activation='softmax')(fc1)
 
     model = Model(channel_inputs, fc2)
-    model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
     return model
 
-
-
-
 early_stop = EarlyStopping(monitor='val_loss', patience=5)
-
 
 #  Still=1, Walking=2, Run=3, Bike=4, Car=5, Bus=6, Train=7, Subway=8
 fine_label_mapping = {
@@ -177,18 +171,20 @@ for user in users:
                 acc_magnitudes = [compute_magnitude(acc) for acc in acc_data]
                 mag_magnitudes = [compute_magnitude(mag) for mag in mag_data]
 
-                for idx, (timestamp, acc_values, mag_values) in enumerate(zip(timestamps, acc_data, mag_data)):
+                for idx, (acc_values, mag_values) in enumerate(zip(acc_data, mag_data)):
                     mode = labels[idx]
                     if mode != 0:
                         # Append the data in the desired order
-                        all_data.append([timestamp] + 
-                                        list(acc_values) + 
-                                        [acc_jerks_x[idx], acc_jerks_y[idx], acc_jerks_z[idx]] + 
-                                        [acc_magnitudes[idx]] + 
-                                        [mag_jerks_x[idx], mag_jerks_y[idx], mag_jerks_z[idx]] + 
-                                        [mag_magnitudes[idx]] + 
-                                        list(mag_values) + 
-                                        [mode])
+                        row = (
+                            list(acc_values) +  # Acceleration x,y,z -> Channel 1
+                            [acc_jerks_x[idx], acc_jerks_y[idx], acc_jerks_z[idx]] +  # Acceleration jerk x,y,z -> Channel 2
+                            [acc_magnitudes[idx]] +  # Acceleration magnitude -> Channel 3
+                            [mag_jerks_x[idx], mag_jerks_y[idx], mag_jerks_z[idx]] +  # Magnetic jerk x,y,z -> Channel 4
+                            [mag_magnitudes[idx]] +  # Magnetic magnitude -> Channel 5
+                            list(mag_values) +  # Magnetic x,y,z -> Channel 6
+                            [mode]
+                        )
+                        all_data.append(row)
 
                 print(f"Data length after processing {motion_file}: {len(all_data)}")
 
@@ -205,37 +201,69 @@ all_data_np = np.array(all_data)
 X = all_data_np[:, :-1]  # All columns except the last one
 y = all_data_np[:, -1].astype(int)  # Last column
 
-y = tf.keras.utils.to_categorical(y, num_classes=9)  # Convert labels to one-hot encoding
-
-# Reshape the data
-X = X.reshape(X.shape[0], X.shape[1], 1)
-
 # Splitting data into training and test sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Create the CNN-BiLSTM model
-num_channels = 6  # 6 channels as described
-input_shapes = [(X_train.shape[1], 1) for _ in range(num_channels)]  # Each channel has the same input shape
+# Extract the respective data for each channel from training data
+X_train_acc = X_train[:, :3]  # Acceleration x, y, z
+X_train_jerk = X_train[:, 3:6]  # Jerk x, y, z
+X_train_acc_mag = X_train[:, 6:7]  # Acceleration magnitude
+X_train_mag_jerk = X_train[:, 7:10]  # Magnetic jerk x, y, z
+X_train_mag_mag = X_train[:, 10:11]  # Magnetic magnitude
+X_train_magnetic = X_train[:, 11:14]  # Magnetic field x, y, z
+
+X_train_acc = X_train_acc[..., np.newaxis]
+X_train_jerk = X_train_jerk[..., np.newaxis]
+X_train_acc_mag = X_train_acc_mag[..., np.newaxis]
+X_train_mag_jerk = X_train_mag_jerk[..., np.newaxis]
+X_train_mag_mag = X_train_mag_mag[..., np.newaxis]
+X_train_magnetic = X_train_magnetic[..., np.newaxis]
+
+# Now that the X_train_... variables are defined, you can create the input_shapes list:
+input_shapes = [
+    X_train_acc.shape[1:], 
+    X_train_jerk.shape[1:], 
+    X_train_acc_mag.shape[1:], 
+    X_train_mag_jerk.shape[1:], 
+    X_train_mag_mag.shape[1:], 
+    X_train_magnetic.shape[1:]
+]
 
 model = create_multichannel_model(input_shapes=input_shapes)
 
-# For training, you need to adapt your data so that you provide each channel's input separately.
-# Here I'm using the same data for each channel for demonstration purposes.
-X_train_channels = [X_train for _ in range(num_channels)]
-X_test_channels = [X_test for _ in range(num_channels)]
+X_train_channels = [X_train_acc, X_train_jerk, X_train_acc_mag, X_train_mag_jerk, X_train_mag_mag, X_train_magnetic]
 
+# Extract the respective data for each channel from test data
+X_test_acc = X_test[:, :3]
+X_test_jerk = X_test[:, 3:6]
+X_test_acc_mag = X_test[:, 6:7]
+X_test_mag_jerk = X_test[:, 7:10]
+X_test_mag_mag = X_test[:, 10:11]
+X_test_magnetic = X_test[:, 11:14]
+
+X_test_channels = [X_test_acc, X_test_jerk, X_test_acc_mag, X_test_mag_jerk, X_test_mag_mag, X_test_magnetic]
+
+# Convert labels to one-hot encoding
 y_train_encoded = to_categorical(y_train, num_classes=9)
 y_test_encoded = to_categorical(y_test, num_classes=9)
 
+X_test_acc = X_test_acc[..., np.newaxis]
+X_test_jerk = X_test_jerk[..., np.newaxis]
+X_test_acc_mag = X_test_acc_mag[..., np.newaxis]
+X_test_mag_jerk = X_test_mag_jerk[..., np.newaxis]
+X_test_mag_mag = X_test_mag_mag[..., np.newaxis]
+X_test_magnetic = X_test_magnetic[..., np.newaxis]
+
+
+# Training the model
 history = model.fit(
     x=X_train_channels,
     y=y_train_encoded,
     validation_data=(X_test_channels, y_test_encoded),
-    epochs=20,
-    batch_size=32,
+    epochs=10,
+    batch_size=128,
     callbacks=[early_stop]
 )
 
-
-# Save the model if needed
+# Save the model
 model.save('cnn_bilstm_model.h5')
