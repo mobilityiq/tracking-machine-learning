@@ -54,45 +54,23 @@ qw = data[:, 9].astype(float)  # qw quaternion
 # For example, you can normalize the sensor values
 
 # Normalize timestamp, speed, x, y, and z values
-mean_timestamp = np.mean(timestamps)
-std_timestamp = np.std(timestamps)
-normalized_timestamp = (timestamps - mean_timestamp) / std_timestamp
+def normalize(array):
+    mean = np.mean(array)
+    std = np.std(array)
+    normalized = (array - mean) / std
+    return normalized, mean, std
 
-mean_speed = np.mean(speed)
-std_speed = np.std(speed)
-normalized_speed = (speed - mean_speed) / std_speed
-
-mean_course = np.mean(course)
-std_course = np.std(course)
-normalized_course = (course - mean_course) / std_course
-
-mean_x = np.mean(x)
-std_x = np.std(x)
-normalized_x = (x - mean_x) / std_x
-
-mean_y = np.mean(y)
-std_y = np.std(y)
-normalized_y = (y - mean_y) / std_y
-
-mean_z = np.mean(z)
-std_z = np.std(z)
-normalized_z = (z - mean_z) / std_z
-
-mean_qx = np.mean(qx)
-std_qx = np.std(qx)
-normalized_qx = (qx - mean_qx) / std_qx
-
-mean_qy = np.mean(qy)
-std_qy = np.std(qy)
-normalized_qy = (qy - mean_qy) / std_qy
-
-mean_qz = np.mean(qz)
-std_qz = np.std(qz)
-normalized_qz = (qz - mean_qz) / std_qz
-
-mean_qw = np.mean(qw)
-std_qw = np.std(qw)
-normalized_qw = (qw - mean_qw) / std_qw
+# Perform normalization on the sensor values
+normalized_timestamp, mean_timestamp, std_timestamp = normalize(timestamps)
+normalized_speed, mean_speed, std_speed = normalize(speed)
+normalized_course, mean_course, std_course = normalize(course)
+normalized_x, mean_x, std_x = normalize(x)
+normalized_y, mean_y, std_y = normalize(y)
+normalized_z, mean_z, std_z = normalize(z)
+normalized_qx, mean_qx, std_qx = normalize(qx)
+normalized_qy, mean_qy, std_qy = normalize(qy)
+normalized_qz, mean_qz, std_qz = normalize(qz)
+normalized_qw, mean_qw, std_qw = normalize(qw)
 
 # Encode transportation modes as numerical labels
 label_encoder = LabelEncoder()
@@ -172,7 +150,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 train_labels = to_categorical(train_labels, num_classes=num_classes)
 test_labels = to_categorical(test_labels, num_classes=num_classes)
 
-history = model.fit(train_features, train_labels, epochs=20, batch_size=64, 
+history = model.fit(train_features, train_labels, epochs=40, batch_size=32, 
                     validation_data=(test_features, test_labels),
                     callbacks=[early_stopping, checkpoint, lr_scheduler])
 
@@ -211,7 +189,7 @@ np.save('../model/std.npy', [std_timestamp, std_speed, std_course, std_x, std_y,
 
 # Create a dictionary to hold the metadata
 metadata = {
-    'mean': [mean_timestamp, mean_speed, mean_course, mean_x, mean_y, mean_z, mean_qx, mean_qy, mean_z, mean_qw],
+    'mean': [mean_timestamp, mean_speed, mean_course, mean_x, mean_y, mean_z, mean_qx, mean_qy, mean_qz, mean_qw],
     'std': [std_timestamp, std_speed, std_course, std_x, std_y, std_z, std_qx, std_qy, std_qz, std_qw],
     'labels': ['driving','cycling','train','bus','metro', 'tram']
 }
