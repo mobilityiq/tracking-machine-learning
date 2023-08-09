@@ -13,7 +13,19 @@ app = Flask(__name__)
 model = tf.keras.models.load_model('model/cnn_bilstm_model.h5')
 
 encoder = LabelEncoder()  
-encoder.classes_ = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8])  # assuming these are the correct labels 
+encoder.classes_ = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8])  # these are the numeric labels 
+
+LABEL_MAP = {
+    0: "unknown",
+    1: "stationary",
+    2: "walking",
+    3: "running",
+    4: "cycling",
+    5: "driving",
+    6: "bus",
+    7: "train",
+    8: "metro"
+}
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -32,18 +44,20 @@ def predict():
     # Predict with the reshaped data
     predictions = model.predict(X_channels)
 
-    # Decode the predictions to get the labels
-    predicted_labels = encoder.inverse_transform(np.argmax(predictions, axis=1))
+    # Decode the predictions to get the numeric labels
+    numeric_labels = np.argmax(predictions, axis=1)
+
+    # Convert numeric labels to string labels
+    predicted_labels = [LABEL_MAP[label] for label in numeric_labels]
     
     probabilities = np.max(predictions, axis=1)
 
     mode_probabilities = {}
 
-    for label, probability in zip(predicted_labels, probabilities):
-        label = label.upper()
-        if label not in mode_probabilities:
-            mode_probabilities[label] = []
-        mode_probabilities[label].append(probability)
+    for label_str, probability in zip(predicted_labels, probabilities):
+        if label_str not in mode_probabilities:
+            mode_probabilities[label_str] = []
+        mode_probabilities[label_str].append(probability)
 
     average_probabilities = {mode: np.mean(probabilities) for mode, probabilities in mode_probabilities.items()}
 
@@ -53,12 +67,8 @@ def predict():
     for mode, probability in sorted_probabilities:
         print(f"{mode}: {probability}")
 
-    probability = sorted_probabilities[0]
-
-    return probability[0]
-
+    # Assuming you want to return the label with the highest probability
+    return sorted_probabilities[0][0]
 
 if __name__ == "__main__":
-    # app.run(host='51.68.196.15', port=8001, debug=True)
     app.run(host='192.168.18.200', port=8001, debug=True)
-
