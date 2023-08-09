@@ -114,6 +114,5 @@ def upload():
 
     return 'File uploaded successfully.', 200
 
-
 if __name__ == "__main__":
     app.run(host='51.68.196.15', port=8000, debug=True)
