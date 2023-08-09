@@ -16,3 +16,5 @@ www/uploads/*.csv
 
 www/nohup.out
 
+
+training/files/*
