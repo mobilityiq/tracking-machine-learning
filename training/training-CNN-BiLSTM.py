@@ -96,8 +96,8 @@ fine_label_mapping = {
     8: "metro"
 }
 
-users = ["User1", "User2", "User3"]
-# users = ["UserTest"]
+# users = ["User1", "User2", "User3"]
+users = ["User1"]
 all_data = []
 start_time = time.time()
 motion_files = ["Bag_Motion.txt", "Hips_Motion.txt", "Hand_Motion.txt", "Torso_Motion.txt"]
@@ -226,7 +226,7 @@ history = model.fit(
     y=y_train_encoded,
     validation_data=(X_test_channels, y_test_encoded),
     epochs=10,
-    batch_size=64,
+    batch_size=128,
     callbacks=[early_stop]
 )
 
