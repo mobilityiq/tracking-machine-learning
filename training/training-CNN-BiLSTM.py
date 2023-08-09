@@ -64,10 +64,10 @@ early_stop = EarlyStopping(monitor='val_loss', patience=5)
 
 
 # users = ["User1", "User2", "User3"]
-users = ["UserTest"]
+users = ["User1"]
 all_data = []
 # motion_files = ["Bag_Motion.txt", "Hips_Motion.txt", "Hand_Motion.txt", "Torso_Motion.txt"]
-motion_files = ["Bag_Motion.txt"]
+motion_files = ["Hand_Motion.txt", "Hips_Motion.txt"]
 
 for user in users:
     data_loading_start = time.time()
