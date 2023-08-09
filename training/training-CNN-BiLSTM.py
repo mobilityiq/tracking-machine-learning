@@ -13,8 +13,11 @@ from keras.layers import Input, Conv1D, MaxPooling1D, BatchNormalization, Bidire
 from keras.utils import to_categorical
 import matplotlib.pyplot as plt
 from preprocesing import apply_gaussian_filter, compute_jerk, compute_magnitude
-from data_reader import read_motion_data, read_label_file
+from data_reader import DataReader
 
+data_reader = DataReader
+
+from keras.layers import Dropout
 
 def create_multichannel_model(input_shapes):
     channel_inputs = []
@@ -25,35 +28,30 @@ def create_multichannel_model(input_shapes):
         channel_inputs.append(channel_input)
 
         # 1st Conv layer
-        conv1 = Conv1D(32, 3, activation='relu', padding='same')(channel_input)
+        conv1 = Conv1D(16, 3, activation='relu', padding='same')(channel_input)
         conv1 = BatchNormalization()(conv1)
+        conv1 = Dropout(0.3)(conv1)  # Added Dropout
 
         # 2nd Conv layer
-        conv2 = Conv1D(64, 3, activation='relu', padding='same')(conv1)
+        conv2 = Conv1D(32, 3, activation='relu', padding='same')(conv1)
         conv2 = BatchNormalization()(conv2)
+        conv2 = Dropout(0.3)(conv2)  # Added Dropout
 
         # 3rd Conv layer
         conv3 = Conv1D(64, 3, activation='relu', padding='same')(conv2)
         conv3 = BatchNormalization()(conv3)
+        conv3 = Dropout(0.3)(conv3)  # Added Dropout
 
-        # 4th Conv layer
-        conv4 = Conv1D(128, 3, activation='relu', padding='same')(conv3)
-        conv4 = BatchNormalization()(conv4)
-
-        # 5th Conv layer
-        conv5 = Conv1D(128, 3, activation='relu', padding='same')(conv4)
-        conv5 = BatchNormalization()(conv5)
-
-        conv_outputs.append(Flatten()(conv5))
+        conv_outputs.append(Flatten()(conv3))
 
     concatenated = Concatenate()(conv_outputs)
     
     # BiLSTM Layer
-    bi_lstm = Bidirectional(LSTM(128, return_sequences=True))(Reshape((-1, 1))(concatenated))
+    bi_lstm = Bidirectional(LSTM(64, return_sequences=True))(Reshape((-1, 1))(concatenated))  # Reduced LSTM units to 64
     bi_lstm = Flatten()(bi_lstm)
 
     # Fully Connected Layers
-    fc1 = Dense(128, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.01))(bi_lstm)
+    fc1 = Dense(64, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.01))(bi_lstm)  # Reduced dense units to 64
     fc2 = Dense(9, activation='softmax')(fc1)
 
     model = Model(channel_inputs, fc2)
@@ -61,26 +59,15 @@ def create_multichannel_model(input_shapes):
 
     return model
 
+
 early_stop = EarlyStopping(monitor='val_loss', patience=5)
 
-#  Still=1, Walking=2, Run=3, Bike=4, Car=5, Bus=6, Train=7, Subway=8
-fine_label_mapping = {
-    0: "unknown",
-    1: "stationary",
-    2: "walking",
-    3: "running",
-    4: "cycling",
-    5: "driving",
-    6: "bus",
-    7: "train",
-    8: "metro"
-}
 
 # users = ["User1", "User2", "User3"]
 users = ["UserTest"]
 all_data = []
-motion_files = ["Bag_Motion.txt", "Hips_Motion.txt", "Hand_Motion.txt", "Torso_Motion.txt"]
-# motion_files = ["Bag_Motion.txt"]
+# motion_files = ["Bag_Motion.txt", "Hips_Motion.txt", "Hand_Motion.txt", "Torso_Motion.txt"]
+motion_files = ["Bag_Motion.txt"]
 
 for user in users:
     data_loading_start = time.time()
@@ -91,7 +78,7 @@ for user in users:
         label_file_path = os.path.join(user_folder, date_folder, "Label.txt")
 
         try:
-            labels = read_label_file(label_file_path)
+            labels = data_reader.read_label_file(label_file_path)
         except FileNotFoundError:
             print(f"Warning: {label_file_path} not found. Skipping...")
             continue
@@ -103,7 +90,7 @@ for user in users:
             motion_file_path = os.path.join(user_folder, date_folder, motion_file)
 
             if os.path.exists(motion_file_path):
-                data = read_motion_data(motion_file_path)
+                data = data_reader.read_motion_data(motion_file_path)
                 print("Shape of data after reading:", data.shape)
 
                 data = apply_gaussian_filter(data=data)
@@ -173,6 +160,7 @@ input_shapes = [
     X_train_magnetic.shape[1:]
 ]
 
+# Create the model
 model = create_multichannel_model(input_shapes=input_shapes)
 
 X_train_channels = [X_train_acc, X_train_jerk, X_train_acc_mag, X_train_mag_jerk, X_train_mag_mag, X_train_magnetic]
@@ -210,4 +198,4 @@ history = model.fit(
 )
 
 # Save the model
-model.save('cnn_bilstm_model.h5')
+model.save('../model/cnn_bilstm_model.h5')
