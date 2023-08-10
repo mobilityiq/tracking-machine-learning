@@ -19,7 +19,7 @@ encoder.classes_ = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8])  # these are the numeri
 
 # Load models
 loaded_model = tf.keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', '3.0', 'trained_model-3.0.h5'))
-loaded_cnn_bilstm_model = tf.keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'cnn-bi-lstm', 'cnn_bilstm_model.h5'))
+# loaded_cnn_bilstm_model = tf.keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'cnn-bi-lstm', 'cnn_bilstm_model.h5'))
 loaded_lstm_model = tf.keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'lstm', 'trained_lstm_model.h5'))
 
 LABEL_MAP = {
@@ -179,49 +179,49 @@ def predict():
 
     return probability[0]
 
-@app.route('/predict-cnn-bilstm', methods=['POST'])
-def predict_cnn_bilstm():
-    # Check if a file is uploaded
-    if 'file' not in request.files:
-        return 'No file uploaded.'
+# @app.route('/predict-cnn-bilstm', methods=['POST'])
+# def predict_cnn_bilstm():
+#     # Check if a file is uploaded
+#     if 'file' not in request.files:
+#         return 'No file uploaded.'
 
-    file = request.files['file']
+#     file = request.files['file']
 
-    # Load the new data for prediction
-    data = np.genfromtxt(StringIO(file.read().decode('utf-8')), delimiter=',', dtype=float)
+#     # Load the new data for prediction
+#     data = np.genfromtxt(StringIO(file.read().decode('utf-8')), delimiter=',', dtype=float)
 
-    # Transform data to multiple channels
-    X_channels = Preprocessing.preprocess_data_for_prediction(data)
+#     # Transform data to multiple channels
+#     X_channels = Preprocessing.preprocess_data_for_prediction(data)
 
 
-    # Predict with the reshaped data
-    predictions = loaded_cnn_bilstm_model.predict(X_channels)
+#     # Predict with the reshaped data
+#     predictions = loaded_cnn_bilstm_model.predict(X_channels)
 
-    # Decode the predictions to get the numeric labels
-    numeric_labels = np.argmax(predictions, axis=1)
+#     # Decode the predictions to get the numeric labels
+#     numeric_labels = np.argmax(predictions, axis=1)
 
-    # Convert numeric labels to string labels
-    predicted_labels = [LABEL_MAP[label] for label in numeric_labels]
+#     # Convert numeric labels to string labels
+#     predicted_labels = [LABEL_MAP[label] for label in numeric_labels]
     
-    probabilities = np.max(predictions, axis=1)
+#     probabilities = np.max(predictions, axis=1)
 
-    mode_probabilities = {}
+#     mode_probabilities = {}
 
-    for label_str, probability in zip(predicted_labels, probabilities):
-        if label_str not in mode_probabilities:
-            mode_probabilities[label_str] = []
-        mode_probabilities[label_str].append(probability)
+#     for label_str, probability in zip(predicted_labels, probabilities):
+#         if label_str not in mode_probabilities:
+#             mode_probabilities[label_str] = []
+#         mode_probabilities[label_str].append(probability)
 
-    average_probabilities = {mode: np.mean(probabilities) for mode, probabilities in mode_probabilities.items()}
+#     average_probabilities = {mode: np.mean(probabilities) for mode, probabilities in mode_probabilities.items()}
 
-    sorted_probabilities = sorted(average_probabilities.items(), key=lambda x: x[1], reverse=True)
+#     sorted_probabilities = sorted(average_probabilities.items(), key=lambda x: x[1], reverse=True)
 
-    print("Mode Probabilities:")
-    for mode, probability in sorted_probabilities:
-        print(f"{mode}: {probability}")
+#     print("Mode Probabilities:")
+#     for mode, probability in sorted_probabilities:
+#         print(f"{mode}: {probability}")
 
-    # Assuming you want to return the label with the highest probability
-    return sorted_probabilities[0][0]
+#     # Assuming you want to return the label with the highest probability
+#     return sorted_probabilities[0][0]
 
 @app.route('/upload', methods=['POST'])
 def upload():
