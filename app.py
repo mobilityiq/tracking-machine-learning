@@ -70,5 +70,26 @@ def predict():
     # Assuming you want to return the label with the highest probability
     return sorted_probabilities[0][0]
 
+@app.route('/upload', methods=['POST'])
+def upload():
+    # Check if a file is uploaded
+    if 'file' not in request.files:
+        return 'Unauthorised acess. Your ip has been tracked and will be reported', 400
+
+    file = request.files['file']
+
+    # Check if the file has an allowed extension
+    if not file.filename.lower().endswith(('.csv')):
+        return 'Unauthorised acess. Your ip has been tracked and will be reported', 400
+
+    # Create a unique filename using current datetime
+    current_datetime = datetime.now().strftime("%Y%m%d%H%M%S")
+    filename = f"training_uploaded_file_{current_datetime}.csv"
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    
+    # Create the new file and write the contents of the uploaded file into it
+    with open(file_path, 'w') as new_file:
+        new_file.write(file.read().decode('utf-8'))
+
 if __name__ == "__main__":
     app.run(host='192.168.18.200', port=8001, debug=True)
