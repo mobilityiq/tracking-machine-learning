@@ -48,10 +48,19 @@ normalized_mx, mean_mx, std_mx = normalize(mx)
 normalized_my, mean_my, std_my = normalize(my)
 normalized_mz, mean_mz, std_mz = normalize(mz)
 
+# Before label encoding
+unique_modes = np.unique(modes)
+print(f"Unique labels before encoding: {unique_modes}")
+
 # Encode transportation modes as numerical labels
 label_encoder = LabelEncoder()
 encoded_labels = label_encoder.fit_transform(modes)
-num_classes = len(TransportationMode)
+num_classes = len(Preprocessing.LABEL_MAP)
+
+# After label encoding
+print("A few samples of encoded labels:")
+for original, encoded in zip(modes[:10], encoded_labels[:10]):
+    print(f"{original} -> {encoded}")
 
 # Get the list of transportation mode labels
 labels = label_encoder.classes_.tolist()
