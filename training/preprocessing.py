@@ -2,7 +2,6 @@ import os
 import numpy as np
 from scipy.interpolate import UnivariateSpline
 from scipy.ndimage import gaussian_filter
-from data_reader import DataReader
 
 class Preprocessing:
     LABEL_MAP = {
@@ -16,6 +15,12 @@ class Preprocessing:
         7: "train",
         8: "metro"
     }
+
+    def read_motion_data(file_path):
+        return np.genfromtxt(file_path, delimiter=' ', dtype=float, usecols=[0, 1, 2, 3, 7, 8, 9])
+
+    def read_label_file(file_path):
+        return np.genfromtxt(file_path, delimiter=' ', dtype=int, usecols=[1])
 
     def apply_gaussian_filter(data, sigma=1):
         return gaussian_filter(data, sigma=sigma)
@@ -44,7 +49,7 @@ class Preprocessing:
                 label_file_path = os.path.join(user_folder, date_folder, "Label.txt")
 
                 try:
-                    labels = DataReader.read_label_file(label_file_path)
+                    labels = Preprocessing.read_label_file(label_file_path)
                 except FileNotFoundError:
                     print(f"Warning: {label_file_path} not found. Skipping...")
                     continue
@@ -56,7 +61,7 @@ class Preprocessing:
                     motion_file_path = os.path.join(user_folder, date_folder, motion_file)
 
                     if os.path.exists(motion_file_path):
-                        data = DataReader.read_motion_data(motion_file_path)
+                        data = Preprocessing.read_motion_data(motion_file_path)
                         print("Shape of data after reading:", data.shape)
 
                         data = data[::5]
@@ -91,7 +96,7 @@ class Preprocessing:
                 label_file_path = os.path.join(user_folder, date_folder, "Label.txt")
 
                 try:
-                    labels = DataReader.read_label_file(label_file_path)
+                    labels = Preprocessing.read_label_file(label_file_path)
                 except FileNotFoundError:
                     print(f"Warning: {label_file_path} not found. Skipping...")
                     continue
@@ -103,7 +108,7 @@ class Preprocessing:
                     motion_file_path = os.path.join(user_folder, date_folder, motion_file)
 
                     if os.path.exists(motion_file_path):
-                        data = DataReader.read_motion_data(motion_file_path)
+                        data = Preprocessing.read_motion_data(motion_file_path)
                         print("Shape of data after reading:", data.shape)
 
                         data = Preprocessing.apply_gaussian_filter(data=data)

@@ -1,28 +1,23 @@
-import sys
+import os
 import numpy as np
-import tensorflow as tf
-from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, LearningRateScheduler
+import time
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
-from enum import Enum
-import coremltools as ct
-import json
+import tensorflow as tf
+from tensorflow import keras
+from keras.models import Model
+from keras.layers import Concatenate, Flatten
+from keras.callbacks import EarlyStopping, ModelCheckpoint, LearningRateScheduler
+from scipy.interpolate import UnivariateSpline
+from scipy.ndimage import gaussian_filter
+from keras.layers import Reshape
+from keras.layers import Input, Conv1D, MaxPooling1D, BatchNormalization, Bidirectional, LSTM, Dense
+from keras.utils import to_categorical
+from keras.layers import Dropout
+
 import matplotlib.pyplot as plt
-from tensorflow.keras.utils import to_categorical
 from preprocessing import Preprocessing
 from models import Models
-
-
-# Define the transportation mode Enum
-class TransportationMode(Enum):
-    DRIVING = 'driving'
-    CYCLING = 'cycling'
-    TRAIN = 'train'
-    BUS = 'bus'
-    SUBWAY = 'metro'
-    RUNNING = 'running'
-    WALKING = 'walking'
-    STATIONARY = 'stationary'
+from transportation_mode import TransportationMode
 
 users = ["User1", "User2", "User3"]
 # users = ["UserTest"]
@@ -93,7 +88,7 @@ model = Models.create_classification_model(num_clases=num_classes, input_dim=inp
 
 # Define callbacks
 early_stopping = EarlyStopping(patience=3, restore_best_weights=True)
-checkpoint = ModelCheckpoint('model.h5', save_best_only=True)
+checkpoint = ModelCheckpoint('../model/classification/trained_classification_model.h5', save_best_only=True)
 lr_scheduler = LearningRateScheduler(lr_schedule)
 
 # Compile and fit the model
@@ -103,7 +98,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 train_labels = to_categorical(train_labels, num_classes=num_classes)
 test_labels = to_categorical(test_labels, num_classes=num_classes)
 
-history = model.fit(train_features, train_labels, epochs=40, batch_size=64, 
+history = model.fit(train_features, train_labels, epochs=20, batch_size=64, 
                     validation_data=(test_features, test_labels),
                     callbacks=[early_stopping, checkpoint, lr_scheduler])
 

@@ -3,11 +3,12 @@ import numpy as np
 import time
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
-from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Concatenate, Flatten
+from tensorflow import keras
+from keras.models import Model
+from keras.layers import Concatenate, Flatten
+from keras.callbacks import EarlyStopping
 from scipy.interpolate import UnivariateSpline
 from scipy.ndimage import gaussian_filter
-from tensorflow.keras.callbacks import EarlyStopping
 from keras.layers import Reshape
 from keras.layers import Input, Conv1D, MaxPooling1D, BatchNormalization, Bidirectional, LSTM, Dense
 from keras.utils import to_categorical
@@ -18,7 +19,6 @@ from preprocessing import Preprocessing
 from models import Models
 
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
-
 
 early_stop = EarlyStopping(monitor='val_loss', patience=5)
 

@@ -1,28 +1,13 @@
-import sys
 import numpy as np
-import tensorflow as tf
-from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, LearningRateScheduler
+from keras.callbacks import EarlyStopping, ModelCheckpoint, LearningRateScheduler
+from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from enum import Enum
-import coremltools as ct
-import json
 import matplotlib.pyplot as plt
-from tensorflow.keras.utils import to_categorical
 from preprocessing import Preprocessing
 from models import Models
-
-
-# Define the transportation mode Enum
-class TransportationMode(Enum):
-    DRIVING = 'driving'
-    CYCLING = 'cycling'
-    TRAIN = 'train'
-    BUS = 'bus'
-    SUBWAY = 'metro'
-    RUNNING = 'running'
-    WALKING = 'walking'
-    STATIONARY = 'stationary'
+from transportation_mode import TransportationMode
 
 users = ["User1", "User2", "User3"]
 # users = ["UserTest"]
@@ -106,7 +91,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 train_labels = to_categorical(train_labels, num_classes=num_classes)
 test_labels = to_categorical(test_labels, num_classes=num_classes)
 
-history = model.fit(train_features, train_labels, epochs=40, batch_size=64, 
+history = model.fit(train_features, train_labels, epochs=20, batch_size=64, 
                     validation_data=(test_features, test_labels),
                     callbacks=[early_stopping, checkpoint, lr_scheduler])
 

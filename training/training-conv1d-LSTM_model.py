@@ -1,28 +1,13 @@
-import sys
 import numpy as np
-import tensorflow as tf
-from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, LearningRateScheduler
+from keras.callbacks import EarlyStopping, ModelCheckpoint, LearningRateScheduler
+from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from enum import Enum
-import coremltools as ct
-import json
 import matplotlib.pyplot as plt
-from tensorflow.keras.utils import to_categorical
 from preprocessing import Preprocessing
 from models import Models
-
-
-# Define the transportation mode Enum
-class TransportationMode(Enum):
-    DRIVING = 'driving'
-    CYCLING = 'cycling'
-    TRAIN = 'train'
-    BUS = 'bus'
-    SUBWAY = 'metro'
-    RUNNING = 'running'
-    WALKING = 'walking'
-    STATIONARY = 'stationary'
+from transportation_mode import TransportationMode
 
 users = ["User1", "User2", "User3"]
 # users = ["UserTest"]
@@ -96,7 +81,7 @@ model = Models.create_conv1d_lstm_model(num_classes=num_classes)
 
 # Define callbacks
 early_stopping = EarlyStopping(patience=5, restore_best_weights=True)
-checkpoint = ModelCheckpoint('../model/conv1d/trained_classification_model.h5', save_best_only=True)
+checkpoint = ModelCheckpoint('../model/conv1d-lstm/trained_conv1d-lstm_model.h5', save_best_only=True)
 lr_scheduler = LearningRateScheduler(lr_schedule)
 
 # Compile and fit the model
@@ -106,19 +91,19 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 train_labels = to_categorical(train_labels, num_classes=num_classes)
 test_labels = to_categorical(test_labels, num_classes=num_classes)
 
-history = model.fit(train_features, train_labels, epochs=40, batch_size=64, 
+history = model.fit(train_features, train_labels, epochs=20, batch_size=64, 
                     validation_data=(test_features, test_labels),
                     callbacks=[early_stopping, checkpoint, lr_scheduler])
 
 # Save the trained model as a TensorFlow h5 file
-model.save('../model/conv1d/trained_classification_model.h5')
+model.save('../model/conv1d-lstm/trained_conv1d-lstm_model.h5')
 
 # Save the label encoder
-np.save('../model/conv1d/label_encoder.npy', label_encoder.classes_)
+np.save('../model/conv1d-lstm/label_encoder.npy', label_encoder.classes_)
 
 # Save the mean and standard deviation
-np.save('../model/conv1d/mean.npy', [mean_timestamp, mean_x, mean_y, mean_z, mean_mx, mean_my, mean_mz])
-np.save('../model/conv1d/std.npy', [std_timestamp, std_x, std_y, std_z, std_mx, std_my, std_mz])
+np.save('../model/conv1d-lstm/mean.npy', [mean_timestamp, mean_x, mean_y, mean_z, mean_mx, mean_my, mean_mz])
+np.save('../model/conv1d-lstm/std.npy', [std_timestamp, std_x, std_y, std_z, std_mx, std_my, std_mz])
 
 # Plot training & validation accuracy values
 plt.figure(figsize=(12, 4))
