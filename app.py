@@ -5,12 +5,12 @@ from io import StringIO
 from sklearn.preprocessing import LabelEncoder
 from datetime import datetime
 from flask import Flask, request
-from training.preprocessing import preprocess_data_for_prediction
+from training.preprocessing import Preprocessing
 
 app = Flask(__name__)
 
-# Load trained model into memory
-model = tf.keras.models.load_model('model/cnn_bilstm_model.h5')
+UPLOAD_FOLDER = 'www/uploads/'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 encoder = LabelEncoder()  
 encoder.classes_ = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8])  # these are the numeric labels 
@@ -35,11 +35,163 @@ def predict():
 
     file = request.files['file']
 
+    # Check if the file has an allowed extension
+    # if not filename.lower().endswith(('.csv')):
+    #     return 'Authentication failed. Your connection has been recorded and will be reported'
+
+    # Load the new data for prediction
+    new_data = np.genfromtxt(StringIO(file.read().decode('utf-8')), delimiter=',', dtype=float)
+
+
+    # Extract the relevant columns from the data
+    timestamps = new_data[:, 0]
+    speed = new_data[:, 1]
+    course = new_data[:, 2]
+    x = new_data[:, 3]
+    y = new_data[:, 4]
+    z = new_data[:, 5]
+    qx = new_data[:, 6]
+    qy = new_data[:, 7]
+    qz = new_data[:, 8]
+    qw = new_data[:, 9]
+
+    loaded_model = tf.keras.models.load_model('..model/3.0/trained_model-3.0.h5')
+
+    label_encoder = LabelEncoder()
+    label_encoder.classes_ = np.load('../model/3.0/label_encoder.npy')
+
+    
+    mean = np.load('../model/3.0/mean.npy')
+    std = np.load('../model/3.0/std.npy')
+
+    normalized_timestamp = (timestamps - mean[0]) / std[0]
+    normalized_speed = (speed - mean[1]) / std[1]
+    normalized_course = (course - mean[2]) / std[2]
+    normalized_x = (x - mean[3]) / std[3]
+    normalized_y = (y - mean[4]) / std[4]
+    normalized_z = (z - mean[5]) / std[5]
+    normalized_qx = (qx - mean[6]) / std[6]
+    normalized_qy = (qy - mean[7]) / std[7]
+    normalized_qz = (qz - mean[8]) / std[8]
+    normalized_qw = (qw - mean[9]) / std[9]
+
+    # Include normalized features in data
+    data = np.column_stack((normalized_timestamp, normalized_speed, normalized_course, normalized_x, normalized_y, normalized_z, normalized_qx, normalized_qy, normalized_qz, normalized_qw))
+
+    predictions = loaded_model.predict(data)
+
+    predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
+
+    probabilities = np.max(predictions, axis=1)
+
+    mode_probabilities = {}
+
+    for label, probability in zip(predicted_labels, probabilities):
+        label = label.upper()
+        if label not in mode_probabilities:
+            mode_probabilities[label] = []
+        mode_probabilities[label].append(probability)
+
+    average_probabilities = {mode: np.mean(probabilities) for mode, probabilities in mode_probabilities.items()}
+
+    sorted_probabilities = sorted(average_probabilities.items(), key=lambda x: x[1], reverse=True)
+
+    print("Mode Probabilities:")
+    for mode, probability in sorted_probabilities:
+        print(f"{mode}: {probability}")
+
+    probability = sorted_probabilities[0]
+
+    return probability[0]
+
+@app.route('/predict-lstm', methods=['POST'])
+def predict_lstm():
+    # Check if a file is uploaded
+    if 'file' not in request.files:
+        return 'No file uploaded.'
+
+    file = request.files['file']
+
+    # Load trained model into memory
+
+    # Check if the file has an allowed extension
+    # if not filename.lower().endswith(('.csv')):
+    #     return 'Authentication failed. Your connection has been recorded and will be reported'
+
+    # Load the new data for prediction
+    new_data = np.genfromtxt(StringIO(file.read().decode('utf-8')), delimiter=',', dtype=float)
+
+    # Extract the relevant columns from the data
+    timestamps = new_data[:, 0]
+    x = new_data[:, 1]
+    y = new_data[:, 2]
+    z = new_data[:, 3]
+    mx = new_data[:, 4]
+    my = new_data[:, 5]
+    mz = new_data[:, 6]
+
+    loaded_model = tf.keras.models.load_model('..model/lstm/trained_lstm_model-3.0.h5')
+
+    label_encoder = LabelEncoder()
+    label_encoder.classes_ = np.load('../model/lstm/label_encoder.npy')
+
+    
+    mean = np.load('../model/lstm/mean.npy')
+    std = np.load('../model/lstm/std.npy')
+
+    normalized_timestamp = (timestamps - mean[0]) / std[0]
+    normalized_x = (x - mean[1]) / std[1]
+    normalized_y = (y - mean[2]) / std[2]
+    normalized_z = (z - mean[3]) / std[3]
+    normalized_mx = (mx - mean[4]) / std[4]
+    normalized_my = (my - mean[5]) / std[5]
+    normalized_mz = (mz - mean[6]) / std[6]
+
+    # Include normalized features in data
+    data = np.column_stack((normalized_timestamp, normalized_x, normalized_y, normalized_z, normalized_mx, normalized_my, normalized_mz))
+
+    predictions = loaded_model.predict(data)
+
+    predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
+
+    probabilities = np.max(predictions, axis=1)
+
+    mode_probabilities = {}
+
+    for label, probability in zip(predicted_labels, probabilities):
+        label = label.upper()
+        if label not in mode_probabilities:
+            mode_probabilities[label] = []
+        mode_probabilities[label].append(probability)
+
+    average_probabilities = {mode: np.mean(probabilities) for mode, probabilities in mode_probabilities.items()}
+
+    sorted_probabilities = sorted(average_probabilities.items(), key=lambda x: x[1], reverse=True)
+
+    print("Mode Probabilities:")
+    for mode, probability in sorted_probabilities:
+        print(f"{mode}: {probability}")
+
+    probability = sorted_probabilities[0]
+
+    return probability[0]
+
+@app.route('/predict-cnn-bilstm', methods=['POST'])
+def predict_cnn_bilstm():
+    # Check if a file is uploaded
+    if 'file' not in request.files:
+        return 'No file uploaded.'
+
+    file = request.files['file']
+
     # Load the new data for prediction
     data = np.genfromtxt(StringIO(file.read().decode('utf-8')), delimiter=',', dtype=float)
 
     # Transform data to multiple channels
-    X_channels = preprocess_data_for_prediction(data)
+    X_channels = Preprocessing.preprocess_data_for_prediction(data)
+
+    # Load trained model into memory
+    model = tf.keras.models.load_model('model/cnn-bi-lstm/cnn_bilstm_model.h5')
 
     # Predict with the reshaped data
     predictions = model.predict(X_channels)
