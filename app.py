@@ -61,8 +61,8 @@ def predict_lbi_stm():
     label_encoder = LabelEncoder()
     label_encoder.classes_ = np.load(os.path.join(os.path.dirname(__file__), 'model', 'lstm', 'label_encoder.npy'))
 
-    mean = np.load(os.path.join(os.path.dirname(__file__), 'model', 'lstm', 'mean.npy'))
-    std = np.load(os.path.join(os.path.dirname(__file__), 'model', 'lstm', 'std.npy'))
+    mean = np.load(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'mean.npy'))
+    std = np.load(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'std.npy'))
 
     normalized_timestamp = (timestamps - mean[0]) / std[0]
     normalized_x = (x - mean[1]) / std[1]
