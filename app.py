@@ -80,8 +80,9 @@ def predict_lstm():
 
     predictions = loaded_lstm_model.predict(data)
 
-    predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
-    print(predicted_labels)
+    predicted_indices = np.argmax(predictions, axis=1)
+    predicted_labels = [LABEL_MAP[index] for index in predicted_indices]
+
     probabilities = np.max(predictions, axis=1)
 
     mode_probabilities = {}
