@@ -3,11 +3,12 @@ from enum import Enum
 
 # Define the transportation mode Enum
 class TransportationMode(Enum):
-    DRIVING = 'driving'
-    CYCLING = 'cycling'
-    TRAIN = 'train'
-    BUS = 'bus'
-    SUBWAY = 'metro'
-    RUNNING = 'running'
-    WALKING = 'walking'
+    UNKNOWN = 'unknown'
     STATIONARY = 'stationary'
+    WALKING = 'walking'
+    RUNNING = 'running'
+    CYCLING = 'cycling'
+    DRIVING = 'driving'
+    BUS = 'bus'
+    TRAIN = 'train'
+    SUBWAY = 'metro'

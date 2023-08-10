@@ -23,14 +23,15 @@ loaded_model = tf.keras.models.load_model(os.path.join(os.path.dirname(__file__)
 loaded_lstm_model = tf.keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'lstm', 'trained_lstm_model.h5'))
 
 LABEL_MAP = {
-    6: "bus",
+    0: "unknown",
+    1: "stationary",
+    2: "walking",
+    3: "running",
     4: "cycling",
     5: "driving",
-    8: "metro",
-    3: "running",
-    1: "stationary",
+    6: "bus",
     7: "train",
-    2: "walking",
+    8: "metro"
 }
 
 @app.route('/predict-lstm', methods=['POST'])
@@ -79,8 +80,7 @@ def predict_lstm():
 
     predictions = loaded_lstm_model.predict(data)
 
-    predicted_indices = np.argmax(predictions, axis=1)
-    predicted_labels = [LABEL_MAP[index] for index in predicted_indices]
+    predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
 
     probabilities = np.max(predictions, axis=1)
 
