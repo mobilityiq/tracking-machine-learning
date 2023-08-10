@@ -31,7 +31,6 @@ LABEL_MAP = {
     1: "stationary",
     7: "train",
     2: "walking",
-    0: "unknown"
 }
 
 @app.route('/predict-lstm', methods=['POST'])
