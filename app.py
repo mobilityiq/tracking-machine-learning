@@ -23,15 +23,15 @@ loaded_model = tf.keras.models.load_model(os.path.join(os.path.dirname(__file__)
 loaded_lstm_model = tf.keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'lstm', 'trained_lstm_model.h5'))
 
 LABEL_MAP = {
-    0: "unknown",
-    1: "stationary",
-    2: "walking",
-    3: "running",
+    6: "bus",
     4: "cycling",
     5: "driving",
-    6: "bus",
+    8: "metro",
+    3: "running",
+    1: "stationary",
     7: "train",
-    8: "metro"
+    2: "walking",
+    0: "unknown"
 }
 
 @app.route('/predict-lstm', methods=['POST'])
