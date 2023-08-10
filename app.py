@@ -81,7 +81,7 @@ def predict_lstm():
     predictions = loaded_lstm_model.predict(data)
 
     predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
-
+    print(predicted_labels)
     probabilities = np.max(predictions, axis=1)
 
     mode_probabilities = {}
