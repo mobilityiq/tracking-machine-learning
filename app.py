@@ -5,7 +5,7 @@ from io import StringIO
 from sklearn.preprocessing import LabelEncoder
 from datetime import datetime
 from flask import Flask, request
-from training.preprocesing import preprocess_data_for_prediction
+from training.preprocessing import preprocess_data_for_prediction
 
 app = Flask(__name__)
 
