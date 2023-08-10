@@ -27,7 +27,7 @@ class TransportationMode(Enum):
 users = ["User1", "User2", "User3"]
 # users = ["UserTest"]
 motion_files = ["Bag_Motion.txt", "Hips_Motion.txt", "Hand_Motion.txt", "Torso_Motion.txt"]
-# motion_files = ["Hand_Motion.txt", "Hips_Motion.txt"]
+# motion_files = ["Hand_Motion.txt"]
 
 # Load data from the text file
 data = Preprocessing.data_for_classification_model(users=users,motion_files=motion_files)
@@ -76,6 +76,9 @@ features = np.column_stack((normalized_timestamp, normalized_x, normalized_y, no
 
 # Split the data into training and testing sets
 train_features, test_features, train_labels, test_labels = train_test_split(features, encoded_labels, test_size=0.2)
+train_features = train_features[:, np.newaxis, :]
+test_features = test_features[:, np.newaxis, :]
+
 
 # Define learning rate schedule function
 def lr_schedule(epoch):
@@ -89,11 +92,11 @@ def lr_schedule(epoch):
 
 input_dim = features.shape[1]
 
-model = Models.create_classification_model(num_clases=num_classes, input_dim=input_dim, num_classes=num_classes)
+model = Models.create_bidirectional_lstm_model(num_classes=num_classes)
 
 # Define callbacks
-early_stopping = EarlyStopping(patience=3, restore_best_weights=True)
-checkpoint = ModelCheckpoint('model.h5', save_best_only=True)
+early_stopping = EarlyStopping(patience=5, restore_best_weights=True)
+checkpoint = ModelCheckpoint('../model/bi-lstm/trained_bi-lstm_model.h5', save_best_only=True)
 lr_scheduler = LearningRateScheduler(lr_schedule)
 
 # Compile and fit the model
@@ -107,15 +110,16 @@ history = model.fit(train_features, train_labels, epochs=40, batch_size=64,
                     validation_data=(test_features, test_labels),
                     callbacks=[early_stopping, checkpoint, lr_scheduler])
 
+
 # Save the trained model as a TensorFlow h5 file
-model.save('../model/classification/trained_classification_model.h5')
+model.save('../model/bi-lstm/trained_bi-lstm_model.h5')
 
 # Save the label encoder
-np.save('../model/classification/label_encoder.npy', label_encoder.classes_)
+np.save('../model/bi-lstm/label_encoder.npy', label_encoder.classes_)
 
 # Save the mean and standard deviation
-np.save('../model/classification/mean.npy', [mean_timestamp, mean_x, mean_y, mean_z, mean_mx, mean_my, mean_mz])
-np.save('../model/classification/std.npy', [std_timestamp, std_x, std_y, std_z, std_mx, std_my, std_mz])
+np.save('../model/bi-lstm/mean.npy', [mean_timestamp, mean_x, mean_y, mean_z, mean_mx, mean_my, mean_mz])
+np.save('../model/bi-lstm/std.npy', [std_timestamp, std_x, std_y, std_z, std_mx, std_my, std_mz])
 
 # Plot training & validation accuracy values
 plt.figure(figsize=(12, 4))
@@ -138,4 +142,3 @@ plt.xlabel('Epoch')
 plt.legend(['Train', 'Validation'], loc='upper left')
 
 plt.show()
-

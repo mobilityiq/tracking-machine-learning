@@ -102,4 +102,4 @@ history = model.fit(
 )
 
 # Save the model
-model.save('../model/cnn_bilstm_model.h5')
+model.save('../model/cnn-bi-lstm/cnn_bilstm_model.h5')

@@ -68,3 +68,40 @@ class Models:
         model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
         return model
+    
+    @staticmethod
+    def create_conv1d_lstm_model(num_classes):
+        model = tf.keras.Sequential([
+            Conv1D(64, 3, activation='relu', padding='same', input_shape=(1, 7)),
+            BatchNormalization(),
+            Conv1D(128, 3, activation='relu', padding='same'),
+            BatchNormalization(),
+            LSTM(64, return_sequences=True), 
+            LSTM(64),
+            Dense(num_classes, activation='softmax')
+        ])
+        return model
+
+    @staticmethod
+    def create_bidirectional_lstm_model(num_classes):
+        model = tf.keras.Sequential([
+            Bidirectional(LSTM(64, return_sequences=True), input_shape=(1, 7)), 
+            Bidirectional(LSTM(64)),
+            Dense(num_classes, activation='softmax')
+        ])
+        return model
+
+    @staticmethod
+    def create_simple_conv1d_model(num_classes):
+        model = tf.keras.Sequential([
+            Conv1D(64, 3, activation='relu', padding='same', input_shape=(1, 7)),  # Added padding='same'
+            BatchNormalization(),
+            Dropout(0.3),
+            Conv1D(128, 3, activation='relu', padding='same'),  # Added padding='same'
+            BatchNormalization(),
+            Dropout(0.3),
+            Flatten(),
+            Dense(64, activation='relu'),
+            Dense(num_classes, activation='softmax')
+        ])
+        return model
