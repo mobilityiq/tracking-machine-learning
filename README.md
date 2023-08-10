@@ -28,10 +28,10 @@ This project utilizes machine learning models to predict modes of transportation
     source venv/bin/activate  
     ```
 
-3. Install Flask and other dependencies:
+3. Install dependencies:
 
     ```bash
-    pip install Flask tensorflow scikit-learn coremltools
+    pip install -r requirements.sys
     ```
 
 ## Usage
