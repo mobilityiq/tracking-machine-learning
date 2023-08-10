@@ -23,7 +23,6 @@ loaded_model = tf.keras.models.load_model(os.path.join(os.path.dirname(__file__)
 loaded_lstm_model = tf.keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'lstm', 'trained_lstm_model.h5'))
 
 LABEL_MAP = {
-    0: "unknown",
     1: "stationary",
     2: "walking",
     3: "running",
