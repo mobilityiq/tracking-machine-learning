@@ -24,8 +24,8 @@ early_stop = EarlyStopping(monitor='val_loss', patience=5)
 
 # users = ["User1", "User2", "User3"]
 users = ["UserTest"]
-motion_files = ["Bag_Motion.txt", "Hips_Motion.txt", "Hand_Motion.txt", "Torso_Motion.txt"]
-# motion_files = ["Hand_Motion.txt", "Hips_Motion.txt"]
+# motion_files = ["Bag_Motion.txt", "Hips_Motion.txt", "Hand_Motion.txt", "Torso_Motion.txt"]
+motion_files = ["Bag_Motion.txt"]
 
 # Import the data
 data = Preprocessing.data_for_cnn_bilstm(users=users, motion_files=motion_files)

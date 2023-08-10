@@ -91,6 +91,13 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 train_labels = to_categorical(train_labels, num_classes=num_classes)
 test_labels = to_categorical(test_labels, num_classes=num_classes)
 
+# Save the label encoder
+np.save('../model/bi-lstm/label_encoder.npy', label_encoder.classes_)
+
+# Save the mean and standard deviation
+np.save('../model/bi-lstm/mean.npy', [mean_timestamp, mean_x, mean_y, mean_z, mean_mx, mean_my, mean_mz])
+np.save('../model/bi-lstm/std.npy', [std_timestamp, std_x, std_y, std_z, std_mx, std_my, std_mz])
+
 history = model.fit(train_features, train_labels, epochs=20, batch_size=64, 
                     validation_data=(test_features, test_labels),
                     callbacks=[early_stopping, checkpoint, lr_scheduler])
@@ -98,13 +105,6 @@ history = model.fit(train_features, train_labels, epochs=20, batch_size=64,
 
 # Save the trained model as a TensorFlow h5 file
 model.save('../model/bi-lstm/trained_bi-lstm_model.h5')
-
-# Save the label encoder
-np.save('../model/bi-lstm/label_encoder.npy', label_encoder.classes_)
-
-# Save the mean and standard deviation
-np.save('../model/bi-lstm/mean.npy', [mean_timestamp, mean_x, mean_y, mean_z, mean_mx, mean_my, mean_mz])
-np.save('../model/bi-lstm/std.npy', [std_timestamp, std_x, std_y, std_z, std_mx, std_my, std_mz])
 
 # Plot training & validation accuracy values
 plt.figure(figsize=(12, 4))

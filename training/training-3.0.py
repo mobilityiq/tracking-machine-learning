@@ -86,19 +86,6 @@ features = np.column_stack((normalized_timestamp, normalized_speed, normalized_c
 # Split the data into training and testing sets
 train_features, test_features, train_labels, test_labels = train_test_split(features, encoded_labels, test_size=0.2)
 
-# Define the model architecture
-# model = tf.keras.Sequential([
-#     tf.keras.layers.Dense(64, activation='relu', input_shape=(features.shape[1],)),
-#     tf.keras.layers.Dense(64, activation='relu'),
-#     tf.keras.layers.Dense(num_classes, activation='softmax')
-# ])
-
-# model = tf.keras.Sequential([
-#     tf.keras.layers.LSTM(64, return_sequences=True, input_shape=(1, 10)),
-#     tf.keras.layers.LSTM(64),
-#     tf.keras.layers.Dense(num_classes, activation='softmax')
-# ])
-
 def normalize(array):
     mean = np.mean(array)
     std = np.std(array)
@@ -128,7 +115,6 @@ def lr_schedule(epoch):
 
 input_dim = features.shape[1]
 
-
 # Define model with L2 regularization
 model = tf.keras.Sequential()
 model.add(tf.keras.layers.Dense(64, input_dim=input_dim, kernel_regularizer=regularizers.l2(0.01)))
@@ -150,35 +136,6 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 train_labels = to_categorical(train_labels, num_classes=num_classes)
 test_labels = to_categorical(test_labels, num_classes=num_classes)
 
-history = model.fit(train_features, train_labels, epochs=20, batch_size=64, 
-                    validation_data=(test_features, test_labels),
-                    callbacks=[early_stopping, checkpoint, lr_scheduler])
-
-# Plot training & validation accuracy values
-plt.figure(figsize=(12, 4))
-
-plt.subplot(1, 2, 1)
-plt.plot(history.history['accuracy'])
-plt.plot(history.history['val_accuracy'])
-plt.title('Model accuracy')
-plt.ylabel('Accuracy')
-plt.xlabel('Epoch')
-plt.legend(['Train', 'Validation'], loc='upper left')
-
-# Plot training & validation loss values
-plt.subplot(1, 2, 2)
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.title('Model loss')
-plt.ylabel('Loss')
-plt.xlabel('Epoch')
-plt.legend(['Train', 'Validation'], loc='upper left')
-
-plt.show()
-
-# Save the trained model as a TensorFlow h5 file
-model.save('../model/3.0/trained_model-3.0.h5')
-
 # Save the label encoder
 np.save('../model/3.0/label_encoder.npy', label_encoder.classes_)
 
@@ -186,6 +143,12 @@ np.save('../model/3.0/label_encoder.npy', label_encoder.classes_)
 np.save('../model/3.0/mean.npy', [mean_timestamp, mean_speed, mean_course, mean_x, mean_y, mean_z, mean_qx, mean_qy, mean_qz, mean_qw])
 np.save('../model/3.0/std.npy', [std_timestamp, std_speed, std_course, std_x, std_y, std_z, std_qx, std_qy, std_qz, std_qw])
 
+history = model.fit(train_features, train_labels, epochs=20, batch_size=64, 
+                    validation_data=(test_features, test_labels),
+                    callbacks=[early_stopping, checkpoint, lr_scheduler])
+
+# Save the trained model as a TensorFlow h5 file
+model.save('../model/3.0/trained_model-3.0.h5')
 
 # Create a dictionary to hold the metadata
 metadata = {
@@ -216,3 +179,25 @@ coreml_model.user_defined_metadata['prediction_type'] = 'probability'
 
 # Save the Core ML model
 coreml_model.save('../model/3.0/TransitModePredictor.mlmodel')
+
+# Plot training & validation accuracy values
+plt.figure(figsize=(12, 4))
+
+plt.subplot(1, 2, 1)
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
+plt.title('Model accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Validation'], loc='upper left')
+
+# Plot training & validation loss values
+plt.subplot(1, 2, 2)
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('Model loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Validation'], loc='upper left')
+
+plt.show()

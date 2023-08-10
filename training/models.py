@@ -1,10 +1,8 @@
 import tensorflow as tf
-from tensorflow.keras.layers import Input, Conv1D, BatchNormalization, Dropout, Flatten, Concatenate, Bidirectional, LSTM, Reshape, Dense
-from tensorflow.keras.models import Model
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Activation
-from tensorflow.keras import regularizers
-
+from tensorflow import keras
+from keras import regularizers
+from keras.layers import Input, Conv1D, BatchNormalization, Dropout, Flatten, Concatenate, Bidirectional, LSTM, Reshape, Dense, Activation
+from keras.models import Model, Sequential
 
 class Models:
 
