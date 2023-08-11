@@ -58,6 +58,8 @@ This project utilizes machine learning models to predict modes of transportation
     nohup python app.py > flask_log.txt 2>&1 &
     ```
 
+## Training data
+
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
