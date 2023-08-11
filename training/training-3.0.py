@@ -140,7 +140,7 @@ np.save('../model/3.0/label_encoder.npy', label_encoder.classes_)
 np.save('../model/3.0/mean.npy', [mean_timestamp, mean_speed, mean_course, mean_x, mean_y, mean_z, mean_qx, mean_qy, mean_qz, mean_qw])
 np.save('../model/3.0/std.npy', [std_timestamp, std_speed, std_course, std_x, std_y, std_z, std_qx, std_qy, std_qz, std_qw])
 
-history = model.fit(train_features, train_labels, epochs=20, batch_size=1024, 
+history = model.fit(train_features, train_labels, epochs=20, batch_size=32, 
                     validation_data=(test_features, test_labels),
                     callbacks=[early_stopping, checkpoint, lr_scheduler])
 
