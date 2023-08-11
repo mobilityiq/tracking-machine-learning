@@ -81,7 +81,7 @@ model = Models.create_simple_conv1d_model(num_classes=num_classes)
 
 # Define callbacks
 early_stopping = EarlyStopping(patience=5, restore_best_weights=True)
-checkpoint = ModelCheckpoint('../model/conv1d/trained_conv1d_model.h5', save_best_only=True)
+checkpoint = ModelCheckpoint('../model/conv1d/trained_conv1d_model', save_best_only=True)
 lr_scheduler = LearningRateScheduler(lr_schedule)
 
 # Compile and fit the model

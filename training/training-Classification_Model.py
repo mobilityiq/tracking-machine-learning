@@ -80,7 +80,7 @@ model = Models.create_classification_model(num_clases=num_classes, input_dim=inp
 
 # Define callbacks
 early_stopping = EarlyStopping(patience=3, restore_best_weights=True)
-checkpoint = ModelCheckpoint('../model/classification/trained_classification_model.h5', save_best_only=True)
+checkpoint = ModelCheckpoint('../model/classification/trained_classification_model', save_best_only=True)
 lr_scheduler = LearningRateScheduler(lr_schedule)
 
 # Compile and fit the model

@@ -122,7 +122,7 @@ model.add(tf.keras.layers.Activation('softmax'))
 
 # Define callbacks
 early_stopping = EarlyStopping(patience=3, restore_best_weights=True)
-checkpoint = ModelCheckpoint('model.h5', save_best_only=True)
+checkpoint = ModelCheckpoint('../model/3.0/trained_model-3.0', save_best_only=True)
 lr_scheduler = LearningRateScheduler(lr_schedule)
 
 # Compile and fit the model
