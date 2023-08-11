@@ -88,7 +88,7 @@ history = model.fit(
     y=y_train_encoded,
     validation_data=(X_test_channels, y_test_encoded),
     epochs=10,
-    batch_size=1024,
+    batch_size=32,
     callbacks=[early_stop]
 )
 
