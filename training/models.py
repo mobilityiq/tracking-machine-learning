@@ -1,4 +1,3 @@
-import tensorflow as tf
 from tensorflow import keras
 from keras import regularizers
 from keras.layers import Input, Conv1D, BatchNormalization, Dropout, Flatten, Concatenate, Bidirectional, LSTM, Reshape, Dense, Activation
@@ -8,10 +7,10 @@ class Models:
 
     @staticmethod
     def create_lstm_model(num_classes):
-        model = tf.keras.Sequential([
-            tf.keras.layers.LSTM(64, return_sequences=True, input_shape=(1, 7)),  
-            tf.keras.layers.LSTM(64),
-            tf.keras.layers.Dense(num_classes, activation='softmax')
+        model = keras.Sequential([
+            keras.layers.LSTM(64, return_sequences=True, input_shape=(1, 7)),  
+            keras.layers.LSTM(64),
+            keras.layers.Dense(num_classes, activation='softmax')
         ])
         return model
 
@@ -19,11 +18,11 @@ class Models:
     @staticmethod
     def create_classification_model(num_clases, input_dim, num_classes):
         # Define model with L2 regularization
-        model = tf.keras.Sequential()
-        model.add(tf.keras.layers.Dense(64, input_dim=input_dim, kernel_regularizer=regularizers.l2(0.01)))
-        model.add(tf.keras.layers.Activation('relu'))
-        model.add(tf.keras.layers.Dense(num_classes))
-        model.add(tf.keras.layers.Activation('softmax'))
+        model = keras.Sequential()
+        model.add(keras.layers.Dense(64, input_dim=input_dim, kernel_regularizer=regularizers.l2(0.01)))
+        model.add(keras.layers.Activation('relu'))
+        model.add(keras.layers.Dense(num_classes))
+        model.add(keras.layers.Activation('softmax'))
         return model
 
     @staticmethod
@@ -59,7 +58,7 @@ class Models:
         bi_lstm = Flatten()(bi_lstm)
 
         # Fully Connected Layers
-        fc1 = Dense(64, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.01))(bi_lstm)  # Reduced dense units to 64
+        fc1 = Dense(64, activation='relu', kernel_regularizer=keras.regularizers.l2(0.01))(bi_lstm)  # Reduced dense units to 64
         fc2 = Dense(9, activation='softmax')(fc1)
 
         model = Model(channel_inputs, fc2)
@@ -69,7 +68,7 @@ class Models:
     
     @staticmethod
     def create_conv1d_lstm_model(num_classes):
-        model = tf.keras.Sequential([
+        model = keras.Sequential([
             Conv1D(64, 3, activation='relu', padding='same', input_shape=(1, 7)),
             BatchNormalization(),
             Conv1D(128, 3, activation='relu', padding='same'),
@@ -82,7 +81,7 @@ class Models:
 
     @staticmethod
     def create_bidirectional_lstm_model(num_classes):
-        model = tf.keras.Sequential([
+        model = keras.Sequential([
             Bidirectional(LSTM(64, return_sequences=True), input_shape=(1, 7)), 
             Bidirectional(LSTM(64)),
             Dense(num_classes, activation='softmax')
@@ -91,7 +90,7 @@ class Models:
 
     @staticmethod
     def create_simple_conv1d_model(num_classes):
-        model = tf.keras.Sequential([
+        model = keras.Sequential([
             Conv1D(64, 3, activation='relu', padding='same', input_shape=(1, 7)),  # Added padding='same'
             BatchNormalization(),
             Dropout(0.3),

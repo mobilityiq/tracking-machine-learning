@@ -1,6 +1,6 @@
 import os
-import tensorflow as tf
 import numpy as np
+from tensorflow import keras
 from io import StringIO
 from sklearn.preprocessing import LabelEncoder
 from datetime import datetime
@@ -18,27 +18,17 @@ encoder = LabelEncoder()
 encoder.classes_ = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8])  # these are the numeric labels 
 
 # Load models
-loaded_model = tf.keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', '3.0', 'trained_model-3.0.h5'))
-# loaded_cnn_bilstm_model = tf.keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'cnn-bi-lstm', 'cnn_bilstm_model.h5'))
-loaded_lstm_model = tf.keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'lstm', 'trained_lstm_model.h5'))
-loaded_bi_lstm_model = tf.keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'trained_bi-lstm_model.h5'))
-
-LABEL_MAP = {
-    1: "stationary",
-    2: "walking",
-    3: "running",
-    4: "cycling",
-    5: "driving",
-    6: "bus",
-    7: "train",
-    8: "metro"
-}
+loaded_model = keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', '3.0', 'trained_model-3.0'))
+# loaded_cnn_bilstm_model = keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'cnn-bi-lstm', 'cnn_bilstm_model.h5'))
+loaded_lstm_model = keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'lstm', 'trained_lstm_model.h5'))
+loaded_bi_lstm_model = keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'trained_bi-lstm_model.h5'))
+loaded_conv1d_lstm_model = keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'conv1d-lstm', 'trained_conv1d-lstm_model.h5'))
 
 @app.route('/predict-bi-lstm', methods=['POST'])
 def predict_lbi_stm():
     # Check if a file is uploaded
     if 'file' not in request.files:
-        return 'No file uploaded.'
+        return 'Unauthorised acess. Your ip has been tracked and will be reported', 400
 
     file = request.files['file']
 
@@ -59,7 +49,7 @@ def predict_lbi_stm():
     mz = new_data[:, 6]
 
     label_encoder = LabelEncoder()
-    label_encoder.classes_ = np.load(os.path.join(os.path.dirname(__file__), 'model', 'lstm', 'label_encoder.npy'))
+    label_encoder.classes_ = np.load(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'label_encoder.npy'))
 
     mean = np.load(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'mean.npy'))
     std = np.load(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'std.npy'))
@@ -75,13 +65,16 @@ def predict_lbi_stm():
     # Include normalized features in data
     data = np.column_stack((normalized_timestamp, normalized_x, normalized_y, normalized_z, normalized_mx, normalized_my, normalized_mz))
 
+    print("Inference Data (First 5 Rows):")
+    print(data[:5])  # Print the first 5 rows of the normalized features
+
     # Reshape the data
     data = data.reshape(data.shape[0], 1, data.shape[1])
 
     predictions = loaded_bi_lstm_model.predict(data)
 
     predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
-
+    print(predicted_labels)
     probabilities = np.max(predictions, axis=1)
 
     mode_probabilities = {}
@@ -110,7 +103,7 @@ def predict_lbi_stm():
 def predict_lstm():
     # Check if a file is uploaded
     if 'file' not in request.files:
-        return 'No file uploaded.'
+        return 'Unauthorised acess. Your ip has been tracked and will be reported', 400
 
     file = request.files['file']
 
@@ -178,11 +171,83 @@ def predict_lstm():
 
     return probability[0]
 
+@app.route('/predict-conv1d-lstm', methods=['POST'])
+def predict_conv1d_lstm():
+    # Check if a file is uploaded
+    if 'file' not in request.files:
+        return 'Unauthorised acess. Your ip has been tracked and will be reported', 400
+
+    file = request.files['file']
+
+    # Check if the file has an allowed extension
+    # if not filename.lower().endswith(('.csv')):
+    #     return 'Authentication failed. Your connection has been recorded and will be reported'
+
+    # Load the new data for prediction
+    new_data = np.genfromtxt(StringIO(file.read().decode('utf-8')), delimiter=',', dtype=float)
+
+    # Extract the relevant columns from the data
+    timestamps = new_data[:, 0]
+    x = new_data[:, 1]
+    y = new_data[:, 2]
+    z = new_data[:, 3]
+    mx = new_data[:, 4]
+    my = new_data[:, 5]
+    mz = new_data[:, 6]
+
+    label_encoder = LabelEncoder()
+    label_encoder.classes_ = np.load(os.path.join(os.path.dirname(__file__), 'model', 'conv1d-lstm', 'label_encoder.npy'))
+
+    mean = np.load(os.path.join(os.path.dirname(__file__), 'model', 'conv1d-lstm', 'mean.npy'))
+    std = np.load(os.path.join(os.path.dirname(__file__), 'model', 'conv1d-lstm', 'std.npy'))
+
+    normalized_timestamp = (timestamps - mean[0]) / std[0]
+    normalized_x = (x - mean[1]) / std[1]
+    normalized_y = (y - mean[2]) / std[2]
+    normalized_z = (z - mean[3]) / std[3]
+    normalized_mx = (mx - mean[4]) / std[4]
+    normalized_my = (my - mean[5]) / std[5]
+    normalized_mz = (mz - mean[6]) / std[6]
+
+    # Include normalized features in data
+    data = np.column_stack((normalized_timestamp, normalized_x, normalized_y, normalized_z, normalized_mx, normalized_my, normalized_mz))
+
+    # Reshape the data
+    data = data.reshape(data.shape[0], 1, data.shape[1])
+
+    predictions = loaded_conv1d_lstm_model.predict(data)
+
+    predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
+
+    probabilities = np.max(predictions, axis=1)
+
+    mode_probabilities = {}
+
+    for label, probability in zip(predicted_labels, probabilities):
+        label = label.upper()
+        if label not in mode_probabilities:
+            mode_probabilities[label] = []
+        mode_probabilities[label].append(probability)
+
+    average_probabilities = {mode: np.mean(probabilities) for mode, probabilities in mode_probabilities.items()}
+
+    sorted_probabilities = sorted(average_probabilities.items(), key=lambda x: x[1], reverse=True)
+
+    print("Mode Probabilities:")
+    for mode, probability in sorted_probabilities:
+        print(f"{mode}: {probability}")
+
+
+    probability = sorted_probabilities[0]
+    # return jsonify({"mode": probability[0], "probability": float(probability[1])})
+
+    return probability[0]
+
 @app.route('/predict', methods=['POST'])
 def predict():
     # Check if a file is uploaded
     if 'file' not in request.files:
-        return 'No file uploaded.'
+        return 'Unauthorised acess. Your ip has been tracked and will be reported', 400
 
     file = request.files['file']
 
@@ -253,6 +318,18 @@ def predict():
 
 # @app.route('/predict-cnn-bilstm', methods=['POST'])
 # def predict_cnn_bilstm():
+# 
+    # LABEL_MAP = {
+    #     1: "stationary",
+    #     2: "walking",
+    #     3: "running",
+    #     4: "cycling",
+    #     5: "driving",
+    #     6: "bus",
+    #     7: "train",
+    #     8: "metro"
+    # }
+    # 
 #     # Check if a file is uploaded
 #     if 'file' not in request.files:
 #         return 'No file uploaded.'
@@ -317,4 +394,5 @@ def upload():
         new_file.write(file.read().decode('utf-8'))
 
 if __name__ == "__main__":
-    app.run(host='51.68.196.15', port=8000, debug=True)
+    # app.run(host='51.68.196.15', port=8000, debug=True)
+    app.run(host='192.168.18.200', port=8000, debug=True)

@@ -10,7 +10,7 @@ from models import Models
 from transportation_mode import TransportationMode
 
 users = ["User1", "User2", "User3"]
-# users = ["UserTest"]
+# users = ["User1"]
 motion_files = ["Bag_Motion.txt", "Hips_Motion.txt", "Hand_Motion.txt", "Torso_Motion.txt"]
 # motion_files = ["Bag_Motion.txt"]
 
@@ -27,7 +27,6 @@ z = data[:, 3].astype(float)  # z accel
 mx = data[:, 4].astype(float)  # mx magnetometer value
 my = data[:, 5].astype(float)  # my magnetometer
 mz = data[:, 6].astype(float)  # mz magnetometer
-
 
 # Perform any necessary preprocessing steps
 # For example, you can normalize the sensor values
@@ -58,6 +57,9 @@ labels = label_encoder.classes_.tolist()
 
 # Combine normalized sensor values into features
 features = np.column_stack((normalized_timestamp, normalized_x, normalized_y, normalized_z, normalized_mx, normalized_my, normalized_mz))
+
+print("Training Data (First 5 Rows):")
+print(features[:5])  # Print the first 5 rows of the normalized features
 
 # Split the data into training and testing sets
 train_features, test_features, train_labels, test_labels = train_test_split(features, encoded_labels, test_size=0.2)
@@ -98,12 +100,12 @@ np.save('../model/conv1d-lstm/label_encoder.npy', label_encoder.classes_)
 np.save('../model/conv1d-lstm/mean.npy', [mean_timestamp, mean_x, mean_y, mean_z, mean_mx, mean_my, mean_mz])
 np.save('../model/conv1d-lstm/std.npy', [std_timestamp, std_x, std_y, std_z, std_mx, std_my, std_mz])
 
-history = model.fit(train_features, train_labels, epochs=20, batch_size=64, 
+history = model.fit(train_features, train_labels, epochs=10, batch_size=1024, 
                     validation_data=(test_features, test_labels),
                     callbacks=[early_stopping, checkpoint, lr_scheduler])
 
-# Save the trained model as a TensorFlow h5 file
-model.save('../model/conv1d-lstm/trained_conv1d-lstm_model.h5')
+# Save the trained model 
+model.save('../model/conv1d-lstm/trained_conv1d-lstm_model')
 
 # Plot training & validation accuracy values
 plt.figure(figsize=(12, 4))

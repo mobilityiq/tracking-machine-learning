@@ -1,23 +1,15 @@
-import os
 import numpy as np
-import time
-from sklearn.model_selection import train_test_split
-import tensorflow as tf
-from tensorflow import keras
-from keras.models import Model
-from keras.layers import Concatenate, Flatten
-from keras.callbacks import EarlyStopping, ModelCheckpoint, LearningRateScheduler
-from scipy.interpolate import UnivariateSpline
-from scipy.ndimage import gaussian_filter
-from keras.layers import Reshape
-from keras.layers import Input, Conv1D, MaxPooling1D, BatchNormalization, Bidirectional, LSTM, Dense
-from keras.utils import to_categorical
-from keras.layers import Dropout
-
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from keras.callbacks import EarlyStopping, ModelCheckpoint, LearningRateScheduler
+from scipy.ndimage import gaussian_filter
+from keras.layers import Input
+from keras.utils import to_categorical
 from preprocessing import Preprocessing
 from models import Models
 from transportation_mode import TransportationMode
+from sklearn.preprocessing import LabelEncoder
+
 
 users = ["User1", "User2", "User3"]
 # users = ["UserTest"]
@@ -105,12 +97,12 @@ np.save('../model/classification/label_encoder.npy', label_encoder.classes_)
 np.save('../model/classification/mean.npy', [mean_timestamp, mean_x, mean_y, mean_z, mean_mx, mean_my, mean_mz])
 np.save('../model/classification/std.npy', [std_timestamp, std_x, std_y, std_z, std_mx, std_my, std_mz])
 
-history = model.fit(train_features, train_labels, epochs=20, batch_size=64, 
+history = model.fit(train_features, train_labels, epochs=20, batch_size=1024, 
                     validation_data=(test_features, test_labels),
                     callbacks=[early_stopping, checkpoint, lr_scheduler])
 
-# Save the trained model as a TensorFlow h5 file
-model.save('../model/classification/trained_classification_model.h5')
+# Save the trained model
+model.save('../model/classification/trained_classification_model')
 
 # Plot training & validation accuracy values
 plt.figure(figsize=(12, 4))

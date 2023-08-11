@@ -1,20 +1,11 @@
-import os
 import numpy as np
-import time
-from sklearn.model_selection import train_test_split
 import tensorflow as tf
-from tensorflow import keras
-from keras.models import Model
-from keras.layers import Concatenate, Flatten
-from keras.callbacks import EarlyStopping
-from scipy.interpolate import UnivariateSpline
-from scipy.ndimage import gaussian_filter
-from keras.layers import Reshape
-from keras.layers import Input, Conv1D, MaxPooling1D, BatchNormalization, Bidirectional, LSTM, Dense
-from keras.utils import to_categorical
-from keras.layers import Dropout
-
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from keras.callbacks import EarlyStopping
+from scipy.ndimage import gaussian_filter
+from keras.layers import Input
+from keras.utils import to_categorical
 from preprocessing import Preprocessing
 from models import Models
 
@@ -97,9 +88,31 @@ history = model.fit(
     y=y_train_encoded,
     validation_data=(X_test_channels, y_test_encoded),
     epochs=10,
-    batch_size=128,
+    batch_size=1024,
     callbacks=[early_stop]
 )
 
 # Save the model
-model.save('../model/cnn-bi-lstm/cnn_bilstm_model.h5')
+model.save('../model/cnn-bi-lstm/cnn_bilstm_model')
+
+# Plot training & validation accuracy values
+plt.figure(figsize=(12, 4))
+
+plt.subplot(1, 2, 1)
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
+plt.title('Model accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Validation'], loc='upper left')
+
+# Plot training & validation loss values
+plt.subplot(1, 2, 2)
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('Model loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Validation'], loc='upper left')
+
+plt.show()

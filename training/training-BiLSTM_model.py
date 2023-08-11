@@ -1,10 +1,10 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from keras.callbacks import EarlyStopping, ModelCheckpoint, LearningRateScheduler
 from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from enum import Enum
-import matplotlib.pyplot as plt
 from preprocessing import Preprocessing
 from models import Models
 from transportation_mode import TransportationMode
@@ -98,13 +98,13 @@ np.save('../model/bi-lstm/label_encoder.npy', label_encoder.classes_)
 np.save('../model/bi-lstm/mean.npy', [mean_timestamp, mean_x, mean_y, mean_z, mean_mx, mean_my, mean_mz])
 np.save('../model/bi-lstm/std.npy', [std_timestamp, std_x, std_y, std_z, std_mx, std_my, std_mz])
 
-history = model.fit(train_features, train_labels, epochs=20, batch_size=64, 
+history = model.fit(train_features, train_labels, epochs=20, batch_size=1024, 
                     validation_data=(test_features, test_labels),
                     callbacks=[early_stopping, checkpoint, lr_scheduler])
 
 
-# Save the trained model as a TensorFlow h5 file
-model.save('../model/bi-lstm/trained_bi-lstm_model.h5')
+# Save the trained model
+model.save('../model/bi-lstm/trained_bi-lstm_model')
 
 # Plot training & validation accuracy values
 plt.figure(figsize=(12, 4))

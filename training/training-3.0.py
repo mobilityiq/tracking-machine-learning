@@ -1,17 +1,15 @@
 import sys
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, LearningRateScheduler
-from tensorflow.keras import regularizers
+from keras.callbacks import EarlyStopping, ModelCheckpoint, LearningRateScheduler
+from keras import regularizers
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from enum import Enum
 import coremltools as ct
 import json
 import matplotlib.pyplot as plt
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Activation
-from tensorflow.keras.utils import to_categorical
+from keras.utils import to_categorical
 
 
 # Define the transportation mode Enum
@@ -34,7 +32,6 @@ data_file = sys.argv[1]
 
 # Load data from the text file
 data = np.genfromtxt(data_file, delimiter=',', dtype=str)
-
 
 # Extract relevant information from the loaded data
 modes = data[:, -1]  # transportation modes
@@ -143,12 +140,12 @@ np.save('../model/3.0/label_encoder.npy', label_encoder.classes_)
 np.save('../model/3.0/mean.npy', [mean_timestamp, mean_speed, mean_course, mean_x, mean_y, mean_z, mean_qx, mean_qy, mean_qz, mean_qw])
 np.save('../model/3.0/std.npy', [std_timestamp, std_speed, std_course, std_x, std_y, std_z, std_qx, std_qy, std_qz, std_qw])
 
-history = model.fit(train_features, train_labels, epochs=20, batch_size=64, 
+history = model.fit(train_features, train_labels, epochs=20, batch_size=1024, 
                     validation_data=(test_features, test_labels),
                     callbacks=[early_stopping, checkpoint, lr_scheduler])
 
-# Save the trained model as a TensorFlow h5 file
-model.save('../model/3.0/trained_model-3.0.h5')
+# Save the trained model
+model.save('../model/3.0/trained_model-3.0')
 
 # Create a dictionary to hold the metadata
 metadata = {

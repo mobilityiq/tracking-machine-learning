@@ -107,13 +107,13 @@ np.save('../model/lstm/label_encoder.npy', label_encoder.classes_)
 np.save('../model/lstm/mean.npy', [mean_timestamp, mean_x, mean_y, mean_z, mean_mx, mean_my, mean_mz])
 np.save('../model/lstm/std.npy', [std_timestamp, std_x, std_y, std_z, std_mx, std_my, std_mz])
 
-history = model.fit(train_features, train_labels, epochs=20, batch_size=64, 
+history = model.fit(train_features, train_labels, epochs=20, batch_size=1024, 
                     validation_data=(test_features, test_labels),
                     callbacks=[early_stopping, checkpoint, lr_scheduler])
 
 
-# Save the trained model as a TensorFlow h5 file
-model.save('../model/lstm/trained_lstm_model.h5')
+# Save the trained model 
+model.save('../model/lstm/trained_lstm_model')
 
 # Plot training & validation accuracy values
 plt.figure(figsize=(12, 4))
