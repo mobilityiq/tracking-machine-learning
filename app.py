@@ -393,6 +393,8 @@ def upload():
     with open(file_path, 'w') as new_file:
         new_file.write(file.read().decode('utf-8'))
 
+    return "Ok", 200
+
 if __name__ == "__main__":
     # app.run(host='51.68.196.15', port=8000, debug=True)
     app.run(host='192.168.18.200', port=8000, debug=True)
