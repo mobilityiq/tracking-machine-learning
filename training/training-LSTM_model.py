@@ -107,7 +107,7 @@ np.save('../model/lstm/label_encoder.npy', label_encoder.classes_)
 np.save('../model/lstm/mean.npy', [mean_timestamp, mean_x, mean_y, mean_z, mean_mx, mean_my, mean_mz])
 np.save('../model/lstm/std.npy', [std_timestamp, std_x, std_y, std_z, std_mx, std_my, std_mz])
 
-history = model.fit(train_features, train_labels, epochs=20, batch_size=32, 
+history = model.fit(train_features, train_labels, epochs=10, batch_size=32, 
                     validation_data=(test_features, test_labels),
                     callbacks=[early_stopping, checkpoint, lr_scheduler])
 
