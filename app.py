@@ -17,12 +17,19 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 encoder = LabelEncoder()  
 encoder.classes_ = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8])  # these are the numeric labels 
 
+f1_metric = Preprocessing.f1_metric
+custom_objects = {'f1_metric': f1_metric}
 # Load models
-loaded_model = keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', '3.0', 'trained_model-3.0'))
+# 3.0
+loaded_model = keras.models.load_model('model/3.0/trained_model-3.0/')
 # loaded_cnn_bilstm_model = keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'cnn-bi-lstm', 'cnn_bilstm_model.h5'))
-loaded_lstm_model = keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'lstm', 'trained_lstm_model'))
-loaded_bi_lstm_model = keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'trained_bi-lstm_model'))
+# LSTM
+loaded_lstm_model = keras.models.load_model('model/lstm/trained_lstm_model/', custom_objects=custom_objects)
+# BiLSTM
+loaded_bi_lstm_model = keras.models.load_model('model/bi-lstm/trained_bi_lstm_model/', custom_objects=custom_objects)
+# CONV1D-LSTM
 loaded_conv1d_lstm_model = keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'conv1d-lstm', 'trained_conv1d-lstm_model'))
+loaded_conv1d_lstm_model = keras.models.load_model('model/conv1d-lstm/trained_conv1d_lstm_model/', custom_objects=custom_objects)
 
 @app.route('/predict-bi-lstm', methods=['POST'])
 def predict_lbi_stm():
@@ -144,6 +151,9 @@ def predict_lstm():
     data = data.reshape(data.shape[0], 1, data.shape[1])
 
     predictions = loaded_lstm_model.predict(data)
+
+    print(predictions[:10])  # Print the first 10 predictions to get an idea of the scores
+
 
     predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
 
