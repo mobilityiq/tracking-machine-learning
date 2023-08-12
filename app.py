@@ -19,92 +19,91 @@ encoder.classes_ = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8])  # these are the numeri
 
 f1_metric = Preprocessing.f1_metric
 custom_objects = {'f1_metric': f1_metric}
+
 # Load models
 # 3.0
 loaded_model = keras.models.load_model('model/3.0/trained_model-3.0/')
-# loaded_cnn_bilstm_model = keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'cnn-bi-lstm', 'cnn_bilstm_model.h5'))
 # LSTM
 loaded_lstm_model = keras.models.load_model('model/lstm/trained_lstm_model/', custom_objects=custom_objects)
 # BiLSTM
-loaded_bi_lstm_model = keras.models.load_model('model/bi-lstm/trained_bi_lstm_model/', custom_objects=custom_objects)
+# loaded_bi_lstm_model = keras.models.load_model('model/bi-lstm/trained_bi_lstm_model/', custom_objects=custom_objects)
 # CONV1D-LSTM
-loaded_conv1d_lstm_model = keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'conv1d-lstm', 'trained_conv1d-lstm_model'))
 loaded_conv1d_lstm_model = keras.models.load_model('model/conv1d-lstm/trained_conv1d_lstm_model/', custom_objects=custom_objects)
 
-@app.route('/predict-bi-lstm', methods=['POST'])
-def predict_lbi_stm():
-    # Check if a file is uploaded
-    if 'file' not in request.files:
-        return 'Unauthorised acess. Your ip has been tracked and will be reported', 400
+# @app.route('/predict-bi-lstm', methods=['POST'])
+# def predict_lbi_stm():
+#     # Check if a file is uploaded
+#     if 'file' not in request.files:
+#         return 'Unauthorised acess. Your ip has been tracked and will be reported', 400
 
-    file = request.files['file']
+#     file = request.files['file']
 
-    # Check if the file has an allowed extension
-    # if not filename.lower().endswith(('.csv')):
-    #     return 'Authentication failed. Your connection has been recorded and will be reported'
+#     # Check if the file has an allowed extension
+#     # if not filename.lower().endswith(('.csv')):
+#     #     return 'Authentication failed. Your connection has been recorded and will be reported'
 
-    # Load the new data for prediction
-    new_data = np.genfromtxt(StringIO(file.read().decode('utf-8')), delimiter=',', dtype=float)
+#     # Load the new data for prediction
+#     new_data = np.genfromtxt(StringIO(file.read().decode('utf-8')), delimiter=',', dtype=float)
 
-    # Extract the relevant columns from the data
-    timestamps = new_data[:, 0]
-    x = new_data[:, 1]
-    y = new_data[:, 2]
-    z = new_data[:, 3]
-    mx = new_data[:, 4]
-    my = new_data[:, 5]
-    mz = new_data[:, 6]
+#     # Extract the relevant columns from the data
+#     timestamps = new_data[:, 0]
+#     x = new_data[:, 1]
+#     y = new_data[:, 2]
+#     z = new_data[:, 3]
+#     mx = new_data[:, 4]
+#     my = new_data[:, 5]
+#     mz = new_data[:, 6]
 
-    label_encoder = LabelEncoder()
-    label_encoder.classes_ = np.load(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'label_encoder.npy'))
+#     label_encoder = LabelEncoder()
+#     label_encoder.classes_ = np.load(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'label_encoder.npy'))
 
-    mean = np.load(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'mean.npy'))
-    std = np.load(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'std.npy'))
+#     mean = np.load(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'mean.npy'))
+#     std = np.load(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'std.npy'))
 
-    normalized_timestamp = (timestamps - mean[0]) / std[0]
-    normalized_x = (x - mean[1]) / std[1]
-    normalized_y = (y - mean[2]) / std[2]
-    normalized_z = (z - mean[3]) / std[3]
-    normalized_mx = (mx - mean[4]) / std[4]
-    normalized_my = (my - mean[5]) / std[5]
-    normalized_mz = (mz - mean[6]) / std[6]
+#     normalized_timestamp = (timestamps - mean[0]) / std[0]
+#     normalized_x = (x - mean[1]) / std[1]
+#     normalized_y = (y - mean[2]) / std[2]
+#     normalized_z = (z - mean[3]) / std[3]
+#     normalized_mx = (mx - mean[4]) / std[4]
+#     normalized_my = (my - mean[5]) / std[5]
+#     normalized_mz = (mz - mean[6]) / std[6]
 
-    # Include normalized features in data
-    data = np.column_stack((normalized_timestamp, normalized_x, normalized_y, normalized_z, normalized_mx, normalized_my, normalized_mz))
+#     # Include normalized features in data
+#     data = np.column_stack((normalized_timestamp, normalized_x, normalized_y, normalized_z, normalized_mx, normalized_my, normalized_mz))
 
-    print("Inference Data (First 5 Rows):")
-    print(data[:5])  # Print the first 5 rows of the normalized features
+#     print("Inference Data (First 5 Rows):")
+#     print(data[:5])  # Print the first 5 rows of the normalized features
 
-    # Reshape the data
-    data = data.reshape(data.shape[0], 1, data.shape[1])
+#     # Reshape the data
+#     data = data.reshape(data.shape[0], 1, data.shape[1])
 
-    predictions = loaded_bi_lstm_model.predict(data)
+#     predictions = loaded_bi_lstm_model.predict(data)
 
-    predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
-    print(predicted_labels)
-    probabilities = np.max(predictions, axis=1)
+#     predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
+#     print(predicted_labels)
+#     probabilities = np.max(predictions, axis=1)
 
-    mode_probabilities = {}
+#     mode_probabilities = {}
 
-    for label, probability in zip(predicted_labels, probabilities):
-        label = label.upper()
-        if label not in mode_probabilities:
-            mode_probabilities[label] = []
-        mode_probabilities[label].append(probability)
+#     for label, probability in zip(predicted_labels, probabilities):
+#         label = label.upper()
+#         if label not in mode_probabilities:
+#             mode_probabilities[label] = []
+#         mode_probabilities[label].append(probability)
 
-    average_probabilities = {mode: np.mean(probabilities) for mode, probabilities in mode_probabilities.items()}
+#     average_probabilities = {mode: np.mean(probabilities) for mode, probabilities in mode_probabilities.items()}
 
-    sorted_probabilities = sorted(average_probabilities.items(), key=lambda x: x[1], reverse=True)
+#     sorted_probabilities = sorted(average_probabilities.items(), key=lambda x: x[1], reverse=True)
 
-    print("Mode Probabilities:")
-    for mode, probability in sorted_probabilities:
-        print(f"{mode}: {probability}")
+#     print("Mode Probabilities:")
+#     for mode, probability in sorted_probabilities:
+#         print(f"{mode}: {probability}")
 
 
-    probability = sorted_probabilities[0]
-    # return jsonify({"mode": probability[0], "probability": float(probability[1])})
+#     probability = sorted_probabilities[0]
+#     # return jsonify({"mode": probability[0], "probability": float(probability[1])})
 
-    return probability[0]
+#     return probability[0]
 
 @app.route('/predict-lstm', methods=['POST'])
 def predict_lstm():
