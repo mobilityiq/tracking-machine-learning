@@ -19,3 +19,4 @@ www/nohup.out
 .venv/*
 
 training/files/*
+cnn_bilstm_model.h5
