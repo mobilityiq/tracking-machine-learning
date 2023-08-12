@@ -8,9 +8,10 @@ import matplotlib.pyplot as plt
 from preprocessing import Preprocessing
 from models import Models
 from transportation_mode import TransportationMode
+from imblearn.over_sampling import SMOTE
 
 users = ["User1", "User2", "User3"]
-# users = ["UserTest"]
+# users = ["User0"]
 motion_files = ["Bag_Motion.txt", "Hips_Motion.txt", "Hand_Motion.txt", "Torso_Motion.txt"]
 # motion_files = ["Hand_Motion.txt", "Hips_Motion.txt"]
 
@@ -62,14 +63,27 @@ print("A few samples of encoded labels:")
 for original, encoded in zip(modes[:10], encoded_labels[:10]):
     print(f"{original} -> {encoded}")
 
+
 # Get the list of transportation mode labels
 labels = label_encoder.classes_.tolist()
+
+unique, counts = np.unique(encoded_labels, return_counts=True)
+print(dict(zip(label_encoder.inverse_transform(unique), counts)))
+
 
 # Combine normalized sensor values into features
 features = np.column_stack((normalized_timestamp, normalized_x, normalized_y, normalized_z, normalized_mx, normalized_my, normalized_mz))
 
 # Split the data into training and testing sets
 train_features, test_features, train_labels, test_labels = train_test_split(features, encoded_labels, test_size=0.2)
+
+# Apply SMOTE to the training data
+smote = SMOTE()
+train_features, train_labels = smote.fit_resample(train_features, train_labels)
+
+# Now, the training data should have roughly equal number of instances for each class
+
+# Split the data into training and testing sets
 train_features = train_features[:, np.newaxis, :]
 test_features = test_features[:, np.newaxis, :]
 
@@ -94,7 +108,10 @@ checkpoint = ModelCheckpoint('../model/lstm/trained_lstm_model', save_best_only=
 lr_scheduler = LearningRateScheduler(lr_schedule)
 
 # Compile and fit the model
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+f1_metric = Preprocessing.f1_metric
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy', f1_metric])
+
+
 
 # One-hot encode the labels
 train_labels = to_categorical(train_labels, num_classes=num_classes)

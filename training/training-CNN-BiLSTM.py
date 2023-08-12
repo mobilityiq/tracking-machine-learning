@@ -14,7 +14,7 @@ print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 early_stop = EarlyStopping(monitor='val_loss', patience=5)
 
 # users = ["User1", "User2", "User3"]
-users = ["UserTest"]
+users = ["User1"]
 # motion_files = ["Bag_Motion.txt", "Hips_Motion.txt", "Hand_Motion.txt", "Torso_Motion.txt"]
 motion_files = ["Bag_Motion.txt"]
 
@@ -23,6 +23,8 @@ data = Preprocessing.data_for_cnn_bilstm(users=users, motion_files=motion_files)
 
 # Process the all_data list to separate features and labels
 all_data_np = np.array(data)
+
+print("All data:", all_data_np.shape)
 
 X = all_data_np[:, :-1]  # All columns except the last one
 y = all_data_np[:, -1].astype(int)  # Last column
@@ -88,7 +90,7 @@ history = model.fit(
     y=y_train_encoded,
     validation_data=(X_test_channels, y_test_encoded),
     epochs=10,
-    batch_size=32,
+    batch_size=1024,
     callbacks=[early_stop]
 )
 

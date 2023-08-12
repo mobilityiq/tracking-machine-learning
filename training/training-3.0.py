@@ -10,6 +10,7 @@ import coremltools as ct
 import json
 import matplotlib.pyplot as plt
 from keras.utils import to_categorical
+from preprocessing import Preprocessing
 
 
 # Define the transportation mode Enum
@@ -23,15 +24,22 @@ class TransportationMode(Enum):
     # ESCOOTER = 'e-scooter'
 
 # Check if the data file is provided as a command-line argument
-if len(sys.argv) < 2:
-    print("Please provide the path to the data file as a command-line argument.")
-    sys.exit(1)
+# if len(sys.argv) < 2:
+#     print("Please provide the path to the data file as a command-line argument.")
+#     sys.exit(1)
 
 # Get the data file path from the command-line argument
-data_file = sys.argv[1]
+# data_file = sys.argv[1]
+
+users = ["User1", "User2", "User3"]
+# users = ["UserTest"]
+motion_files = ["Bag_Motion.txt", "Hips_Motion.txt", "Hand_Motion.txt", "Torso_Motion.txt"]
+# motion_files = ["Hand_Motion.txt"]
+
+data_file = Preprocessing.data_for_3_0(users=users, motion_files=motion_files)
 
 # Load data from the text file
-data = np.genfromtxt(data_file, delimiter=',', dtype=str)
+data = np.array(data_file)
 
 # Extract relevant information from the loaded data
 modes = data[:, -1]  # transportation modes
