@@ -20,9 +20,9 @@ encoder.classes_ = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8])  # these are the numeri
 # Load models
 loaded_model = keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', '3.0', 'trained_model-3.0'))
 # loaded_cnn_bilstm_model = keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'cnn-bi-lstm', 'cnn_bilstm_model.h5'))
-loaded_lstm_model = keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'lstm', 'trained_lstm_model.h5'))
-loaded_bi_lstm_model = keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'trained_bi-lstm_model.h5'))
-loaded_conv1d_lstm_model = keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'conv1d-lstm', 'trained_conv1d-lstm_model.h5'))
+loaded_lstm_model = keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'lstm', 'trained_lstm_model'))
+loaded_bi_lstm_model = keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'trained_bi-lstm_model'))
+loaded_conv1d_lstm_model = keras.models.load_model(os.path.join(os.path.dirname(__file__), 'model', 'conv1d-lstm', 'trained_conv1d-lstm_model'))
 
 @app.route('/predict-bi-lstm', methods=['POST'])
 def predict_lbi_stm():
@@ -103,7 +103,7 @@ def predict_lbi_stm():
 def predict_lstm():
     # Check if a file is uploaded
     if 'file' not in request.files:
-        return 'Unauthorised acess. Your ip has been tracked and will be reported', 400
+        return 'Unauthorised access. Your ip has been tracked and will be reported', 400
 
     file = request.files['file']
 
