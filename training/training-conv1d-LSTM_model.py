@@ -7,10 +7,11 @@ from enum import Enum
 import matplotlib.pyplot as plt
 from preprocessing import Preprocessing
 from models import Models
-from transportation_mode import TransportationMode
+from imblearn.over_sampling import SMOTE
+
 
 users = ["User1", "User2", "User3"]
-# users = ["User1"]
+# users = ["UserTest"]
 motion_files = ["Bag_Motion.txt", "Hips_Motion.txt", "Hand_Motion.txt", "Torso_Motion.txt"]
 # motion_files = ["Bag_Motion.txt"]
 
@@ -50,7 +51,7 @@ normalized_mz, mean_mz, std_mz = normalize(mz)
 # Encode transportation modes as numerical labels
 label_encoder = LabelEncoder()
 encoded_labels = label_encoder.fit_transform(modes)
-num_classes = len(TransportationMode)
+num_classes = len(Preprocessing.LABEL_MAP)
 
 # Get the list of transportation mode labels
 labels = label_encoder.classes_.tolist()
@@ -87,7 +88,8 @@ checkpoint = ModelCheckpoint('../model/conv1d-lstm/trained_conv1d-lstm_model', s
 lr_scheduler = LearningRateScheduler(lr_schedule)
 
 # Compile and fit the model
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+f1_metric = Preprocessing.f1_metric
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy', f1_metric])
 
 # One-hot encode the labels
 train_labels = to_categorical(train_labels, num_classes=num_classes)

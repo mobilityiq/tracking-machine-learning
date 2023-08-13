@@ -252,13 +252,17 @@ class Preprocessing:
                             mode = labels[idx]
                             if mode > 3:
                                 modeString = Preprocessing.LABEL_MAP[mode]
+                                # Check for NaN values in acc_values, mag_values, and mode
+                                if np.isnan(acc_values).any() or np.isnan(mag_values).any() or np.isnan(mode):
+                                    print(f"Skipping idx {idx} due to NaN values")
+                                    continue
                                 # Append the data in the desired order
                                 row = ([timestamps[idx]] +
                                     list(acc_values) +  # Acceleration x,y,z -> Channel 1
                                     list(mag_values) +  # Magnetic x,y,z -> Channel 6
                                     [modeString]
                                 )
-
+                                
                                 all_data.append(row)
 
         # Extract the labels (last column) from all_data
