@@ -1,15 +1,21 @@
 from tensorflow import keras
 from keras import regularizers
-from keras.layers import Input, Conv1D, BatchNormalization, Dropout, Flatten, Concatenate, Bidirectional, LSTM, Reshape, Dense, Activation
-from keras.models import Model, Sequential
+from keras.layers import Input, Conv1D, GlobalMaxPooling1D, BatchNormalization, Dropout, Flatten, Concatenate, Bidirectional, LSTM, Reshape, Dense, MaxPooling1D
+from keras.models import Model
 
 class Models:
 
     @staticmethod
-    def create_lstm_model(num_classes):
+    def create_complex_lstm_model(num_classes):
         model = keras.Sequential([
-            keras.layers.LSTM(64, return_sequences=True, input_shape=(1, 7)),  
-            keras.layers.LSTM(64),
+            keras.layers.LSTM(128, return_sequences=True, input_shape=(1, 7)),  
+            Dropout(0.5),
+            keras.layers.LSTM(128, return_sequences=True),  
+            Dropout(0.5),
+            keras.layers.LSTM(64),  
+            Dropout(0.5),
+            keras.layers.Dense(128, activation='relu'),
+            Dropout(0.5),
             keras.layers.Dense(num_classes, activation='softmax')
         ])
         return model
@@ -35,36 +41,46 @@ class Models:
             channel_inputs.append(channel_input)
 
             # 1st Conv layer
-            conv1 = Conv1D(16, 3, activation='relu', padding='same')(channel_input)
+            conv1 = Conv1D(32, 15, activation='relu', padding='same')(channel_input)
             conv1 = BatchNormalization()(conv1)
             conv1 = Dropout(0.3)(conv1)  # Added Dropout
+            # conv1 = MaxPooling1D(pool_size=4, strides=2)(conv1)
 
             # 2nd Conv layer
-            conv2 = Conv1D(32, 3, activation='relu', padding='same')(conv1)
-            conv2 = BatchNormalization()(conv2)
+            conv2 = Conv1D(64, 10, activation='relu', padding='same')(conv1)
             conv2 = Dropout(0.3)(conv2)  # Added Dropout
+            # conv2 = MaxPooling1D(pool_size=4, strides=2)(conv2)
 
             # 3rd Conv layer
-            conv3 = Conv1D(64, 3, activation='relu', padding='same')(conv2)
+            conv3 = Conv1D(64, 10, activation='relu', padding='same')(conv2)
             conv3 = BatchNormalization()(conv3)
-            conv3 = Dropout(0.3)(conv3)  # Added Dropout
 
-            conv_outputs.append(Flatten()(conv3))
+            # 4th Conv layer (no pooling after this)
+            conv4 = Conv1D(128, 5, activation='relu', padding='same')(conv3)
+            conv4 = BatchNormalization()(conv4)
+
+            # 5th Conv layer - followed by GlobalMaxPooling1D
+            conv5 = Conv1D(128, 5, activation='relu', padding='same')(conv4)
+            conv5 = BatchNormalization()(conv5)
+            pooled = GlobalMaxPooling1D()(conv5)  # Global Max Pooling
+
+            conv_outputs.append(pooled)
 
         concatenated = Concatenate()(conv_outputs)
-        
+
         # BiLSTM Layer
-        bi_lstm = Bidirectional(LSTM(64, return_sequences=True))(Reshape((-1, 1))(concatenated))  # Reduced LSTM units to 64
-        bi_lstm = Flatten()(bi_lstm)
+        bi_lstm = Bidirectional(LSTM(128))(Reshape((-1, 1))(concatenated))
 
         # Fully Connected Layers
-        fc1 = Dense(64, activation='relu', kernel_regularizer=keras.regularizers.l2(0.01))(bi_lstm)  # Reduced dense units to 64
+        fc1 = Dense(128, activation='relu', kernel_regularizer=keras.regularizers.l2(0.01))(bi_lstm)
         fc2 = Dense(9, activation='softmax')(fc1)
 
         model = Model(channel_inputs, fc2)
-        model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+        model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
 
         return model
+
+
     
     @staticmethod
     def create_conv1d_lstm_model(num_classes):

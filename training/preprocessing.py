@@ -2,6 +2,7 @@ import os
 import math
 import numpy as np
 import random
+from scipy.signal import savgol_filter
 from collections import Counter
 from scipy.interpolate import UnivariateSpline
 from scipy.ndimage import gaussian_filter
@@ -33,8 +34,14 @@ class Preprocessing:
         f1_val = 2*(precision*recall)/(precision+recall+K.epsilon())
         return f1_val
 
+    def read_motion_accel_data(file_path):
+        return np.genfromtxt(file_path, delimiter=' ', dtype=float, usecols=[0, 1, 2, 3])
+    
     def read_motion_data(file_path):
         return np.genfromtxt(file_path, delimiter=' ', dtype=float, usecols=[0, 1, 2, 3, 7, 8, 9])
+    
+    def read_2023_label_file(file_path):
+        return np.genfromtxt(file_path, delimiter=' ', dtype=int, usecols=[1])
     
     def read_3_0_motion_data(file_path):
         return np.genfromtxt(file_path, delimiter=' ', dtype=float, usecols=[0, 1, 2, 3, 10, 11, 12, 13])
@@ -47,6 +54,21 @@ class Preprocessing:
 
     def apply_gaussian_filter(data, sigma=1):
         return gaussian_filter(data, sigma=sigma)
+    
+    def apply_savitzky_golay(data, window_length=5, polynomial_order=2):
+        """
+        Apply Savitzky-Golay filter to data.
+        
+        Parameters:
+        - data: The input data (e.g., a list or numpy array)
+        - window_length: The length of the filter window (should be an odd integer). Default is 5.
+        - polynomial_order: The order of the polynomial used to fit the samples. Default is 2.
+        
+        Returns:
+        - Smoothed data
+        """
+        return savgol_filter(data, window_length, polynomial_order)
+
 
     def spline_interpolate(data, original_sample_rate=100, desired_sample_rate=20):
         x = np.arange(len(data))
@@ -153,6 +175,7 @@ class Preprocessing:
                                         all_data.append(row)
         return all_data
     
+    # MARK: - BI-LSTM MODEL
     @staticmethod
     def data_for_bi_lstm_model(users, motion_files):
         all_data = np.empty((0, 1, 8))
@@ -214,7 +237,7 @@ class Preprocessing:
 
         return all_data
 
-
+    # MARK: - CLASSIFICATION MODEL
     @staticmethod
     def data_for_classification_model(users, motion_files):
         all_data = []
@@ -262,7 +285,7 @@ class Preprocessing:
                                     list(mag_values) +  # Magnetic x,y,z -> Channel 6
                                     [modeString]
                                 )
-                                
+
                                 all_data.append(row)
 
         # Extract the labels (last column) from all_data
@@ -274,7 +297,13 @@ class Preprocessing:
         print(label_counts)
         return all_data
     
-    # MARK: - CNN-BiLSTM
+    # MARK: - CNN-BiLSTM    
+    @staticmethod
+    def data_to_cnn_bilstm_data(data, labels):
+        all_data = []
+
+       
+
     @staticmethod
     def data_for_cnn_bilstm(users, motion_files):
         all_data = []
@@ -307,30 +336,51 @@ class Preprocessing:
                         data = data[::5]
                         print("Shape of data after interpolation:", data.shape)
 
-                        timestamps = [row[0] for row in data]
                         acc_data = [row[1:4] for row in data]
-                        mag_data = [row[4:7] for row in data]   
+                        mag_data = [row[4:7] for row in data]
 
-                        # acc_data =  Preprocessing.apply_gaussian_filter(data=acc_data, sigma=1)
-                        # mag_data = Preprocessing.apply_gaussian_filter(data=mag_data, sigma=1)
+                        # Extract each dimension for accelerometer and magnetometer
+                        acc_data_x = [row[0] for row in acc_data]
+                        acc_data_y = [row[1] for row in acc_data]
+                        acc_data_z = [row[2] for row in acc_data]
 
-                        # Compute jerk 
-                        acc_jerks_x, acc_jerks_y, acc_jerks_z = Preprocessing.compute_jerk([row[0] for row in acc_data]), Preprocessing.compute_jerk([row[1] for row in acc_data]), Preprocessing.compute_jerk([row[2] for row in acc_data])
-                        mag_jerks_x, mag_jerks_y, mag_jerks_z = Preprocessing.compute_jerk([row[0] for row in mag_data]), Preprocessing.compute_jerk([row[1] for row in mag_data]), Preprocessing.compute_jerk([row[2] for row in mag_data])
+                        mag_data_x = [row[0] for row in mag_data]
+                        mag_data_y = [row[1] for row in mag_data]
+                        mag_data_z = [row[2] for row in mag_data]
+
+                        # Apply the filter to accelerometer data
+                        smoothed_acc_x = Preprocessing.apply_savitzky_golay(acc_data_x)
+                        smoothed_acc_y = Preprocessing.apply_savitzky_golay(acc_data_y)
+                        smoothed_acc_z = Preprocessing.apply_savitzky_golay(acc_data_z)
+
+                        # Apply the filter to magnetometer data
+                        smoothed_mag_x = Preprocessing.apply_savitzky_golay(mag_data_x)
+                        smoothed_mag_y = Preprocessing.apply_savitzky_golay(mag_data_y)
+                        smoothed_mag_z = Preprocessing.apply_savitzky_golay(mag_data_z)
+
+                        # Group the smoothed data back together
+                        smoothed_acc_data = list(zip(smoothed_acc_x, smoothed_acc_y, smoothed_acc_z))
+                        smoothed_mag_data = list(zip(smoothed_mag_x, smoothed_mag_y, smoothed_mag_z))
+
+                        # Compute jerk
+                        acc_jerks_x = Preprocessing.compute_jerk(smoothed_acc_x)
+                        acc_jerks_y = Preprocessing.compute_jerk(smoothed_acc_y)
+                        acc_jerks_z = Preprocessing.compute_jerk(smoothed_acc_z)
+
+                        mag_jerks_x = Preprocessing.compute_jerk(smoothed_mag_x)
+                        mag_jerks_y = Preprocessing.compute_jerk(smoothed_mag_y)
+                        mag_jerks_z = Preprocessing.compute_jerk(smoothed_mag_z)
 
                         # Compute magnitude
-                        acc_magnitudes = [Preprocessing.compute_magnitude(acc) for acc in acc_data]
-                        mag_magnitudes = [Preprocessing.compute_magnitude(mag) for mag in mag_data]
+                        acc_magnitudes = [Preprocessing.compute_magnitude(acc) for acc in smoothed_acc_data]
+                        mag_magnitudes = [Preprocessing.compute_magnitude(mag) for mag in smoothed_mag_data]
 
-                        
-
-                        for idx, (acc_values, mag_values) in enumerate(zip(acc_data, mag_data)):
+                        for idx, (acc_values, mag_values) in enumerate(zip(smoothed_acc_data, smoothed_mag_data)):
                             mode = labels[idx]
 
                             if mode > 3:
                                 # Append the data in the desired order
                                 row = (
-                                    [timestamps[idx]] +
                                     list(acc_values) +  # Acceleration x,y,z -> Channel 1
                                     [acc_jerks_x[idx], acc_jerks_y[idx], acc_jerks_z[idx]] +  # Acceleration jerk x,y,z -> Channel 2
                                     [acc_magnitudes[idx]] +  # Acceleration magnitude -> Channel 3
@@ -340,4 +390,239 @@ class Preprocessing:
                                     [mode]
                                 )
                                 all_data.append(row)
+
+                        return all_data
+
+                        
+    
+    @staticmethod
+    def preprocess_data_for_cnn_bilstm_prediction(data):
+        # Assuming data shape is (num_samples, 3) for each channel (acc, magnetic)
+        
+        # Compute jerk
+        acc_jerk = Preprocessing.compute_jerk(data[:, :3])
+        mag_jerk = Preprocessing.compute_jerk(data[:, 11:14])
+        
+        # Compute magnitude
+        acc_magnitude = Preprocessing.compute_magnitude(data[:, :3]).reshape(-1, 1)
+        mag_magnitude = Preprocessing.compute_magnitude(data[:, 11:14]).reshape(-1, 1)
+        acc_jerk_magnitude = Preprocessing.compute_magnitude(acc_jerk).reshape(-1, 1)
+        mag_jerk_magnitude = Preprocessing.compute_magnitude(mag_jerk).reshape(-1, 1)
+
+        # Concatenate to the original data
+        extended_data = np.hstack([data[:-1], acc_jerk[:-1], mag_jerk[:-1], acc_magnitude[:-1], mag_magnitude[:-1], acc_jerk_magnitude[:-1], mag_jerk_magnitude[:-1]])
+
+        # Load mean and std values (change these paths to wherever you saved them)
+        means = np.load('../model/cnn-bi-lstm/training_means.npy')
+        stds = np.load('../model/cnn-bi-lstm/stds.npy')
+        
+        # Normalize extended data
+        for i in range(extended_data.shape[1]):
+            extended_data[:, i] = (extended_data[:, i] - means[i]) / stds[i]
+
+        return extended_data
+
+
+    
+    # MARK: - DATA FROM PHONE LOCATIONS
+    @staticmethod
+    def data_from_phone_locations(locations,is_validation=False):
+        all_data = []
+        print(os.getcwd())
+        print(locations)
+
+        for location in locations:
+            # locations_folder = os.path.join("files/SHL-2023", location)
+            locations_folder = os.path.join("files/SHL-2023", location)
+
+            print(locations_folder)
+            if is_validation:
+                mag_file = os.path.join("files/SHL-2023", "validate", location, "Mag.txt")
+                accel_file = os.path.join("files/SHL-2023", "validate", location, "Acc.txt")
+                label_file = os.path.join("files/SHL-2023", "validate", location, "Label.txt")
+            else:
+                mag_file = os.path.join(locations_folder, "Mag.txt")
+                accel_file = os.path.join(locations_folder, "Acc.txt")
+                label_file = os.path.join(locations_folder, "Label.txt")
+
+            try:
+                print("Preprocessing: ",(mag_file))
+                mag = Preprocessing.read_motion_accel_data(mag_file)
+                print("Magnetometer: ",len(mag))
+                # Downsample from 100Hz to 20Hz
+                mag = mag[::5]  # Take every 5th label
+                print("Downsampled motion: ",len(mag))
+            except FileNotFoundError:
+                print(f"Warning: {mag} not found. Skipping...")
+                continue
+
+            try:
+                print("Preprocessing: ",(accel_file))
+                accel = Preprocessing.read_motion_accel_data(accel_file)
+                print("Accelerometer: ",len(accel))
+                # Downsample from 100Hz to 20Hz
+                accel = accel[::5]  # Take every 5th label
+                print("Downsampled accel: ",len(accel))
+            except FileNotFoundError:
+                print(f"Warning: {accel} not found. Skipping...")
+                continue
+
+            try:
+                print("Preprocessing: ",(label_file))
+                labels = Preprocessing.read_2023_label_file(label_file)
+                print("Labels: ",len(labels))
+                # Downsample from 100Hz to 20Hz
+                labels = labels[::5]  # Take every 5th label
+                print("Downsampled Labels: ",len(labels))
+            except FileNotFoundError:
+                print(f"Warning: {label_file} not found. Skipping...")
+                continue
+
+            timestamps = [row[0] for row in accel] # Time stamp is the same in all the files but GPS.txt where it is 1hz
+            
+            acc_data = [row[1:4] for row in accel]
+            if not acc_data:
+                print("acc_data is empty!")
+                continue
+
+            mag_data = [row[1:4] for row in mag] 
+            if not mag_data:
+                print("mag_data is empty!")
+                continue
+
+            for idx, (acc_values, mag_values) in enumerate(zip(acc_data, mag_data)):
+                mode = labels[idx]
+                if mode > 3:
+                    modeString = Preprocessing.LABEL_MAP[mode]
+                    # Check for NaN values in acc_values, mag_values, and mode
+                    if np.isnan(acc_values).any() or np.isnan(mag_values).any() or np.isnan(mode):
+                        print(f"Skipping idx {idx} due to NaN values")
+                        continue
+                    # Append the data in the desired order
+                    row = ([timestamps[idx]] +
+                        list(acc_values) +  # Acceleration x,y,z -> Channel 1
+                        list(mag_values) +  # Magnetic x,y,z -> Channel 6
+                        [modeString]
+                    )
+
+                    all_data.append(row)
+
         return all_data
+    
+    @staticmethod
+    def data_from_phone_locations_for_cnn_bilstm(locations,is_validation=False):
+        all_data = []
+        print(os.getcwd())
+        print(locations)
+
+        for location in locations:
+            # locations_folder = os.path.join("files/SHL-2023", location)
+            locations_folder = os.path.join("files/SHL-2023", location)
+
+            print(locations_folder)
+            if is_validation:
+                mag_file = os.path.join("files/SHL-2023", "validate", location, "Mag.txt")
+                accel_file = os.path.join("files/SHL-2023", "validate", location, "Acc.txt")
+                label_file = os.path.join("files/SHL-2023", "validate", location, "Label.txt")
+            else:
+                mag_file = os.path.join(locations_folder, "Mag.txt")
+                accel_file = os.path.join(locations_folder, "Acc.txt")
+                label_file = os.path.join(locations_folder, "Label.txt")
+
+            try:
+                print("Preprocessing: ",(mag_file))
+                mag = Preprocessing.read_motion_accel_data(mag_file)
+                print("Labels: ",len(mag))
+                # Downsample from 100Hz to 20Hz
+                mag = mag[::5]  # Take every 5th label
+                print("Downsampled motion: ",len(mag))
+            except FileNotFoundError:
+                print(f"Warning: {mag} not found. Skipping...")
+                continue
+
+            try:
+                print("Preprocessing: ",(accel_file))
+                accel = Preprocessing.read_motion_accel_data(accel_file)
+                print("Labels: ",len(accel))
+                # Downsample from 100Hz to 20Hz
+                accel = accel[::5]  # Take every 5th label
+                print("Downsampled accel: ",len(accel))
+            except FileNotFoundError:
+                print(f"Warning: {accel} not found. Skipping...")
+                continue
+
+            try:
+                print("Preprocessing: ",(label_file))
+                labels = Preprocessing.read_2023_label_file(label_file)
+                print("Labels: ",len(labels))
+                # Downsample from 100Hz to 20Hz
+                labels = labels[::5]  # Take every 5th label
+                print("Downsampled Labels: ",len(labels))
+            except FileNotFoundError:
+                print(f"Warning: {label_file} not found. Skipping...")
+                continue
+
+
+            acc_data = [row[1:4] for row in accel]
+            if not acc_data:
+                print("acc_data is empty!")
+                continue
+
+            mag_data = [row[1:4] for row in mag] 
+            if not mag_data:
+                print("mag_data is empty!")
+                continue
+
+            # Extract each dimension for accelerometer and magnetometer
+            acc_data_x = [row[0] for row in acc_data]
+            acc_data_y = [row[1] for row in acc_data]
+            acc_data_z = [row[2] for row in acc_data]
+
+            mag_data_x = [row[0] for row in mag_data]
+            mag_data_y = [row[1] for row in mag_data]
+            mag_data_z = [row[2] for row in mag_data]
+
+            # Apply the filter to accelerometer data
+            smoothed_acc_x = Preprocessing.apply_savitzky_golay(acc_data_x)
+            smoothed_acc_y = Preprocessing.apply_savitzky_golay(acc_data_y)
+            smoothed_acc_z = Preprocessing.apply_savitzky_golay(acc_data_z)
+
+            # Apply the filter to magnetometer data
+            smoothed_mag_x = Preprocessing.apply_savitzky_golay(mag_data_x)
+            smoothed_mag_y = Preprocessing.apply_savitzky_golay(mag_data_y)
+            smoothed_mag_z = Preprocessing.apply_savitzky_golay(mag_data_z)
+
+            # Group the smoothed data back together
+            smoothed_acc_data = list(zip(smoothed_acc_x, smoothed_acc_y, smoothed_acc_z))
+            smoothed_mag_data = list(zip(smoothed_mag_x, smoothed_mag_y, smoothed_mag_z))
+
+            # Compute jerk
+            acc_jerks_x = Preprocessing.compute_jerk(smoothed_acc_x)
+            acc_jerks_y = Preprocessing.compute_jerk(smoothed_acc_y)
+            acc_jerks_z = Preprocessing.compute_jerk(smoothed_acc_z)
+
+            mag_jerks_x = Preprocessing.compute_jerk(smoothed_mag_x)
+            mag_jerks_y = Preprocessing.compute_jerk(smoothed_mag_y)
+            mag_jerks_z = Preprocessing.compute_jerk(smoothed_mag_z)
+
+            # Compute magnitude
+            acc_magnitudes = [Preprocessing.compute_magnitude(acc) for acc in smoothed_acc_data]
+            mag_magnitudes = [Preprocessing.compute_magnitude(mag) for mag in smoothed_mag_data]
+
+            for idx, (acc_values, mag_values) in enumerate(zip(smoothed_acc_data, smoothed_mag_data)):
+                mode = labels[idx]
+
+                if mode > 3:
+                    # Append the data in the desired order
+                    row = (
+                        list(acc_values) +  # Acceleration x,y,z -> Channel 1
+                        [acc_jerks_x[idx], acc_jerks_y[idx], acc_jerks_z[idx]] +  # Acceleration jerk x,y,z -> Channel 2
+                        [acc_magnitudes[idx]] +  # Acceleration magnitude -> Channel 3
+                        [mag_jerks_x[idx], mag_jerks_y[idx], mag_jerks_z[idx]] +  # Magnetic jerk x,y,z -> Channel 4
+                        [mag_magnitudes[idx]] +  # Magnetic magnitude -> Channel 5
+                        list(mag_values) +  # Magnetic x,y,z -> Channel 6
+                        [mode]
+                    )
+                    all_data.append(row)
+
+            return all_data
