@@ -7,17 +7,27 @@ from enum import Enum
 import matplotlib.pyplot as plt
 from preprocessing import Preprocessing
 from models import Models
-from transportation_mode import TransportationMode
 from imblearn.over_sampling import SMOTE
 
 # users = ["User1", "User2", "User3"]
-users = ["User0"]
-motion_files = ["Bag_Motion.txt", "Hips_Motion.txt", "Hand_Motion.txt", "Torso_Motion.txt"]
+# users = ["User0"]
+# motion_files = ["Bag_Motion.txt", "Hips_Motion.txt", "Hand_Motion.txt", "Torso_Motion.txt"]
 # motion_files = ["Hand_Motion.txt", "Hips_Motion.txt"]
+# locations = ["Bag","Hand","Hips","Torso"]
+locations = ["Bag"]
+
+# testLocations = ["validate/Bag","validate/Hand","validate/Hips","validate/Torso"]
+testLocations = ["validate/Bag"]
 
 # Load data from the text file
-data = Preprocessing.data_for_classification_model(users=users,motion_files=motion_files)
+# data = Preprocessing.data_for_classification_model(users=users,motion_files=motion_files)
+data = Preprocessing.data_from_phone_locations(locations=locations)
 data = np.array(data)
+
+# Load data for test
+test_Data = Preprocessing.data_from_phone_locations(locations=testLocations)
+test_Data = np.array(test_Data)
+
 
 # Extract relevant information from the loaded data
 modes = data[:, -1]  # transportation modes
@@ -28,6 +38,16 @@ z = data[:, 3].astype(float)  # z accel
 mx = data[:, 4].astype(float)  # mx magnetometer value
 my = data[:, 5].astype(float)  # my magnetometer
 mz = data[:, 6].astype(float)  # mz magnetometer
+
+# Extract relevant information from the loaded data
+test_modes = test_Data[:, -1]  # transportation modes
+test_timestamps = test_Data[:, 0].astype(float)  # timestamps
+test_x = test_Data[:, 1].astype(float)  # x accel value
+test_y = test_Data[:, 2].astype(float)  # y accel
+test_z = test_Data[:, 3].astype(float)  # z accel
+test_mx = test_Data[:, 4].astype(float)  # mx magnetometer value
+test_my = test_Data[:, 5].astype(float)  # my magnetometer
+test_mz = test_Data[:, 6].astype(float)  # mz magnetometer
 
 
 # Perform any necessary preprocessing steps
@@ -49,6 +69,15 @@ normalized_mx, mean_mx, std_mx = normalize(mx)
 normalized_my, mean_my, std_my = normalize(my)
 normalized_mz, mean_mz, std_mz = normalize(mz)
 
+# Perform normalization on the sensor values
+normalized_test_timestamp, mean_test_timestamp, std_test_timestamp = normalize(test_timestamps)
+normalized_test_x, mean_test_x, std_test_x = normalize(test_x)
+normalized_test_y, mean_test_y, std_test_y = normalize(test_y)
+normalized_test_z, mean_test_z, std_test_z = normalize(test_z)
+normalized_test_mx, mean_test_mx, std_test_mx = normalize(test_mx)
+normalized_test_my, mean_test_my, std_test_my = normalize(test_my)
+normalized_test_mz, mean_test_mz, std_test_mz = normalize(test_mz)
+
 # Before label encoding
 unique_modes = np.unique(modes)
 print(f"Unique labels before encoding: {unique_modes}")
@@ -58,6 +87,10 @@ label_encoder = LabelEncoder()
 encoded_labels = label_encoder.fit_transform(modes)
 num_classes = len(Preprocessing.LABEL_MAP)
 
+test_label_encoder = LabelEncoder()
+test_encoded_labels = test_label_encoder.fit_transform(test_modes)
+
+
 # After label encoding
 print("A few samples of encoded labels:")
 for original, encoded in zip(modes[:10], encoded_labels[:10]):
@@ -66,7 +99,9 @@ for original, encoded in zip(modes[:10], encoded_labels[:10]):
 
 # Get the list of transportation mode labels
 labels = label_encoder.classes_.tolist()
+test_labels = test_label_encoder.classes_.tolist()
 
+# Debugging
 unique, counts = np.unique(encoded_labels, return_counts=True)
 print(dict(zip(label_encoder.inverse_transform(unique), counts)))
 
@@ -74,12 +109,18 @@ print(dict(zip(label_encoder.inverse_transform(unique), counts)))
 # Combine normalized sensor values into features
 features = np.column_stack((normalized_timestamp, normalized_x, normalized_y, normalized_z, normalized_mx, normalized_my, normalized_mz))
 
+test_features = np.column_stack((normalized_test_timestamp, normalized_test_x, normalized_test_y, normalized_test_z, normalized_test_mx, normalized_test_my, normalized_test_mz))
+
 # Split the data into training and testing sets
-train_features, test_features, train_labels, test_labels = train_test_split(features, encoded_labels, test_size=0.2)
+# train_features, test_features, train_labels, test_labels = train_test_split(features, encoded_labels, test_size=0.2)
+
+train_features = features
+train_labels = encoded_labels
 
 # Apply SMOTE to the training data
-smote = SMOTE()
-train_features, train_labels = smote.fit_resample(train_features, train_labels)
+# print("Using SMOTE to balance the classes")
+# smote = SMOTE()
+# train_features, train_labels = smote.fit_resample(train_features, train_labels)
 
 # Now, the training data should have roughly equal number of instances for each class
 
@@ -115,7 +156,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 
 # One-hot encode the labels
 train_labels = to_categorical(train_labels, num_classes=num_classes)
-test_labels = to_categorical(test_labels, num_classes=num_classes)
+test_labels = to_categorical(test_encoded_labels, num_classes=num_classes)
 
 # Save the label encoder
 np.save('../model/lstm/label_encoder.npy', label_encoder.classes_)
