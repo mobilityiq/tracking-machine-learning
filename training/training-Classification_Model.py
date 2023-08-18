@@ -11,14 +11,17 @@ from transportation_mode import TransportationMode
 from sklearn.preprocessing import LabelEncoder
 
 
-users = ["User1", "User2", "User3"]
-# users = ["UserTest"]
-motion_files = ["Bag_Motion.txt", "Hips_Motion.txt", "Hand_Motion.txt", "Torso_Motion.txt"]
-# motion_files = ["Hand_Motion.txt", "Hips_Motion.txt"]
+# Phone was located in different parts to collect the data
+# locations = ["Bag","Hand","Hips","Torso"]
+locations = ["Hand"]
 
 # Load data from the text file
-data = Preprocessing.data_for_classification_model(users=users,motion_files=motion_files)
+data = Preprocessing.data_from_phone_locations(locations=locations)
 data = np.array(data)
+
+# Load validation data for test
+test_data = Preprocessing.data_from_phone_locations(locations=locations,is_validation=True)
+test_data = np.array(test_data)
 
 # Extract relevant information from the loaded data
 modes = data[:, -1]  # transportation modes
@@ -29,6 +32,17 @@ z = data[:, 3].astype(float)  # z accel
 mx = data[:, 4].astype(float)  # mx magnetometer value
 my = data[:, 5].astype(float)  # my magnetometer
 mz = data[:, 6].astype(float)  # mz magnetometer
+
+# Extract relevant information from the loaded data
+test_modes = test_data[:, -1]  # transportation modes
+test_timestamps = test_data[:, 0].astype(float)  # timestamps
+test_x = test_data[:, 1].astype(float)  # x accel value
+test_y = test_data[:, 2].astype(float)  # y accel
+test_z = test_data[:, 3].astype(float)  # z accel
+test_mx = test_data[:, 4].astype(float)  # mx magnetometer value
+test_my = test_data[:, 5].astype(float)  # my magnetometer
+test_mz = test_data[:, 6].astype(float)  # mz magnetometer
+
 
 
 # Perform any necessary preprocessing steps
@@ -50,19 +64,50 @@ normalized_mx, mean_mx, std_mx = normalize(mx)
 normalized_my, mean_my, std_my = normalize(my)
 normalized_mz, mean_mz, std_mz = normalize(mz)
 
-# Encode transportation modes as numerical labels
+# Perform normalization on the sensor values
+normalized_test_timestamp, mean_test_timestamp, std_test_timestamp = normalize(test_timestamps)
+normalized_test_x, mean_test_x, std_test_x = normalize(test_x)
+normalized_test_y, mean_test_y, std_test_y = normalize(test_y)
+normalized_test_z, mean_test_z, std_test_z = normalize(test_z)
+normalized_test_mx, mean_test_mx, std_test_mx = normalize(test_mx)
+normalized_test_my, mean_test_my, std_test_my = normalize(test_my)
+normalized_test_mz, mean_test_mz, std_test_mz = normalize(test_mz)
+
+# Create and fit the label encoder on the training data
 label_encoder = LabelEncoder()
 encoded_labels = label_encoder.fit_transform(modes)
-num_classes = len(TransportationMode)
+
+# Use the same encoder to transform labels for the test data
+test_encoded_labels = label_encoder.transform(test_modes)
+
+
+num_classes = len(Preprocessing.LABEL_MAP)
+
+# After label encoding
+print("A few samples of encoded labels:")
+for original, encoded in zip(modes[:10], encoded_labels[:10]):
+    print(f"{original} -> {encoded}")
+
+unique, counts = np.unique(encoded_labels, return_counts=True)
+print(dict(zip(unique, counts)))
 
 # Get the list of transportation mode labels
 labels = label_encoder.classes_.tolist()
+test_labels = label_encoder.classes_.tolist()
 
 # Combine normalized sensor values into features
 features = np.column_stack((normalized_timestamp, normalized_x, normalized_y, normalized_z, normalized_mx, normalized_my, normalized_mz))
 
-# Split the data into training and testing sets
-train_features, test_features, train_labels, test_labels = train_test_split(features, encoded_labels, test_size=0.2)
+# Combine normalized sensor values into features
+features = np.column_stack((normalized_timestamp, normalized_x, normalized_y, normalized_z, normalized_mx, normalized_my, normalized_mz))
+test_features = np.column_stack((normalized_test_timestamp, normalized_test_x, normalized_test_y, normalized_test_z, normalized_test_mx, normalized_test_my, normalized_test_mz))
+
+train_features = features
+train_labels = encoded_labels
+
+# Load the data into training and testing sets
+train_features = train_features[:, np.newaxis, :]
+test_features = test_features[:, np.newaxis, :]
 
 # Define learning rate schedule function
 def lr_schedule(epoch):
@@ -70,7 +115,7 @@ def lr_schedule(epoch):
     if epoch > 10:
         lr *= 1e-1
     elif epoch > 20:
-        lr *= 1e-2
+        lr *= 5e-2  # Consider making this a less aggressive decay
     print('Learning rate: ', lr)
     return lr
 
@@ -80,7 +125,7 @@ model = Models.create_classification_model(num_clases=num_classes, input_dim=inp
 
 # Define callbacks
 early_stopping = EarlyStopping(patience=3, restore_best_weights=True)
-checkpoint = ModelCheckpoint('../model/classification/trained_classification_model', save_best_only=True)
+checkpoint = ModelCheckpoint('../model/classification/trained_classification_model_{epoch:02d}_{val_loss:.4f}', save_best_only=True)
 lr_scheduler = LearningRateScheduler(lr_schedule)
 
 # Compile and fit the model
@@ -88,7 +133,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 
 # One-hot encode the labels
 train_labels = to_categorical(train_labels, num_classes=num_classes)
-test_labels = to_categorical(test_labels, num_classes=num_classes)
+test_labels = to_categorical(test_encoded_labels, num_classes=num_classes)
 
 # Save the label encoder
 np.save('../model/classification/label_encoder.npy', label_encoder.classes_)
@@ -97,7 +142,7 @@ np.save('../model/classification/label_encoder.npy', label_encoder.classes_)
 np.save('../model/classification/mean.npy', [mean_timestamp, mean_x, mean_y, mean_z, mean_mx, mean_my, mean_mz])
 np.save('../model/classification/std.npy', [std_timestamp, std_x, std_y, std_z, std_mx, std_my, std_mz])
 
-history = model.fit(train_features, train_labels, epochs=10, batch_size=32, 
+history = model.fit(train_features, train_labels, epochs=40, batch_size=1024, 
                     validation_data=(test_features, test_labels),
                     callbacks=[early_stopping, checkpoint, lr_scheduler])
 

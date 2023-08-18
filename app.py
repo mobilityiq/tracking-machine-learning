@@ -14,8 +14,8 @@ app = Flask(__name__)
 UPLOAD_FOLDER = 'www/uploads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-encoder = LabelEncoder()  
-encoder.classes_ = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8])  # these are the numeric labels 
+# encoder = LabelEncoder()  
+# encoder.classes_ = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8])  # these are the numeric labels 
 
 f1_metric = Preprocessing.f1_metric
 custom_objects = {'f1_metric': f1_metric}
@@ -26,108 +26,117 @@ loaded_model = keras.models.load_model('model/3.0/trained_model-3.0/')
 # LSTM
 loaded_lstm_model = keras.models.load_model('model/lstm/trained_lstm_model/', custom_objects=custom_objects)
 # BiLSTM
-# loaded_bi_lstm_model = keras.models.load_model('model/bi-lstm/trained_bi_lstm_model/', custom_objects=custom_objects)
+loaded_bi_lstm_model = keras.models.load_model('model/bi-lstm/trained_bi-lstm_model/', custom_objects=custom_objects)
 # CONV1D-LSTM
-# loaded_conv1d_lstm_model = keras.models.load_model('model/conv1d-lstm/trained_conv1d_lstm_model/', custom_objects=custom_objects)
+loaded_conv1d_lstm_model = keras.models.load_model('model/conv1d-lstm/trained_conv1d-lstm_model/', custom_objects=custom_objects)
+# CNN-BiLSTM
+loaded_cnn_bi_lstm_model = keras.models.load_model('model/cnn-bi-lstm/cnn_bilstm_model/', custom_objects=custom_objects)
 
-# @app.route('/predict-bi-lstm', methods=['POST'])
-# def predict_lbi_stm():
-#     # Check if a file is uploaded
-#     if 'file' not in request.files:
-#         return 'Unauthorised acess. Your ip has been tracked and will be reported', 400
+@app.route('/predict-bi-lstm', methods=['POST'])
+def predict_bi_lstm():
+    data = request.get_json()
+    
+    # Check if data is available and is a list
+    if not data or not isinstance(data, list):
+        return 'Invalid data provided', 400
 
-#     file = request.files['file']
+    data_list = [[entry['timestamp'], entry['x'], entry['y'], entry['z'], entry['mx'], entry['my'], entry['mz']] for entry in data]
+    all_data = np.array(data_list, dtype=float)
 
-#     # Check if the file has an allowed extension
-#     # if not filename.lower().endswith(('.csv')):
-#     #     return 'Authentication failed. Your connection has been recorded and will be reported'
+    print("Data shape:",all_data.shape)
 
-#     # Load the new data for prediction
-#     new_data = np.genfromtxt(StringIO(file.read().decode('utf-8')), delimiter=',', dtype=float)
+    # Extract relevant columns
+    timestamps = all_data[:, 0]
+    x = all_data[:, 1]
+    y = all_data[:, 2]
+    z = all_data[:, 3]
+    mx = all_data[:, 4]
+    my = all_data[:, 5]
+    mz = all_data[:, 6]
 
-#     # Extract the relevant columns from the data
-#     timestamps = new_data[:, 0]
-#     x = new_data[:, 1]
-#     y = new_data[:, 2]
-#     z = new_data[:, 3]
-#     mx = new_data[:, 4]
-#     my = new_data[:, 5]
-#     mz = new_data[:, 6]
+    # Apply the filter to data
+    x = Preprocessing.apply_savitzky_golay(x)
+    y = Preprocessing.apply_savitzky_golay(y)
+    z = Preprocessing.apply_savitzky_golay(z)
+    mx = Preprocessing.apply_savitzky_golay(mx)
+    my = Preprocessing.apply_savitzky_golay(my)
+    mz = Preprocessing.apply_savitzky_golay(mz)
 
-#     label_encoder = LabelEncoder()
-#     label_encoder.classes_ = np.load(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'label_encoder.npy'))
+    label_encoder = LabelEncoder()
+    label_encoder.classes_ = np.load(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'label_encoder.npy'))
 
-#     mean = np.load(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'mean.npy'))
-#     std = np.load(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'std.npy'))
+    mean = np.load(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'mean.npy'))
+    std = np.load(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'std.npy'))
 
-#     normalized_timestamp = (timestamps - mean[0]) / std[0]
-#     normalized_x = (x - mean[1]) / std[1]
-#     normalized_y = (y - mean[2]) / std[2]
-#     normalized_z = (z - mean[3]) / std[3]
-#     normalized_mx = (mx - mean[4]) / std[4]
-#     normalized_my = (my - mean[5]) / std[5]
-#     normalized_mz = (mz - mean[6]) / std[6]
+    normalized_timestamp = (timestamps - mean[0]) / std[0]
+    normalized_x = (x - mean[1]) / std[1]
+    normalized_y = (y - mean[2]) / std[2]
+    normalized_z = (z - mean[3]) / std[3]
+    normalized_mx = (mx - mean[4]) / std[4]
+    normalized_my = (my - mean[5]) / std[5]
+    normalized_mz = (mz - mean[6]) / std[6]
 
-#     # Include normalized features in data
-#     data = np.column_stack((normalized_timestamp, normalized_x, normalized_y, normalized_z, normalized_mx, normalized_my, normalized_mz))
+    # Include normalized features in data
+    data = np.column_stack((normalized_timestamp, normalized_x, normalized_y, normalized_z, normalized_mx, normalized_my, normalized_mz))
 
-#     print("Inference Data (First 5 Rows):")
-#     print(data[:5])  # Print the first 5 rows of the normalized features
+    # print("Inference Data (First 5 Rows):")
+    # print(data[:5])  # Print the first 5 rows of the normalized features
 
-#     # Reshape the data
-#     data = data.reshape(data.shape[0], 1, data.shape[1])
+    # Reshape the data
+    data = data.reshape(data.shape[0], 1, data.shape[1])
 
-#     predictions = loaded_bi_lstm_model.predict(data)
+    predictions = loaded_bi_lstm_model.predict(data)
 
-#     predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
-#     print(predicted_labels)
-#     probabilities = np.max(predictions, axis=1)
+    predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
 
-#     mode_probabilities = {}
+    print(predicted_labels)
 
-#     for label, probability in zip(predicted_labels, probabilities):
-#         label = label.upper()
-#         if label not in mode_probabilities:
-#             mode_probabilities[label] = []
-#         mode_probabilities[label].append(probability)
+    probabilities = np.max(predictions, axis=1)
 
-#     average_probabilities = {mode: np.mean(probabilities) for mode, probabilities in mode_probabilities.items()}
+    mode_probabilities = {}
 
-#     sorted_probabilities = sorted(average_probabilities.items(), key=lambda x: x[1], reverse=True)
+    for label, probability in zip(predicted_labels, probabilities):
+        label = label.upper()
+        if label not in mode_probabilities:
+            mode_probabilities[label] = []
+        mode_probabilities[label].append(probability)
 
-#     print("Mode Probabilities:")
-#     for mode, probability in sorted_probabilities:
-#         print(f"{mode}: {probability}")
+    average_probabilities = {mode: np.mean(probabilities) for mode, probabilities in mode_probabilities.items()}
+
+    sorted_probabilities = sorted(average_probabilities.items(), key=lambda x: x[1], reverse=True)
+
+    print("Mode Probabilities:")
+    for mode, probability in sorted_probabilities:
+        print(f"{mode}: {probability}")
 
 
-#     probability = sorted_probabilities[0]
-#     # return jsonify({"mode": probability[0], "probability": float(probability[1])})
+    probability = sorted_probabilities[0]
+    # return jsonify({"mode": probability[0], "probability": float(probability[1])})
 
-#     return probability[0]
+    return probability[0]
 
 @app.route('/predict-lstm', methods=['POST'])
 def predict_lstm():
-    # Check if a file is uploaded
-    if 'file' not in request.files:
-        return 'Unauthorised access. Your ip has been tracked and will be reported', 400
+    data = request.get_json()
+    
+    # Check if data is available and is a list
+    if not data or not isinstance(data, list):
+        return 'Invalid data provided', 400
 
-    file = request.files['file']
+    data_list = [[entry['timestamp'], entry['x'], entry['y'], entry['z'], entry['mx'], entry['my'], entry['mz']] for entry in data]
+    all_data = np.array(data_list, dtype=float)
 
-    # Check if the file has an allowed extension
-    # if not filename.lower().endswith(('.csv')):
-    #     return 'Authentication failed. Your connection has been recorded and will be reported'
+    print("Data shape:",all_data.shape)
 
-    # Load the new data for prediction
-    new_data = np.genfromtxt(StringIO(file.read().decode('utf-8')), delimiter=',', dtype=float)
+    # Extract relevant columns
+    timestamps = all_data[:, 0]
+    x = all_data[:, 1]
+    y = all_data[:, 2]
+    z = all_data[:, 3]
+    mx = all_data[:, 4]
+    my = all_data[:, 5]
+    mz = all_data[:, 6]
 
-    # Extract the relevant columns from the data
-    timestamps = new_data[:, 0]
-    x = new_data[:, 1]
-    y = new_data[:, 2]
-    z = new_data[:, 3]
-    mx = new_data[:, 4]
-    my = new_data[:, 5]
-    mz = new_data[:, 6]
 
     label_encoder = LabelEncoder()
     label_encoder.classes_ = np.load(os.path.join(os.path.dirname(__file__), 'model', 'lstm', 'label_encoder.npy'))
@@ -151,7 +160,7 @@ def predict_lstm():
 
     predictions = loaded_lstm_model.predict(data)
 
-    print(predictions[:10])  # Print the first 10 predictions to get an idea of the scores
+    # print(predictions[:10])  # Print the first 10 predictions to get an idea of the scores
 
 
     predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
@@ -180,77 +189,75 @@ def predict_lstm():
 
     return probability[0]
 
-# @app.route('/predict-conv1d-lstm', methods=['POST'])
-# def predict_conv1d_lstm():
-#     # Check if a file is uploaded
-#     if 'file' not in request.files:
-#         return 'Unauthorised acess. Your ip has been tracked and will be reported', 400
+@app.route('/predict-conv1d-lstm', methods=['POST'])
+def predict_conv1d_lstm():
+    data = request.get_json()
+    
+    # Check if data is available and is a list
+    if not data or not isinstance(data, list):
+        return 'Invalid data provided', 400
 
-#     file = request.files['file']
+    data_list = [[entry['timestamp'], entry['x'], entry['y'], entry['z'], entry['mx'], entry['my'], entry['mz']] for entry in data]
+    all_data = np.array(data_list, dtype=float)
 
-#     # Check if the file has an allowed extension
-#     # if not filename.lower().endswith(('.csv')):
-#     #     return 'Authentication failed. Your connection has been recorded and will be reported'
+    print("Data shape:",all_data.shape)
 
-#     # Load the new data for prediction
-#     new_data = np.genfromtxt(StringIO(file.read().decode('utf-8')), delimiter=',', dtype=float)
+    # Extract relevant columns
+    timestamps = all_data[:, 0]
+    x = all_data[:, 1]
+    y = all_data[:, 2]
+    z = all_data[:, 3]
+    mx = all_data[:, 4]
+    my = all_data[:, 5]
+    mz = all_data[:, 6]
 
-#     # Extract the relevant columns from the data
-#     timestamps = new_data[:, 0]
-#     x = new_data[:, 1]
-#     y = new_data[:, 2]
-#     z = new_data[:, 3]
-#     mx = new_data[:, 4]
-#     my = new_data[:, 5]
-#     mz = new_data[:, 6]
+    label_encoder = LabelEncoder()
+    label_encoder.classes_ = np.load(os.path.join(os.path.dirname(__file__), 'model', 'conv1d-lstm', 'label_encoder.npy'))
 
-#     label_encoder = LabelEncoder()
-#     label_encoder.classes_ = np.load(os.path.join(os.path.dirname(__file__), 'model', 'conv1d-lstm', 'label_encoder.npy'))
+    mean = np.load(os.path.join(os.path.dirname(__file__), 'model', 'conv1d-lstm', 'mean.npy'))
+    std = np.load(os.path.join(os.path.dirname(__file__), 'model', 'conv1d-lstm', 'std.npy'))
 
-#     mean = np.load(os.path.join(os.path.dirname(__file__), 'model', 'conv1d-lstm', 'mean.npy'))
-#     std = np.load(os.path.join(os.path.dirname(__file__), 'model', 'conv1d-lstm', 'std.npy'))
+    normalized_timestamp = (timestamps - mean[0]) / std[0]
+    normalized_x = (x - mean[1]) / std[1]
+    normalized_y = (y - mean[2]) / std[2]
+    normalized_z = (z - mean[3]) / std[3]
+    normalized_mx = (mx - mean[4]) / std[4]
+    normalized_my = (my - mean[5]) / std[5]
+    normalized_mz = (mz - mean[6]) / std[6]
 
-#     normalized_timestamp = (timestamps - mean[0]) / std[0]
-#     normalized_x = (x - mean[1]) / std[1]
-#     normalized_y = (y - mean[2]) / std[2]
-#     normalized_z = (z - mean[3]) / std[3]
-#     normalized_mx = (mx - mean[4]) / std[4]
-#     normalized_my = (my - mean[5]) / std[5]
-#     normalized_mz = (mz - mean[6]) / std[6]
+    # Include normalized features in data
+    data = np.column_stack((normalized_timestamp, normalized_x, normalized_y, normalized_z, normalized_mx, normalized_my, normalized_mz))
 
-#     # Include normalized features in data
-#     data = np.column_stack((normalized_timestamp, normalized_x, normalized_y, normalized_z, normalized_mx, normalized_my, normalized_mz))
+    # Reshape the data
+    data = data.reshape(data.shape[0], 1, data.shape[1])
 
-#     # Reshape the data
-#     data = data.reshape(data.shape[0], 1, data.shape[1])
+    predictions = loaded_conv1d_lstm_model.predict(data)
 
-#     predictions = loaded_conv1d_lstm_model.predict(data)
+    predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
 
-#     predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
+    probabilities = np.max(predictions, axis=1)
 
-#     probabilities = np.max(predictions, axis=1)
+    mode_probabilities = {}
 
-#     mode_probabilities = {}
+    for label, probability in zip(predicted_labels, probabilities):
+        label = label.upper()
+        if label not in mode_probabilities:
+            mode_probabilities[label] = []
+        mode_probabilities[label].append(probability)
 
-#     for label, probability in zip(predicted_labels, probabilities):
-#         label = label.upper()
-#         if label not in mode_probabilities:
-#             mode_probabilities[label] = []
-#         mode_probabilities[label].append(probability)
+    average_probabilities = {mode: np.mean(probabilities) for mode, probabilities in mode_probabilities.items()}
 
-#     average_probabilities = {mode: np.mean(probabilities) for mode, probabilities in mode_probabilities.items()}
+    sorted_probabilities = sorted(average_probabilities.items(), key=lambda x: x[1], reverse=True)
 
-#     sorted_probabilities = sorted(average_probabilities.items(), key=lambda x: x[1], reverse=True)
-
-#     print("Mode Probabilities:")
-#     for mode, probability in sorted_probabilities:
-#         print(f"{mode}: {probability}")
+    print("Mode Probabilities:")
+    for mode, probability in sorted_probabilities:
+        print(f"{mode}: {probability}")
 
 
-#     probability = sorted_probabilities[0]
-#     # return jsonify({"mode": probability[0], "probability": float(probability[1])})
+    probability = sorted_probabilities[0]
+    # return jsonify({"mode": probability[0], "probability": float(probability[1])})
 
-#     return probability[0]
+    return probability[0]
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -325,61 +332,61 @@ def predict():
 
     return probability[0]
 
-# @app.route('/predict-cnn-bilstm', methods=['POST'])
-# def predict_cnn_bilstm():
-# 
-    # LABEL_MAP = {
-    #     1: "stationary",
-    #     2: "walking",
-    #     3: "running",
-    #     4: "cycling",
-    #     5: "driving",
-    #     6: "bus",
-    #     7: "train",
-    #     8: "metro"
-    # }
-    # 
-#     # Check if a file is uploaded
-#     if 'file' not in request.files:
-#         return 'No file uploaded.'
 
-#     file = request.files['file']
-
-#     # Load the new data for prediction
-#     data = np.genfromtxt(StringIO(file.read().decode('utf-8')), delimiter=',', dtype=float)
-
-#     # Transform data to multiple channels
-#     X_channels = Preprocessing.preprocess_data_for_prediction(data)
-
-
-#     # Predict with the reshaped data
-#     predictions = loaded_cnn_bilstm_model.predict(X_channels)
-
-#     # Decode the predictions to get the numeric labels
-#     numeric_labels = np.argmax(predictions, axis=1)
-
-#     # Convert numeric labels to string labels
-#     predicted_labels = [LABEL_MAP[label] for label in numeric_labels]
+@app.route('/predict-cnn-bilstm', methods=['POST'])
+def predict_cnn_bilstm():
     
-#     probabilities = np.max(predictions, axis=1)
+    # Extract JSON data from the request
+    data = request.get_json()
+    
+    # Check if data is available and is a list
+    if not data or not isinstance(data, list):
+        return 'Invalid data provided', 400
 
-#     mode_probabilities = {}
+    # Convert data to the expected format
+    data_list = [[entry['x'], entry['y'], entry['z'], entry['mx'], entry['my'], entry['mz']] for entry in data]
+    all_data = np.array(data_list, dtype=float)
+    print(all_data.shape)  # Expected: (1200, 6)
 
-#     for label_str, probability in zip(predicted_labels, probabilities):
-#         if label_str not in mode_probabilities:
-#             mode_probabilities[label_str] = []
-#         mode_probabilities[label_str].append(probability)
+    # If you're using a label encoder
+    label_encoder = LabelEncoder()
+    label_encoder.classes_ = np.load('model/cnn-bi-lstm/label_encoder.npy')
 
-#     average_probabilities = {mode: np.mean(probabilities) for mode, probabilities in mode_probabilities.items()}
+    # Since you're moving from files to JSON, we no longer use genfromtxt. 
+    # Instead, you directly have the all_data array from the JSON data.
 
-#     sorted_probabilities = sorted(average_probabilities.items(), key=lambda x: x[1], reverse=True)
+    # Transform data to multiple channels
+    # Assuming Preprocessing is a module/class you've defined elsewhere
+    X_channels = Preprocessing.preprocess_data_for_cnn_bilstm_prediction(all_data)
 
-#     print("Mode Probabilities:")
-#     for mode, probability in sorted_probabilities:
-#         print(f"{mode}: {probability}")
+    # Predict with the reshaped data
+    predictions = loaded_cnn_bi_lstm_model.predict(X_channels)
 
-#     # Assuming you want to return the label with the highest probability
-#     return sorted_probabilities[0][0]
+    # Convert numeric labels to string labels
+    predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
+    
+    probabilities = np.max(predictions, axis=1)
+
+    mode_probabilities = {}
+
+    for label_str, probability in zip(predicted_labels, probabilities):
+        if label_str not in mode_probabilities:
+            mode_probabilities[label_str] = []
+        mode_probabilities[label_str].append(probability)
+
+    average_probabilities = {mode: np.mean(probabilities) for mode, probabilities in mode_probabilities.items()}
+
+    sorted_probabilities = sorted(average_probabilities.items(), key=lambda x: x[1], reverse=True)
+
+    print("Mode Probabilities:")
+    for mode, probability in sorted_probabilities:
+        print(f"{mode}: {probability}")
+
+    # Assuming you want to return the label with the highest probability
+    # return jsonify(mode=sorted_probabilities[0][0], probability=sorted_probabilities[0][1])
+    return sorted_probabilities[0]
+
+
 
 @app.route('/upload', methods=['POST'])
 def upload():

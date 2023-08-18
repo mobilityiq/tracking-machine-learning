@@ -14,7 +14,7 @@ X_train, y_train = Preprocessing.load_and_process_data(locations)
 X_test, y_test = Preprocessing.load_and_process_data(locations, is_validation=True)
 
  # Normalize data
-X_train, X_test = Preprocessing.normalize_data(X_train, X_test) 
+X_train, X_test, means, stds = Preprocessing.normalize_data(X_train, X_test) 
 
 # Reshape the Data
 # Flatten each sample since Random Forest doesn't work with 3D data

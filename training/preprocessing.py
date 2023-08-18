@@ -1,4 +1,5 @@
 import os
+import csv
 import math
 import numpy as np
 import random
@@ -73,7 +74,7 @@ class Preprocessing:
         stds = np.std(X_train, axis=0)
         X_train_norm = (X_train - means) / stds
         X_test_norm = (X_test - means) / stds
-        return X_train_norm, X_test_norm
+        return X_train_norm, X_test_norm, means, stds
 
     @staticmethod
     def f1_metric(y_true, y_pred):
@@ -210,6 +211,28 @@ class Preprocessing:
         distance = R * c
         return distance
     
+    def find_nearest_gps_index(acc_timestamp, gps_timestamps):
+        # Conduct a binary search
+        idx = np.searchsorted(gps_timestamps, acc_timestamp)
+
+        # Ensure idx is not out of bounds
+        if idx == len(gps_timestamps):
+            idx -= 1
+
+        # Ensure we check both the found index and the one before it
+        candidates = [idx]
+        if idx > 0:
+            candidates.append(idx-1)
+
+        # Find the closest timestamp among the candidates
+        closest_idx = min(candidates, key=lambda i: abs(gps_timestamps[i] - acc_timestamp))
+
+        if abs(gps_timestamps[closest_idx] - acc_timestamp) <= 1000:
+            return closest_idx
+        return None
+
+
+
     # MARK: - CNN-BiLSTM    
     @staticmethod
     def data_for_cnn_bilstm(users, motion_files):
@@ -315,11 +338,26 @@ class Preprocessing:
         all_data = []
         print(os.getcwd())
         print(locations)
+        
+        
 
         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         print(f"{current_time} - Start processing data")
 
         for location in locations:
+            # Create the filename
+            filename_suffix = "_validation" if is_validation else ""
+            filename_suffix += "_short" if is_short else ""
+            filename = f"{location}_processed_mag_gyro_accel_gps{filename_suffix}.txt"
+
+            # Check if file already exists
+            if os.path.exists(filename):
+                print(f"{filename} already exists. Loading data from the file.")
+                with open(filename, 'r') as f:
+                    reader = csv.reader(f)
+                    all_data = list(reader)
+                    return all_data
+
             # locations_folder = os.path.join("files/SHL-2023", location)
             locations_folder = os.path.join("files/SHL-2023", location)
 
@@ -335,13 +373,13 @@ class Preprocessing:
                 accel_file = os.path.join("files/SHL-2023", "validate", location, "Acc" + accel_suffix)
                 gyro_file = os.path.join("files/SHL-2023", "validate", location, "Gyr" + gyro_suffix)
                 label_file = os.path.join("files/SHL-2023", "validate", location, "Label" + label_suffix)
-                gps_file = os.path.join("files/SHL-2023", "validate", location, "Location" + label_suffix)
+                gps_file = os.path.join("files/SHL-2023", "validate", location, "Location.txt")
             else:
                 mag_file = os.path.join(locations_folder, "Mag" + mag_suffix)
                 accel_file = os.path.join(locations_folder, "Acc" + accel_suffix)
                 gyro_file = os.path.join(locations_folder, "Gyr" + gyro_suffix)
                 label_file = os.path.join(locations_folder, "Label" + label_suffix)
-                gps_file = os.path.join(locations_folder, "Location" + label_suffix)
+                gps_file = os.path.join(locations_folder, "Location.txt")
 
             try:
                 current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -350,10 +388,8 @@ class Preprocessing:
                 print("Magnetometer: ",len(mag))
                 # Downsample from 100Hz to 20Hz
                 mag = mag[::5]  # Take every 5th label
-                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                print(f"{current_time} - Downsampled motion: ",len(mag))
             except FileNotFoundError:
-                print(f"Warning: {mag} not found. Skipping...")
+                print(f"Warning: {mag_file} not found. Skipping...")
                 continue
 
             try:
@@ -363,10 +399,8 @@ class Preprocessing:
                 print("Accelerometer: ",len(accel))
                 # Downsample from 100Hz to 20Hz
                 accel = accel[::5]  # Take every 5th label
-                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                print(f"{current_time} - Downsampled accel: ",len(accel))
             except FileNotFoundError:
-                print(f"Warning: {accel} not found. Skipping...")
+                print(f"Warning: {accel_file} not found. Skipping...")
                 continue
 
             try:
@@ -376,10 +410,8 @@ class Preprocessing:
                 print("Gyro: ",len(gyro))
                 # Downsample from 100Hz to 20Hz
                 gyro = gyro[::5]  # Take every 5th label
-                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                print(f"{current_time} - Downsampled gyro: ",len(gyro))
             except FileNotFoundError:
-                print(f"Warning: {gyro} not found. Skipping...")
+                print(f"Warning: {gyro_file} not found. Skipping...")
                 continue
 
             try:
@@ -391,17 +423,15 @@ class Preprocessing:
                 labels = labels[::5]  # Take every 5th label
                 unique_modes = set(labels)
                 print("Unique modes before filtering:", unique_modes)
-                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                print(f"{current_time} - Downsampled Labels: ",len(labels))
             except FileNotFoundError:
                 print(f"Warning: {label_file} not found. Skipping...")
                 continue
 
             try:
                 current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                print(f"{current_time} - Loading: ",(label_file))
+                print(f"{current_time} - Loading: ",(gps_file))
                 gps = Preprocessing.read_2023_gps_file(gps_file)
-                print("GPS: ",len(labels))
+                gps = gps[::5]  # Take every 5th location
             except FileNotFoundError:
                 print(f"Warning: {gps_file} not found. Skipping...")
                 continue
@@ -412,28 +442,27 @@ class Preprocessing:
 
             acc_data = [row[1:4] for row in accel]
             if not acc_data:
-                print("acc_data is empty!")
+                print("acc_data is empty!, Skipping...")
                 continue
 
             gyro_data = [row[1:4] for row in gyro]
             if not gyro_data:
-                print("gyro_data is empty!")
+                print("gyro_data is empty!, Skipping...")
                 continue
 
             mag_data = [row[1:4] for row in mag] 
             if not mag_data:
-                print("mag_data is empty!")
+                print("mag_data is empty!, Skipping...")
                 continue
 
             gps_data = [row for row in gps] 
             if not gps_data:
-                print("gps_data is empty!")
+                print("gps_data is empty!, Skipping...")
                 continue
 
             
-            current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            print(f"{current_time} - Processing loaded data...")
             # Extract each dimension for accelerometer, magnetometer, gyro and gps
+            acc_timestamps = [row[0] for row in accel]
             acc_data_x = [row[0] for row in acc_data]
             acc_data_y = [row[1] for row in acc_data]
             acc_data_z = [row[2] for row in acc_data]
@@ -457,8 +486,11 @@ class Preprocessing:
             assert len(speeds) > 0, "The list 'speeds' is empty!"
             assert len(bearings) > 0, "The list 'bearings' is empty!"
             
+
             current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            print(f"{current_time} - Applying filters...")
+            print(f"{current_time} - Smoothing data using savitzky_golay...")
+            # current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            # print(f"{current_time} - Applying filters...")
             # Apply the filter to accelerometer data
             smoothed_acc_x = Preprocessing.apply_savitzky_golay(acc_data_x)
             smoothed_acc_y = Preprocessing.apply_savitzky_golay(acc_data_y)
@@ -480,7 +512,7 @@ class Preprocessing:
             smoothed_gyr_data = list(zip(smoothed_gyr_x, smoothed_gyr_y, smoothed_gyr_z))
 
             current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            print(f"{current_time} - Computing jerks...")
+            print(f"{current_time} - Computing jerks and magnitudes...")
             # Compute jerk
             acc_jerks_x = Preprocessing.compute_jerk(smoothed_acc_x)
             acc_jerks_y = Preprocessing.compute_jerk(smoothed_acc_y)
@@ -499,15 +531,31 @@ class Preprocessing:
             mag_magnitudes = [Preprocessing.compute_magnitude(mag) for mag in smoothed_mag_data]
             gyr_magnitudes = [Preprocessing.compute_magnitude(gyr) for gyr in smoothed_gyr_data]
             
+            # Get the GPS timestamps
+            gps_times = gps_data_timestamp
+
+            current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            print(f"{current_time} - Putting all together...")
             for idx, (acc_values, mag_values, gyr_values) in tqdm(enumerate(zip(smoothed_acc_data, smoothed_mag_data, smoothed_gyr_data)), total=len(smoothed_acc_data), desc="Processing last step"):
                 mode = labels[idx]
 
-                interpolated_speeds = Preprocessing.interpolate_values(speeds, 20)
-                interpolated_bearings = Preprocessing.interpolate_values(bearings, 20)
+                acc_timestamp = acc_timestamps[idx]  # Assuming you have a list called acc_timestamps which holds the timestamps for the accelerometer data
+
+                nearest_gps_idx = Preprocessing.find_nearest_gps_index(acc_timestamp, gps_times)
+
+                if nearest_gps_idx is not None:
+                    current_speed = speeds[nearest_gps_idx]
+                    current_bearing = bearings[nearest_gps_idx]
+                else:
+                    current_speed = -1
+                    current_bearing = -1
 
                 if mode > 3:
                     # Append the data in the desired order
                     row = (
+                        [acc_timestamp] + # Timestamp
+                        [current_speed] + # Speed
+                        [current_bearing] + # Bearing
                         list(acc_values) +  # Acceleration x,y,z 
                         [acc_jerks_x[idx], acc_jerks_y[idx], acc_jerks_z[idx]] +  # Acceleration jerk x,y,z 
                         [acc_magnitudes[idx]] +  # Acceleration magnitude
@@ -517,8 +565,6 @@ class Preprocessing:
                         list(gyr_values) + # Gyro x,y,z
                         [gyr_jerks_x[idx], gyr_jerks_y[idx], gyr_jerks_z[idx]] + # Gyro jerk x,y,z
                         [gyr_magnitudes[idx]] + # Gyro magnitude
-                        [interpolated_speeds[idx]] + # Speed
-                        [interpolated_bearings[idx]] + # Bearing
                         [mode]
                     )
                     all_data.append(row)
@@ -526,5 +572,12 @@ class Preprocessing:
 
         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         print(f"{current_time} - Finished processing data")
+        print(len(all_data))
+
+        with open(filename, 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerows(all_data)
+        
+        print(f"Data saved to {filename}")
 
         return all_data
