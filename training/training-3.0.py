@@ -286,7 +286,7 @@ def segment_data_by_time(timestamps, data, segment_duration=60):
         if time - start_time < segment_duration:
             segment.append(data[i])
         else:
-            segments.append(segment)
+            segments.append(segment)    
             segment = [data[i]]
             start_time = time
     if segment:  # appending any remaining data
@@ -308,7 +308,6 @@ def predict_with_rf_in_segments(segmented_features, segmented_labels):
         
         accuracies.append(accuracy)
         
-        print(f"Accuracy for segment {i + 1}: {accuracy:.2%}")
     return accuracies
 
 # Get the accuracies for each 60-second segment
