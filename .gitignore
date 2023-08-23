@@ -22,3 +22,4 @@ training/files/*
 cnn_bilstm_model.h5
 imputer.joblib
 random_forest_model.joblib
+.vscode
