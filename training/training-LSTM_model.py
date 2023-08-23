@@ -10,7 +10,8 @@ from models import Models
 from imblearn.over_sampling import SMOTE
 
 # Phone was located in different parts to collect the data
-locations = ["Bag","Hand","Hips","Torso"]
+# locations = ["Bag","Hand","Hips","Torso"]
+locations = ["Hand"]
 
 # Load data from the text file
 data = Preprocessing.data_from_phone_locations(locations=locations)
