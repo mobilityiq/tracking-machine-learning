@@ -1,390 +1,276 @@
 import os
+import sys
 import numpy as np
 from tensorflow import keras
 from io import StringIO
 from sklearn.preprocessing import LabelEncoder
 from datetime import datetime
-from flask import Flask, request
-from flask import jsonify
+from flask import Flask, request, jsonify
 from training.preprocessing import Preprocessing
 from keras.models import load_model
+from sklearn.externals import joblib
+from enum import Enum
+from sklearn.metrics import accuracy_score
+
 
 app = Flask(__name__)
 
 UPLOAD_FOLDER = 'www/uploads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# Load the trained Random Forest model and imputer
+rf_classifier = joblib.load('../model/3.0/rf_trained_model-3.0.joblib')
+imputer = joblib.load('../model/3.0/imputer.joblib')
+
+
 # encoder = LabelEncoder()  
 # encoder.classes_ = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8])  # these are the numeric labels 
 
-f1_metric = Preprocessing.f1_metric
-custom_objects = {'f1_metric': f1_metric}
+# Define the transportation mode Enum
+class TransportationMode(Enum):
+    DRIVING = 'driving'
+    CYCLING = 'cycling'
+    TRAIN = 'train'
+    BUS = 'bus'
+    SUBWAY = 'metro'
+    TRAM = 'tram'
+    # ESCOOTER = 'e-scooter'
 
-# Load models
-# 3.0
-loaded_model = keras.models.load_model('model/3.0/trained_model-3.0/')
-# LSTM
-loaded_lstm_model = keras.models.load_model('model/lstm/trained_lstm_model/', custom_objects=custom_objects)
-# BiLSTM
-loaded_bi_lstm_model = keras.models.load_model('model/bi-lstm/trained_bi-lstm_model/', custom_objects=custom_objects)
-# CONV1D-LSTM
-loaded_conv1d_lstm_model = keras.models.load_model('model/conv1d-lstm/trained_conv1d-lstm_model/', custom_objects=custom_objects)
-# CNN-BiLSTM
-loaded_cnn_bi_lstm_model = keras.models.load_model('model/cnn-bi-lstm/cnn_bilstm_model/', custom_objects=custom_objects)
+class FeaturesNames(Enum):
+    SPEED = 'speed'
+    BEARING = 'bearing'
+    ACC_X = 'acc_x'
+    ACC_Y = 'acc_y'
+    ACC_Z = 'acc_z'
+    JERK_X = 'jerk_x'
+    JERK_Y = 'jerk_y'
+    JERK_Z = 'jerk_z'
+    ACC_MAGNITUDE = 'acc_mag'
+    MAG_X = 'mag_x'
+    MAG_Y = 'mag_y'
+    MAG_Z = 'mag_z'
+    JERK_MAG_X = 'jerk_mx'
+    JERK_MAG_Y = 'jerk_my'
+    JERK_MAG_Z = 'jerk_mz'
+    MAG_MAGNITUDE = 'mag_mag'
 
-@app.route('/predict-bi-lstm', methods=['POST'])
-def predict_bi_lstm():
-    data = request.get_json()
+def compute_magnitude(arrays):
+    squares = [np.square(array) for array in arrays]
+    sum_of_squares = np.sum(squares, axis=0)
+    return np.sqrt(sum_of_squares)
+
+def compute_jerk(data):
+    return [data[i+1] - data[i] for i in range(len(data)-1)] + [0]
+
+def load_and_extract_features(file_path):
+    data = np.genfromtxt(file_path, delimiter=',', dtype=str)
+    timestamp = data[:, 0].astype(float)  # This is the new timestamp column
+    speed = data[:, 1].astype(float)
+    course = data[:, 2].astype(float)
+    x = data[:, 3].astype(float)
+    y = data[:, 4].astype(float)
+    z = data[:, 5].astype(float)
+    mx = data[:, 6].astype(float)
+    my = data[:, 7].astype(float)
+    mz = data[:, 8].astype(float)
+    modes = data[:, -1]
     
-    # Check if data is available and is a list
-    if not data or not isinstance(data, list):
-        return 'Invalid data provided', 400
+    return timestamp, speed, course, x, y, z, mx, my, mz, modes
 
-    data_list = [[entry['timestamp'], entry['x'], entry['y'], entry['z'], entry['mx'], entry['my'], entry['mz']] for entry in data]
-    all_data = np.array(data_list, dtype=float)
-
-    print("Data shape:",all_data.shape)
-
-    # Extract relevant columns
-    timestamps = all_data[:, 0]
-    x = all_data[:, 1]
-    y = all_data[:, 2]
-    z = all_data[:, 3]
-    mx = all_data[:, 4]
-    my = all_data[:, 5]
-    mz = all_data[:, 6]
-
-    # Apply the filter to data
-    x = Preprocessing.apply_savitzky_golay(x)
-    y = Preprocessing.apply_savitzky_golay(y)
-    z = Preprocessing.apply_savitzky_golay(z)
-    mx = Preprocessing.apply_savitzky_golay(mx)
-    my = Preprocessing.apply_savitzky_golay(my)
-    mz = Preprocessing.apply_savitzky_golay(mz)
-
-    label_encoder = LabelEncoder()
-    label_encoder.classes_ = np.load(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'label_encoder.npy'))
-
-    mean = np.load(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'mean.npy'))
-    std = np.load(os.path.join(os.path.dirname(__file__), 'model', 'bi-lstm', 'std.npy'))
-
-    normalized_timestamp = (timestamps - mean[0]) / std[0]
-    normalized_x = (x - mean[1]) / std[1]
-    normalized_y = (y - mean[2]) / std[2]
-    normalized_z = (z - mean[3]) / std[3]
-    normalized_mx = (mx - mean[4]) / std[4]
-    normalized_my = (my - mean[5]) / std[5]
-    normalized_mz = (mz - mean[6]) / std[6]
-
-    # Include normalized features in data
-    data = np.column_stack((normalized_timestamp, normalized_x, normalized_y, normalized_z, normalized_mx, normalized_my, normalized_mz))
-
-    # print("Inference Data (First 5 Rows):")
-    # print(data[:5])  # Print the first 5 rows of the normalized features
-
-    # Reshape the data
-    data = data.reshape(data.shape[0], 1, data.shape[1])
-
-    predictions = loaded_bi_lstm_model.predict(data)
-
-    predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
-
-    print(predicted_labels)
-
-    probabilities = np.max(predictions, axis=1)
-
-    mode_probabilities = {}
-
-    for label, probability in zip(predicted_labels, probabilities):
-        label = label.upper()
-        if label not in mode_probabilities:
-            mode_probabilities[label] = []
-        mode_probabilities[label].append(probability)
-
-    average_probabilities = {mode: np.mean(probabilities) for mode, probabilities in mode_probabilities.items()}
-
-    sorted_probabilities = sorted(average_probabilities.items(), key=lambda x: x[1], reverse=True)
-
-    print("Mode Probabilities:")
-    for mode, probability in sorted_probabilities:
-        print(f"{mode}: {probability}")
+def compute_statistics(data):
+    return np.mean(data), np.std(data)
 
 
-    probability = sorted_probabilities[0]
-    # return jsonify({"mode": probability[0], "probability": float(probability[1])})
+def normalize_data(data, mean, std):
+    return (data - mean) / std
 
-    return probability[0]
+def check_data_types(*arrays):
+    for arr in arrays:
+        if not np.issubdtype(arr.dtype, np.number):
+            print(f"Found non-numeric data: {arr[arr != arr.astype(float).astype(str)]}")
 
-@app.route('/predict-lstm', methods=['POST'])
-def predict_lstm():
-    data = request.get_json()
+
+def preprocess_data(speed, course, x, y, z, jerk_ax, jerk_ay, jerk_az, acc_magnitude, mx, my, mz, jerk_mx, jerk_my, jerk_mz, mag_magnitude, 
+                    mean_acc_magnitude=None, std_acc_magnitude=None, mean_mag_magnitude=None, std_mag_magnitude=None, 
+                    mean_speed=None, std_speed=None, mean_course=None, std_course=None, 
+                    mean_x=None, std_x=None, mean_y=None, std_y=None, mean_z=None, std_z=None, 
+                    mean_mx=None, std_mx=None, mean_my=None, std_my=None, mean_mz=None, std_mz=None,
+                    mean_jerk_ax=None, std_jerk_ax=None, mean_jerk_ay=None, std_jerk_ay=None, mean_jerk_az=None, std_jerk_az=None,
+                    mean_jerk_mx=None, std_jerk_mx=None, mean_jerk_my=None, std_jerk_my=None, mean_jerk_mz=None, std_jerk_mz=None):
     
-    # Check if data is available and is a list
-    if not data or not isinstance(data, list):
-        return 'Invalid data provided', 400
-
-    data_list = [[entry['timestamp'], entry['x'], entry['y'], entry['z'], entry['mx'], entry['my'], entry['mz']] for entry in data]
-    all_data = np.array(data_list, dtype=float)
-
-    print("Data shape:",all_data.shape)
-
-    # Extract relevant columns
-    timestamps = all_data[:, 0]
-    x = all_data[:, 1]
-    y = all_data[:, 2]
-    z = all_data[:, 3]
-    mx = all_data[:, 4]
-    my = all_data[:, 5]
-    mz = all_data[:, 6]
-
-
-    label_encoder = LabelEncoder()
-    label_encoder.classes_ = np.load(os.path.join(os.path.dirname(__file__), 'model', 'lstm', 'label_encoder.npy'))
-
-    mean = np.load(os.path.join(os.path.dirname(__file__), 'model', 'lstm', 'mean.npy'))
-    std = np.load(os.path.join(os.path.dirname(__file__), 'model', 'lstm', 'std.npy'))
-
-    normalized_timestamp = (timestamps - mean[0]) / std[0]
-    normalized_x = (x - mean[1]) / std[1]
-    normalized_y = (y - mean[2]) / std[2]
-    normalized_z = (z - mean[3]) / std[3]
-    normalized_mx = (mx - mean[4]) / std[4]
-    normalized_my = (my - mean[5]) / std[5]
-    normalized_mz = (mz - mean[6]) / std[6]
-
-    # Include normalized features in data
-    data = np.column_stack((normalized_timestamp, normalized_x, normalized_y, normalized_z, normalized_mx, normalized_my, normalized_mz))
-
-    # Reshape the data
-    data = data.reshape(data.shape[0], 1, data.shape[1])
-
-    predictions = loaded_lstm_model.predict(data)
-
-    # print(predictions[:10])  # Print the first 10 predictions to get an idea of the scores
-
-
-    predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
-
-    probabilities = np.max(predictions, axis=1)
-
-    mode_probabilities = {}
-
-    for label, probability in zip(predicted_labels, probabilities):
-        label = label.upper()
-        if label not in mode_probabilities:
-            mode_probabilities[label] = []
-        mode_probabilities[label].append(probability)
-
-    average_probabilities = {mode: np.mean(probabilities) for mode, probabilities in mode_probabilities.items()}
-
-    sorted_probabilities = sorted(average_probabilities.items(), key=lambda x: x[1], reverse=True)
-
-    print("Mode Probabilities:")
-    for mode, probability in sorted_probabilities:
-        print(f"{mode}: {probability}")
-
-
-    probability = sorted_probabilities[0]
-    # return jsonify({"mode": probability[0], "probability": float(probability[1])})
-
-    return probability[0]
-
-@app.route('/predict-conv1d-lstm', methods=['POST'])
-def predict_conv1d_lstm():
-    data = request.get_json()
+    if mean_speed is None or std_speed is None:
+        mean_speed, std_speed = compute_statistics(speed)
+    if mean_course is None or std_course is None:
+        mean_course, std_course = compute_statistics(course)
+    if mean_x is None or std_x is None:
+        mean_x, std_x = compute_statistics(x)
+    if mean_y is None or std_y is None:
+        mean_y, std_y = compute_statistics(y)
+    if mean_z is None or std_z is None:
+        mean_z, std_z = compute_statistics(z)
+    if mean_mx is None or std_mx is None:
+        mean_mx, std_mx = compute_statistics(mx)
+    if mean_my is None or std_my is None:
+        mean_my, std_my = compute_statistics(my)
+    if mean_mz is None or std_mz is None:
+        mean_mz, std_mz = compute_statistics(mz)
+    if mean_acc_magnitude is None or std_acc_magnitude is None:
+        mean_acc_magnitude, std_acc_magnitude = compute_statistics(acc_magnitude)
+    if mean_mag_magnitude is None or std_mag_magnitude is None:
+        mean_mag_magnitude, std_mag_magnitude = compute_statistics(mag_magnitude)
+         # Add the new jerk statistics
+    if mean_jerk_ax is None or std_jerk_ax is None:
+        mean_jerk_ax, std_jerk_ax = compute_statistics(jerk_ax)
+    if mean_jerk_ay is None or std_jerk_ay is None:
+        mean_jerk_ay, std_jerk_ay = compute_statistics(jerk_ay)
+    if mean_jerk_az is None or std_jerk_az is None:
+        mean_jerk_az, std_jerk_az = compute_statistics(jerk_az)
+    if mean_jerk_mx is None or std_jerk_mx is None:
+        mean_jerk_mx, std_jerk_mx = compute_statistics(jerk_mx)
+    if mean_jerk_my is None or std_jerk_my is None:
+        mean_jerk_my, std_jerk_my = compute_statistics(jerk_my)
+    if mean_jerk_mz is None or std_jerk_mz is None:
+        mean_jerk_mz, std_jerk_mz = compute_statistics(jerk_mz)
+        
     
-    # Check if data is available and is a list
-    if not data or not isinstance(data, list):
-        return 'Invalid data provided', 400
+    # This part was repeated, so removing the redundant calculations
+    normalized_speed = normalize_data(speed, mean_speed, std_speed)
+    normalized_course = normalize_data(course, mean_course, std_course)
+    normalized_x = normalize_data(x, mean_x, std_x)
+    normalized_y = normalize_data(y, mean_y, std_y)
+    normalized_z = normalize_data(z, mean_z, std_z)
+    normalized_mx = normalize_data(mx, mean_mx, std_mx)
+    normalized_my = normalize_data(my, mean_my, std_my)
+    normalized_mz = normalize_data(mz, mean_mz, std_mz)
+    normalized_acc_magnitude = normalize_data(acc_magnitude, mean_acc_magnitude, std_acc_magnitude)
+    normalized_mag_magnitude = normalize_data(mag_magnitude, mean_mag_magnitude, std_mag_magnitude)
+    normalized_jerk_ax = normalize_data(jerk_ax, mean_jerk_ax, std_jerk_ax)
+    normalized_jerk_ay = normalize_data(jerk_ay, mean_jerk_ay, std_jerk_ay)
+    normalized_jerk_az = normalize_data(jerk_az, mean_jerk_az, std_jerk_az)
+    normalized_jerk_mx = normalize_data(jerk_mx, mean_jerk_mx, std_jerk_mx)
+    normalized_jerk_my = normalize_data(jerk_my, mean_jerk_my, std_jerk_my)
+    normalized_jerk_mz = normalize_data(jerk_mz, mean_jerk_mz, std_jerk_mz)
 
-    data_list = [[entry['timestamp'], entry['x'], entry['y'], entry['z'], entry['mx'], entry['my'], entry['mz']] for entry in data]
-    all_data = np.array(data_list, dtype=float)
-
-    print("Data shape:",all_data.shape)
-
-    # Extract relevant columns
-    timestamps = all_data[:, 0]
-    x = all_data[:, 1]
-    y = all_data[:, 2]
-    z = all_data[:, 3]
-    mx = all_data[:, 4]
-    my = all_data[:, 5]
-    mz = all_data[:, 6]
-
-    label_encoder = LabelEncoder()
-    label_encoder.classes_ = np.load(os.path.join(os.path.dirname(__file__), 'model', 'conv1d-lstm', 'label_encoder.npy'))
-
-    mean = np.load(os.path.join(os.path.dirname(__file__), 'model', 'conv1d-lstm', 'mean.npy'))
-    std = np.load(os.path.join(os.path.dirname(__file__), 'model', 'conv1d-lstm', 'std.npy'))
-
-    normalized_timestamp = (timestamps - mean[0]) / std[0]
-    normalized_x = (x - mean[1]) / std[1]
-    normalized_y = (y - mean[2]) / std[2]
-    normalized_z = (z - mean[3]) / std[3]
-    normalized_mx = (mx - mean[4]) / std[4]
-    normalized_my = (my - mean[5]) / std[5]
-    normalized_mz = (mz - mean[6]) / std[6]
-
-    # Include normalized features in data
-    data = np.column_stack((normalized_timestamp, normalized_x, normalized_y, normalized_z, normalized_mx, normalized_my, normalized_mz))
-
-    # Reshape the data
-    data = data.reshape(data.shape[0], 1, data.shape[1])
-
-    predictions = loaded_conv1d_lstm_model.predict(data)
-
-    predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
-
-    probabilities = np.max(predictions, axis=1)
-
-    mode_probabilities = {}
-
-    for label, probability in zip(predicted_labels, probabilities):
-        label = label.upper()
-        if label not in mode_probabilities:
-            mode_probabilities[label] = []
-        mode_probabilities[label].append(probability)
-
-    average_probabilities = {mode: np.mean(probabilities) for mode, probabilities in mode_probabilities.items()}
-
-    sorted_probabilities = sorted(average_probabilities.items(), key=lambda x: x[1], reverse=True)
-
-    print("Mode Probabilities:")
-    for mode, probability in sorted_probabilities:
-        print(f"{mode}: {probability}")
+    features = np.column_stack((normalized_speed, normalized_course, normalized_x, normalized_y, normalized_z, normalized_jerk_ax, normalized_jerk_ay, normalized_jerk_az, normalized_acc_magnitude, 
+                                normalized_mx, normalized_my, normalized_mz, normalized_jerk_mx, normalized_jerk_my, normalized_jerk_mz, normalized_mag_magnitude))    
+        
+    statistics = {
+        'mean_speed': mean_speed, 'std_speed': std_speed,
+        'mean_course': mean_course, 'std_course': std_course,
+        'mean_x': mean_x, 'std_x': std_x,
+        'mean_y': mean_y, 'std_y': std_y,
+        'mean_z': mean_z, 'std_z': std_z,
+        'mean_mx': mean_mx, 'std_mx': std_mx,
+        'mean_my': mean_my, 'std_my': std_my,
+        'mean_mz': mean_mz, 'std_mz': std_mz,
+        'mean_acc_magnitude': mean_acc_magnitude, 
+        'std_acc_magnitude': std_acc_magnitude,
+        'mean_mag_magnitude': mean_mag_magnitude, 
+        'std_mag_magnitude': std_mag_magnitude,
+        'mean_jerk_ax': mean_jerk_ax, 'std_jerk_ax': std_jerk_ax,
+        'mean_jerk_ay': mean_jerk_ay, 'std_jerk_ay': std_jerk_ay,
+        'mean_jerk_az': mean_jerk_az, 'std_jerk_az': std_jerk_az,
+        'mean_jerk_mx': mean_jerk_mx, 'std_jerk_mx': std_jerk_mx,
+        'mean_jerk_my': mean_jerk_my, 'std_jerk_my': std_jerk_my,
+        'mean_jerk_mz': mean_jerk_mz, 'std_jerk_mz': std_jerk_mz
+    }
+    
+    return features, statistics
 
 
-    probability = sorted_probabilities[0]
-    # return jsonify({"mode": probability[0], "probability": float(probability[1])})
+def predict_with_rf(features, true_labels):
+    predicted_labels = rf_classifier.predict(features)
+    accuracy = accuracy_score(true_labels, predicted_labels)
+    return accuracy
 
-    return probability[0]
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    # Check if a file is uploaded
-    if 'file' not in request.files:
-        return 'Unauthorised acess. Your ip has been tracked and will be reported', 400
+    try:
 
-    file = request.files['file']
+        # Receive the uploaded file
+        uploaded_file = request.files['file']
+        
+        if uploaded_file.filename != '':
+            # Save the uploaded file temporarily
+            file_path = 'temp_data.csv'
+            uploaded_file.save(file_path)
 
-    # Check if the file has an allowed extension
-    # if not filename.lower().endswith(('.csv')):
-    #     return 'Authentication failed. Your connection has been recorded and will be reported'
+        # Load and preprocess the data from the uploaded file
+        timestamp, speed, course, x, y, z, mx, my, mz, modes = load_and_extract_features(file_path)
 
-    # Load the new data for prediction
-    new_data = np.genfromtxt(StringIO(file.read().decode('utf-8')), delimiter=',', dtype=float)
+        acc_magnitude = compute_magnitude([x, y, z])
+        mag_magnitude = compute_magnitude([mx, my, mz])
 
-    # Extract the relevant columns from the data
-    timestamps = new_data[:, 0]
-    speed = new_data[:, 1]
-    course = new_data[:, 2]
-    x = new_data[:, 3]
-    y = new_data[:, 4]
-    z = new_data[:, 5]
-    qx = new_data[:, 6]
-    qy = new_data[:, 7]
-    qz = new_data[:, 8]
-    qw = new_data[:, 9]
+        # Apply the filters
+        smoothed_acc_x = Preprocessing.apply_savitzky_golay(x)
+        smoothed_acc_y = Preprocessing.apply_savitzky_golay(y)
+        smoothed_acc_z = Preprocessing.apply_savitzky_golay(z)
+        smoothed_mag_x = Preprocessing.apply_savitzky_golay(mx)
+        smoothed_mag_y = Preprocessing.apply_savitzky_golay(my)
+        smoothed_mag_z = Preprocessing.apply_savitzky_golay(mz)
 
-    label_encoder = LabelEncoder()
-    label_encoder.classes_ = np.load('model/3.0/label_encoder.npy')
-
-    mean = np.load('model/3.0/mean.npy')
-    std = np.load('model/3.0/std.npy')
-
-    normalized_timestamp = (timestamps - mean[0]) / std[0]
-    normalized_speed = (speed - mean[1]) / std[1]
-    normalized_course = (course - mean[2]) / std[2]
-    normalized_x = (x - mean[3]) / std[3]
-    normalized_y = (y - mean[4]) / std[4]
-    normalized_z = (z - mean[5]) / std[5]
-    normalized_qx = (qx - mean[6]) / std[6]
-    normalized_qy = (qy - mean[7]) / std[7]
-    normalized_qz = (qz - mean[8]) / std[8]
-    normalized_qw = (qw - mean[9]) / std[9]
-
-    # Include normalized features in data
-    data = np.column_stack((normalized_timestamp, normalized_speed, normalized_course, normalized_x, normalized_y, normalized_z, normalized_qx, normalized_qy, normalized_qz, normalized_qw))
-
-    predictions = loaded_model.predict(data)
-
-    predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
-
-    probabilities = np.max(predictions, axis=1)
-
-    mode_probabilities = {}
-
-    for label, probability in zip(predicted_labels, probabilities):
-        label = label.upper()
-        if label not in mode_probabilities:
-            mode_probabilities[label] = []
-        mode_probabilities[label].append(probability)
-
-    average_probabilities = {mode: np.mean(probabilities) for mode, probabilities in mode_probabilities.items()}
-
-    sorted_probabilities = sorted(average_probabilities.items(), key=lambda x: x[1], reverse=True)
-
-    print("Mode Probabilities:")
-    for mode, probability in sorted_probabilities:
-        print(f"{mode}: {probability}")
-
-    probability = sorted_probabilities[0]
-
-    return probability[0]
+        # Calculating jerks
+        jerk_ax = compute_jerk(smoothed_acc_x)
+        jerk_ay = compute_jerk(smoothed_acc_y)
+        jerk_az = compute_jerk(smoothed_acc_z)
 
 
-@app.route('/predict-cnn-bilstm', methods=['POST'])
-def predict_cnn_bilstm():
+        jerk_mx = compute_jerk(smoothed_mag_x)
+        jerk_my = compute_jerk(smoothed_mag_y)
+        jerk_mz = compute_jerk(smoothed_mag_z)
+
+        # Encode transportation modes as numerical labels
+        label_encoder = LabelEncoder()
+        encoded_labels = label_encoder.fit_transform(modes)
+        num_classes = len(TransportationMode)
+
+        # Preprocess the training data
+        train_features, train_statistics = preprocess_data(speed, course, x, y, z, jerk_ax, jerk_ay, jerk_az, acc_magnitude, mx, my, mz, jerk_mx, jerk_my, jerk_mz, mag_magnitude)
+
+        train_labels = label_encoder.transform(modes)
+
+        # Load testing data
+        data_test_file = 'testing-3.0.csv'
+        test_timestamp, test_speed, test_course, test_x, test_y, test_z, test_mx, test_my, test_mz, test_modes = load_and_extract_features(data_test_file)
+
+        acc_test_magnitudes = compute_magnitude([test_x, test_y, test_z])
+        mag_test_magnitudes = compute_magnitude([test_mx, test_my, test_mz])
+
+        smoothed_acc_test_x = Preprocessing.apply_savitzky_golay(test_x)
+        smoothed_acc_test_y = Preprocessing.apply_savitzky_golay(test_y)
+        smoothed_acc_test_z = Preprocessing.apply_savitzky_golay(test_z)
+        smoothed_mag_test_x = Preprocessing.apply_savitzky_golay(test_mx)
+        smoothed_mag_test_y = Preprocessing.apply_savitzky_golay(test_my)
+        smoothed_mag_test_z = Preprocessing.apply_savitzky_golay(test_mz)
+
+        # Assuming you have your accelerometer data as:
+        jerk_test_ax = compute_jerk(smoothed_acc_test_x)
+        jerk_test_ay = compute_jerk(smoothed_acc_test_y)
+        jerk_test_az = compute_jerk(smoothed_acc_test_z)
+
+        # Assuming you have your magnetometer data as:
+        jerk_test_mx = compute_jerk(smoothed_mag_test_x)
+        jerk_test_my = compute_jerk(smoothed_mag_test_y)
+        jerk_test_mz = compute_jerk(smoothed_mag_test_z)
+
+        test_features = preprocess_data(
+        test_speed, test_course, test_x, test_y, test_z, jerk_test_ax, jerk_test_ay, jerk_test_az, acc_test_magnitudes, test_mx, test_my, test_mz, jerk_test_mx, jerk_test_my, jerk_test_mz, mag_test_magnitudes,  **train_statistics
+    )[0]
+
+        # Make predictions using the trained Random Forest model
+        predicted_labels = rf_classifier.predict(test_features)
+
+        # Convert numeric labels back to transportation modes
+        predicted_modes = label_encoder.inverse_transform(predicted_labels)
+
+        # Return the predicted modes as JSON
+        result = {'predicted_modes': predicted_modes.tolist()}
+        
+        return jsonify(result)
     
-    # Extract JSON data from the request
-    data = request.get_json()
-    
-    # Check if data is available and is a list
-    if not data or not isinstance(data, list):
-        return 'Invalid data provided', 400
-
-    # Convert data to the expected format
-    data_list = [[entry['x'], entry['y'], entry['z'], entry['mx'], entry['my'], entry['mz']] for entry in data]
-    all_data = np.array(data_list, dtype=float)
-    print(all_data.shape)  # Expected: (1200, 6)
-
-    # If you're using a label encoder
-    label_encoder = LabelEncoder()
-    label_encoder.classes_ = np.load('model/cnn-bi-lstm/label_encoder.npy')
-
-    # Since you're moving from files to JSON, we no longer use genfromtxt. 
-    # Instead, you directly have the all_data array from the JSON data.
-
-    # Transform data to multiple channels
-    # Assuming Preprocessing is a module/class you've defined elsewhere
-    X_channels = Preprocessing.preprocess_data_for_cnn_bilstm_prediction(all_data)
-
-    # Predict with the reshaped data
-    predictions = loaded_cnn_bi_lstm_model.predict(X_channels)
-
-    # Convert numeric labels to string labels
-    predicted_labels = label_encoder.inverse_transform(np.argmax(predictions, axis=1))
-    
-    probabilities = np.max(predictions, axis=1)
-
-    mode_probabilities = {}
-
-    for label_str, probability in zip(predicted_labels, probabilities):
-        if label_str not in mode_probabilities:
-            mode_probabilities[label_str] = []
-        mode_probabilities[label_str].append(probability)
-
-    average_probabilities = {mode: np.mean(probabilities) for mode, probabilities in mode_probabilities.items()}
-
-    sorted_probabilities = sorted(average_probabilities.items(), key=lambda x: x[1], reverse=True)
-
-    print("Mode Probabilities:")
-    for mode, probability in sorted_probabilities:
-        print(f"{mode}: {probability}")
-
-    # Assuming you want to return the label with the highest probability
-    # return jsonify(mode=sorted_probabilities[0][0], probability=sorted_probabilities[0][1])
-    return sorted_probabilities[0]
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
 
 
