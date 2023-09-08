@@ -8,7 +8,7 @@ from datetime import datetime
 from flask import Flask, request, jsonify
 from training.preprocessing import Preprocessing
 from keras.models import load_model
-from sklearn.externals import joblib
+import joblib
 from enum import Enum
 from sklearn.metrics import accuracy_score
 
