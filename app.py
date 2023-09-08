@@ -19,8 +19,8 @@ UPLOAD_FOLDER = 'www/uploads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Load the trained Random Forest model and imputer
-rf_classifier = joblib.load('../model/3.0/rf_trained_model-3.0.joblib')
-imputer = joblib.load('../model/3.0/imputer.joblib')
+rf_classifier = joblib.load('model/3.0/rf_trained_model-3.0.joblib')
+imputer = joblib.load('model/3.0/imputer.joblib')
 
 
 # encoder = LabelEncoder()  
