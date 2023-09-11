@@ -1,4 +1,5 @@
 import sys
+import pickle
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
@@ -9,17 +10,18 @@ from datetime import datetime
 from sklearn.impute import SimpleImputer
 from preprocessing import Preprocessing
 from tqdm import tqdm
-
-
+from imblearn.over_sampling import SMOTE
+from joblib import dump
 
 # Define the transportation mode Enum
 class TransportationMode(Enum):
-    DRIVING = 'driving'
     CYCLING = 'cycling'
+    DRIVING = 'driving'
     TRAIN = 'train'
-    BUS = 'bus'
-    SUBWAY = 'metro'
-    TRAM = 'tram'
+    WALKING = 'walking'
+    # BUS = 'bus'
+    # SUBWAY = 'metro'
+    # TRAM = 'tram'
     # ESCOOTER = 'e-scooter'
 
 class FeaturesNames(Enum):
@@ -84,12 +86,6 @@ def preprocess_data(speed, course, x, y, z, jerk_ax, jerk_ay, jerk_az, acc_magni
                     mean_mx=None, std_mx=None, mean_my=None, std_my=None, mean_mz=None, std_mz=None,
                     mean_jerk_ax=None, std_jerk_ax=None, mean_jerk_ay=None, std_jerk_ay=None, mean_jerk_az=None, std_jerk_az=None,
                     mean_jerk_mx=None, std_jerk_mx=None, mean_jerk_my=None, std_jerk_my=None, mean_jerk_mz=None, std_jerk_mz=None):
-       
-    def compute_statistics(data):
-        return np.mean(data), np.std(data)
-
-    def normalize_data(data, mean, std):
-        return (data - mean) / std
     
     if mean_speed is None or std_speed is None:
         mean_speed, std_speed = compute_statistics(speed)
@@ -219,7 +215,16 @@ num_classes = len(TransportationMode)
 # Preprocess the training data
 train_features, train_statistics = preprocess_data(speed, course, x, y, z, jerk_ax, jerk_ay, jerk_az, acc_magnitude, mx, my, mz, jerk_mx, jerk_my, jerk_mz, mag_magnitude)
 
+
+
 train_labels = label_encoder.transform(modes)
+
+# Apply SMOTE to the training data
+print(f"Using SMOTE to balance the classes: {train_features.shape}")
+smote = SMOTE()
+train_features, train_labels = smote.fit_resample(train_features, train_labels)
+# Now, the training data should have roughly equal number of instances for each class
+print(f"Finished balancing the classes: {train_features.shape}")
 
 # Load testing data
 data_test_file = 'testing-3.0.csv'
@@ -314,9 +319,19 @@ def predict_with_rf_in_segments(segmented_features, segmented_labels):
 accuracies = predict_with_rf_in_segments(segmented_features, segmented_labels)
 
 
-from joblib import dump
+# Save model
 dump(rf_classifier, '../model/3.0/rf_trained_model-3.0.joblib')
+
+# Save imputer
 dump(imputer, '../model/3.0/imputer.joblib')
+
+# Save labels
+np.save('../model/3.0/label_encoder.npy', label_encoder.classes_)
+
+# Save statistics
+with open('../model/3.0/statistics.pkl', 'wb') as f:
+    pickle.dump(train_statistics, f)
+
 
 # Plot feature importances
 importances = rf_classifier.feature_importances_

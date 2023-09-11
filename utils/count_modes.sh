@@ -6,12 +6,12 @@ translate_mode() {
   case $1 in
     0) echo "UNKNOWN" ;;
     1) echo "STATIONARY" ;;
-    2) echo "WALKING" ;;
-    3) echo "RUNNING" ;;
-    4) echo "CYCLING" ;;
-    5) echo "DRIVING" ;;
-    6) echo "BUS" ;;
-    7) echo "TRAIN" ;;
+    "walking") echo "walking" ;;
+    "running") echo "running" ;;
+    "cycling") echo "cycling" ;;
+    "drivint") echo "driving" ;;
+    6) echo "bus" ;;
+    "train") echo "train" ;;
     8) echo "SUBWAY" ;;
     *) echo "UNKNOWN" ;;
   esac
@@ -21,7 +21,7 @@ plot_graph_for_file() {
     file=$1
     echo "Processing file: $file"
     
-    awk '{print $2}' $file | sort | uniq -c | while read count mode; do
+    awk '{print $10}' $file | sort | uniq -c | while read count mode; do
         translated_mode=$(translate_mode $mode)
         echo "$translated_mode $count"
     done > graph_data.txt
@@ -38,7 +38,7 @@ plot_graph_for_file() {
     echo "----------------------------------"
 }
 
-# Iterate over subdirectories and look for Label.txt
-find $dir -type f -name "Label.txt" | while read file; do
+# Iterate over subdirectories and look for .....
+find $dir -type f -name "training-3.0.csv" | while read file; do
     plot_graph_for_file $file
 done
