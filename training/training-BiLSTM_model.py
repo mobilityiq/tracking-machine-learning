@@ -81,6 +81,7 @@ np.save('../model/bi-lstm/std.npy', stds)
 
 current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 print(f"{current_time} - Training model")
+
 history = model.fit(X_train, train_labels, epochs=20, batch_size=1024, 
                     validation_data=(X_test, test_labels),
                     callbacks=[early_stopping, checkpoint, lr_scheduler])
