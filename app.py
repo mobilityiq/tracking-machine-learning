@@ -1,7 +1,10 @@
 import os
-import pickle
+import sys
+import pandas as pd
+from io import StringIO
 import numpy as np
 from tensorflow import keras
+from io import StringIO
 from sklearn.preprocessing import LabelEncoder
 from datetime import datetime
 from flask import Flask, request, jsonify
@@ -10,34 +13,41 @@ from keras.models import load_model
 import joblib
 from enum import Enum
 from sklearn.metrics import accuracy_score
-from io import BytesIO
-import pandas as pd
-from sklearn.impute import SimpleImputer
+import pickle
 
 app = Flask(__name__)
 
 UPLOAD_FOLDER = 'www/uploads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-
-# Define the transportation mode Enum
-class TransportationMode(Enum):
-    CYCLING = 'cycling'
-    DRIVING = 'driving'
-    TRAIN = 'train'
-    BUS = 'bus'
-    SUBWAY = 'metro'
-    TRAM = 'tram'
-    ESCOOTER = 'e-scooter'
-
-# Load the saved statistics
-with open('model/3.0/statistics.pkl', 'rb') as f:
-    loaded_statistics = pickle.load(f)
-
 # Load the trained Random Forest model and imputer
 rf_classifier = joblib.load('model/3.0/rf_trained_model-3.0.joblib')
 imputer = joblib.load('model/3.0/imputer.joblib')
-labels = np.load('model/3.0/label_encoder.npy')
+# Load the labels
+loaded_classes = np.load('model/3.0/label_encoder.npy')
+label_encoder = LabelEncoder()
+label_encoder.classes_ = loaded_classes
+# Load the statistics
+with open('model/3.0/statistics.pkl', 'rb') as f:
+    statistics = pickle.load(f)
+
+class FeaturesNames(Enum):
+    SPEED = 'speed'
+    BEARING = 'bearing'
+    ACC_X = 'acc_x'
+    ACC_Y = 'acc_y'
+    ACC_Z = 'acc_z'
+    JERK_X = 'jerk_x'
+    JERK_Y = 'jerk_y'
+    JERK_Z = 'jerk_z'
+    ACC_MAGNITUDE = 'acc_mag'
+    MAG_X = 'mag_x'
+    MAG_Y = 'mag_y'
+    MAG_Z = 'mag_z'
+    JERK_MAG_X = 'jerk_mx'
+    JERK_MAG_Y = 'jerk_my'
+    JERK_MAG_Z = 'jerk_mz'
+    MAG_MAGNITUDE = 'mag_mag'
 
 def compute_magnitude(arrays):
     squares = [np.square(array) for array in arrays]
@@ -46,6 +56,23 @@ def compute_magnitude(arrays):
 
 def compute_jerk(data):
     return [data[i+1] - data[i] for i in range(len(data)-1)] + [0]
+
+def load_and_extract_features(data_string):
+    df = pd.read_csv(StringIO(data_string))
+
+    # Assuming the CSV doesn't include headers
+    data = df.to_numpy()
+
+    speed = data[:, 1].astype(float)
+    course = data[:, 2].astype(float)
+    x = data[:, 3].astype(float)
+    y = data[:, 4].astype(float)
+    z = data[:, 5].astype(float)
+    mx = data[:, 6].astype(float)
+    my = data[:, 7].astype(float)
+    mz = data[:, 8].astype(float)
+    
+    return speed, course, x, y, z, mx, my, mz
 
 
 def compute_statistics(data):
@@ -60,99 +87,46 @@ def check_data_types(*arrays):
         if not np.issubdtype(arr.dtype, np.number):
             print(f"Found non-numeric data: {arr[arr != arr.astype(float).astype(str)]}")
 
+
 def preprocess_data(speed, course, x, y, z, jerk_ax, jerk_ay, jerk_az, acc_magnitude, mx, my, mz, jerk_mx, jerk_my, jerk_mz, mag_magnitude, 
                     mean_acc_magnitude=None, std_acc_magnitude=None, mean_mag_magnitude=None, std_mag_magnitude=None, 
                     mean_speed=None, std_speed=None, mean_course=None, std_course=None, 
                     mean_x=None, std_x=None, mean_y=None, std_y=None, mean_z=None, std_z=None, 
                     mean_mx=None, std_mx=None, mean_my=None, std_my=None, mean_mz=None, std_mz=None,
                     mean_jerk_ax=None, std_jerk_ax=None, mean_jerk_ay=None, std_jerk_ay=None, mean_jerk_az=None, std_jerk_az=None,
-                    mean_jerk_mx=None, std_jerk_mx=None, mean_jerk_my=None, std_jerk_my=None, mean_jerk_mz=None, std_jerk_mz=None):
-
-    mean_speed = loaded_statistics['mean_speed']
-    std_speed = loaded_statistics['std_speed']
-    mean_course = loaded_statistics['mean_course']
-    std_course = loaded_statistics['std_course']
-    mean_x = loaded_statistics['mean_x']
-    std_x = loaded_statistics['std_x']
-    mean_y = loaded_statistics['mean_y']
-    std_y = loaded_statistics['std_y']
-    mean_z = loaded_statistics['mean_z']
-    std_z = loaded_statistics['std_z']
-    mean_mx = loaded_statistics['mean_mx']
-    std_mx = loaded_statistics['std_mx']
-    mean_my = loaded_statistics['mean_my']
-    std_my = loaded_statistics['std_my']
-    mean_mz = loaded_statistics['mean_mz']
-    std_mz = loaded_statistics['std_mz']
-    mean_acc_magnitude = loaded_statistics['mean_acc_magnitude']
-    std_acc_magnitude = loaded_statistics['std_acc_magnitude']
-    mean_mag_magnitude = loaded_statistics['mean_mag_magnitude']
-    std_mag_magnitude = loaded_statistics['std_mag_magnitude']
-    mean_jerk_ax = loaded_statistics['mean_jerk_ax']
-    std_jerk_ax = loaded_statistics['std_jerk_ax']
-    mean_jerk_ay = loaded_statistics['mean_jerk_ay']
-    std_jerk_ay = loaded_statistics['std_jerk_ay']
-    mean_jerk_az = loaded_statistics['mean_jerk_az']
-    std_jerk_az = loaded_statistics['std_jerk_az']
-    mean_jerk_mx = loaded_statistics['mean_jerk_mx']
-    std_jerk_mx = loaded_statistics['std_jerk_mx']
-    mean_jerk_my = loaded_statistics['mean_jerk_my']
-    std_jerk_my = loaded_statistics['std_jerk_my']
-    mean_jerk_mz = loaded_statistics['mean_jerk_mz']
-    std_jerk_mz = loaded_statistics['std_jerk_mz']
-
-    # Then normalize the data based on the loaded statistics
-    normalized_speed = normalize_data(speed, mean_speed, std_speed)
-    normalized_course = normalize_data(course, mean_course, std_course)
-    normalized_x = normalize_data(x, mean_x, std_x)
-    normalized_y = normalize_data(y, mean_y, std_y)
-    normalized_z = normalize_data(z, mean_z, std_z)
-    normalized_mx = normalize_data(mx, mean_mx, std_mx)
-    normalized_my = normalize_data(my, mean_my, std_my)
-    normalized_mz = normalize_data(mz, mean_mz, std_mz)
-    normalized_acc_magnitude = normalize_data(acc_magnitude, mean_acc_magnitude, std_acc_magnitude)
-    normalized_mag_magnitude = normalize_data(mag_magnitude, mean_mag_magnitude, std_mag_magnitude)
-    normalized_jerk_ax = normalize_data(jerk_ax, mean_jerk_ax, std_jerk_ax)
-    normalized_jerk_ay = normalize_data(jerk_ay, mean_jerk_ay, std_jerk_ay)
-    normalized_jerk_az = normalize_data(jerk_az, mean_jerk_az, std_jerk_az)
-    normalized_jerk_mx = normalize_data(jerk_mx, mean_jerk_mx, std_jerk_mx)
-    normalized_jerk_my = normalize_data(jerk_my, mean_jerk_my, std_jerk_my)
-    normalized_jerk_mz = normalize_data(jerk_mz, mean_jerk_mz, std_jerk_mz)
-
+                    mean_jerk_mx=None, std_jerk_mx=None, mean_jerk_my=None, std_jerk_my=None, mean_jerk_mz=None, std_jerk_mz=None):    
     
-    features = np.column_stack((
-        normalized_speed,
-        normalized_course,
-        normalized_x,
-        normalized_y,
-        normalized_z,
-        normalized_mx,
-        normalized_my,
-        normalized_mz,
-        normalized_acc_magnitude,
-        normalized_mag_magnitude,
-        normalized_jerk_ax,
-        normalized_jerk_ay,
-        normalized_jerk_az,
-        normalized_jerk_mx,
-        normalized_jerk_my,
-        normalized_jerk_mz
-    ))
+    # This part was repeated, so removing the redundant calculations
+    normalized_speed = normalize_data(speed, statistics["mean_speed"], statistics["std_speed"])
+    normalized_course = normalize_data(course, statistics["mean_course"], statistics["std_course"])
+    normalized_x = normalize_data(x, statistics["mean_x"], statistics["std_x"])
+    normalized_y = normalize_data(y, statistics["mean_y"], statistics["std_y"])
+    normalized_z = normalize_data(z, statistics["mean_z"], statistics["std_z"])
+    normalized_mx = normalize_data(mx, statistics["mean_mx"], statistics["std_mx"])
+    normalized_my = normalize_data(my, statistics["mean_my"], statistics["std_my"])
+    normalized_mz = normalize_data(mz, statistics["mean_mz"], statistics["std_mz"])
+    normalized_acc_magnitude = normalize_data(acc_magnitude, statistics["mean_acc_magnitude"], statistics["std_acc_magnitude"])
+    normalized_mag_magnitude = normalize_data(mag_magnitude, statistics["mean_mag_magnitude"], statistics["std_mag_magnitude"])
+    normalized_jerk_ax = normalize_data(jerk_ax, statistics["mean_jerk_ax"], statistics["std_jerk_ax"])
+    normalized_jerk_ay = normalize_data(jerk_ay, statistics["mean_jerk_ay"], statistics["std_jerk_ay"])
+    normalized_jerk_az = normalize_data(jerk_az, statistics["mean_jerk_az"], statistics["std_jerk_az"])
+    normalized_jerk_mx = normalize_data(jerk_mx, statistics["mean_jerk_mx"], statistics["std_jerk_mx"])
+    normalized_jerk_my = normalize_data(jerk_my, statistics["mean_jerk_my"], statistics["std_jerk_my"])
+    normalized_jerk_mz = normalize_data(jerk_mz, statistics["mean_jerk_mz"], statistics["std_jerk_mz"])
 
-    return features, loaded_statistics
 
-def load_and_extract_features(df):
-    data = df.values
-    speed = data[:, 1].astype(float)
-    course = data[:, 2].astype(float)
-    x = data[:, 3].astype(float)
-    y = data[:, 4].astype(float)
-    z = data[:, 5].astype(float)
-    mx = data[:, 6].astype(float)
-    my = data[:, 7].astype(float)
-    mz = data[:, 8].astype(float)
-    
-    return speed, course, x, y, z, mx, my, mz
+    features = np.column_stack((normalized_speed, normalized_course, normalized_x, normalized_y, normalized_z, normalized_jerk_ax, normalized_jerk_ay, normalized_jerk_az, normalized_acc_magnitude, 
+                                normalized_mx, normalized_my, normalized_mz, normalized_jerk_mx, normalized_jerk_my, normalized_jerk_mz, normalized_mag_magnitude))    
+        
+
+    return features
+
+
+def predict_with_rf(features, true_labels):
+    predicted_labels = rf_classifier.predict(features)
+    accuracy = accuracy_score(true_labels, predicted_labels)
+    return accuracy
+
 
 
 @app.route('/predict', methods=['POST'])
@@ -161,28 +135,15 @@ def predict():
 
         # Receive the uploaded file
         uploaded_file = request.files['file']
-        
-        if not uploaded_file:
-            return jsonify({'error': 'Unauthorised access already reported'})
+
+        if uploaded_file.filename != '':
+            # Directly read the uploaded file without saving it to disk
+            data_file = uploaded_file.read().decode('utf-8')
+            speed, course, x, y, z, mx, my, mz = load_and_extract_features(data_file)
 
 
-        # Load testing data
-        data_loaded = pd.read_csv(BytesIO(uploaded_file.read()))
-        print(f"Data loaded shape: {data_loaded.shape}")
-
-
-        speed, course, x, y, z, mx, my, mz = load_and_extract_features(data_loaded)
-        print(f"Extracted arrays shapes - speed: {speed.shape}, course: {course.shape}, x: {x.shape}, "
-      f"y: {y.shape}, z: {z.shape}, mx: {mx.shape}, my: {my.shape}, mz: {mz.shape}")
-
-
-        print(f"Before computing magnitude - acc: {len(x), len(y), len(z)}")
         acc_magnitudes = compute_magnitude([x, y, z])
-        print(f"After computing magnitude - acc_magnitudes: {acc_magnitudes.shape}")
-
-        print(f"Before computing magnitude - mat: {len(mx), len(my), len(mz)}")
         mag_magnitudes = compute_magnitude([mx, my, mz])
-        print(f"After computing magnitude - mag: {mag_magnitudes.shape}")
 
         smoothed_acc_x = Preprocessing.apply_savitzky_golay(x)
         smoothed_acc_y = Preprocessing.apply_savitzky_golay(y)
@@ -192,76 +153,44 @@ def predict():
         smoothed_mag_z = Preprocessing.apply_savitzky_golay(mz)
 
         # Assuming you have your accelerometer data as:
-        print(f"Before computing jerk - acc: {len(smoothed_acc_x), len(smoothed_acc_y), len(smoothed_acc_z)}")
         jerk_ax = compute_jerk(smoothed_acc_x)
         jerk_ay = compute_jerk(smoothed_acc_y)
         jerk_az = compute_jerk(smoothed_acc_z)
-        print(f"After computing jerk - jerk_ax: {len(jerk_ax)}")
-
 
         # Assuming you have your magnetometer data as:
         jerk_mx = compute_jerk(smoothed_mag_x)
         jerk_my = compute_jerk(smoothed_mag_y)
         jerk_mz = compute_jerk(smoothed_mag_z)
 
-        # Preprocess the testing data using statistics from the training data
-        # print(f"Before preprocessing data lengths - speed: {len(speed)}, course: {len(course)}, ...")
-        # features = preprocess_data(
-        #     speed, course, x, y, z, jerk_ax, jerk_ay, jerk_az, acc_magnitudes, mx, my, mz, jerk_mx, jerk_my, jerk_mz, mag_magnitudes
-        # )[0]
+        features = preprocess_data(speed, course, x, y, z, jerk_ax, jerk_ay, jerk_az, acc_magnitudes, mx, my, mz, jerk_mx, jerk_my, jerk_mz, mag_magnitudes)
+        
+        # Fit and transform the features
+        features_imputed = imputer.fit_transform(features)
 
-        features, _ = preprocess_data(
-            speed, course, x, y, z, jerk_ax, jerk_ay, jerk_az, acc_magnitudes, 
-            mx, my, mz, jerk_mx, jerk_my, jerk_mz, mag_magnitudes,
-            mean_speed=loaded_statistics['mean_speed'], std_speed=loaded_statistics['std_speed'],
-            mean_course=loaded_statistics['mean_course'], std_course=loaded_statistics['std_course'],
-            mean_x=loaded_statistics['mean_x'], std_x=loaded_statistics['std_x'],
-            mean_y=loaded_statistics['mean_y'], std_y=loaded_statistics['std_y'],
-            mean_z=loaded_statistics['mean_z'], std_z=loaded_statistics['std_z'],
-            mean_jerk_ax=loaded_statistics['mean_jerk_ax'], std_jerk_ax=loaded_statistics['std_jerk_ax'],
-            mean_jerk_ay=loaded_statistics['mean_jerk_ay'], std_jerk_ay=loaded_statistics['std_jerk_ay'],
-            mean_jerk_az=loaded_statistics['mean_jerk_az'], std_jerk_az=loaded_statistics['std_jerk_az'],
-            mean_acc_magnitude=loaded_statistics['mean_acc_magnitude'], std_acc_magnitude=loaded_statistics['std_acc_magnitude'],
-            mean_mx=loaded_statistics['mean_mx'], std_mx=loaded_statistics['std_mx'],
-            mean_my=loaded_statistics['mean_my'], std_my=loaded_statistics['std_my'],
-            mean_mz=loaded_statistics['mean_mz'], std_mz=loaded_statistics['std_mz'],
-            mean_jerk_mx=loaded_statistics['mean_jerk_mx'], std_jerk_mx=loaded_statistics['std_jerk_mx'],
-            mean_jerk_my=loaded_statistics['mean_jerk_my'], std_jerk_my=loaded_statistics['std_jerk_my'],
-            mean_jerk_mz=loaded_statistics['mean_jerk_mz'], std_jerk_mz=loaded_statistics['std_jerk_mz'],
-            mean_mag_magnitude=loaded_statistics['mean_mag_magnitude'], std_mag_magnitude=loaded_statistics['std_mag_magnitude']
-        )
+        # 1. Get prediction probabilities
+        predicted_probabilities = rf_classifier.predict_proba(features_imputed)
 
-        print(f"Test features shape: {features.shape}")
+        # 2. Average the probabilities
+        avg_probabilities = predicted_probabilities.mean(axis=0)
 
-        print(f"Before imputation - features: {features.shape}")
-        data_imputed = imputer.transform(features)
-        print(f"After imputation - data_imputed: {data_imputed.shape}")
+        # 3. Map the numeric labels to modes
+        modes = label_encoder.classes_
 
-         # Make predictions using the trained Random Forest model
-        predicted_probabilities = rf_classifier.predict_proba(data_imputed)
+        # Create a dictionary of numeric labels and their probabilities
+        numeric_label_probs = {str(mode): round(probability * 100, 2) for mode, probability in zip(modes, avg_probabilities)}
 
+        print(f"numeric_label_probs: {numeric_label_probs}")
 
-        # for mode in TransportationMode:
-        #     print(f"Name: {mode.name}")   # This will print the name of the enum member (a string)
-        #     print(f"Value: {mode.value}")  # This will print the value of the enum member (whatever datatype it might be)
+        # Replace numeric labels with actual labels
+        # label_probs = {label_encoder.inverse_transform([float(key)])[0]: value for key, value in numeric_label_probs.items()}
 
-        # Define your transportation modes in the order they appear in predicted_probabilities
-        modes_list = [TransportationMode.DRIVING, TransportationMode.CYCLING, TransportationMode.TRAIN]
-
-        mode_probabilities = {}
-        for mode in modes_list:
-            index = modes_list.index(mode)  # Get the index of the mode in the modes_list
-            mode_probabilities[mode.name] = predicted_probabilities[:, index].mean() * 100
-        print(mode_probabilities)
-        # Sort by probability
-        sorted_modes = sorted(mode_probabilities.items(), key=lambda x: x[1], reverse=True)
-        print(sorted_modes)
-        return sorted_modes[0][0]
-
-                
+        return jsonify(numeric_label_probs)
+    
     except Exception as e:
-        print(e)
+        print(str(e))
         return jsonify({'error': str(e)})
+
+
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -285,7 +214,6 @@ def upload():
         new_file.write(file.read().decode('utf-8'))
 
     return "Ok", 200
-
 
 if __name__ == "__main__":
     app.run(host='51.68.196.15', port=8000, debug=True)

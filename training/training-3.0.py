@@ -9,7 +9,6 @@ from sklearn.metrics import accuracy_score
 from datetime import datetime
 from sklearn.impute import SimpleImputer
 from preprocessing import Preprocessing
-from tqdm import tqdm
 from imblearn.over_sampling import SMOTE
 from joblib import dump
 
@@ -19,7 +18,7 @@ class TransportationMode(Enum):
     DRIVING = 'driving'
     TRAIN = 'train'
     WALKING = 'walking'
-    # BUS = 'bus'
+    BUS = 'bus'
     # SUBWAY = 'metro'
     # TRAM = 'tram'
     # ESCOOTER = 'e-scooter'
@@ -226,6 +225,22 @@ train_features, train_labels = smote.fit_resample(train_features, train_labels)
 # Now, the training data should have roughly equal number of instances for each class
 print(f"Finished balancing the classes: {train_features.shape}")
 
+
+# Get the list of transportation mode labels
+labels = label_encoder.classes_.tolist()
+
+# Create an imputer object with a mean filling strategy
+imputer = SimpleImputer(strategy='mean')
+
+# Apply the imputer to our training data
+X_train_rf_imputed = imputer.fit_transform(train_features)
+
+# Create a Random Forest Classifier
+rf_classifier = RandomForestClassifier(n_estimators=20)
+
+# Train the classifier on the training data
+rf_classifier.fit(X_train_rf_imputed, train_labels)
+
 # Load testing data
 data_test_file = 'testing-3.0.csv'
 test_timestamp, test_speed, test_course, test_x, test_y, test_z, test_mx, test_my, test_mz, test_modes = load_and_extract_features(data_test_file)
@@ -251,37 +266,17 @@ jerk_test_my = compute_jerk(smoothed_mag_test_y)
 jerk_test_mz = compute_jerk(smoothed_mag_test_z)
 
 # Preprocess the testing data using statistics from the training data
-test_features = preprocess_data(
-    test_speed, test_course, test_x, test_y, test_z, jerk_test_ax, jerk_test_ay, jerk_test_az, acc_test_magnitudes, test_mx, test_my, test_mz, jerk_test_mx, jerk_test_my, jerk_test_mz, mag_test_magnitudes,  **train_statistics
-)[0]
+test_features, train_statistics = preprocess_data(test_speed, test_course, test_x, test_y, test_z, jerk_test_ax, jerk_test_ay, jerk_test_az, acc_test_magnitudes, test_mx, test_my, test_mz, jerk_test_mx, jerk_test_my, jerk_test_mz, mag_test_magnitudes)
 
 # Get features and labels for testing data
 test_labels = label_encoder.transform(test_modes)
 
-
-# Get the list of transportation mode labels
-labels = label_encoder.classes_.tolist()
-
-# Create an imputer object with a mean filling strategy
-imputer = SimpleImputer(strategy='mean')
-
-# Apply the imputer to our training data
-X_train_rf_imputed = imputer.fit_transform(train_features)
-
 # Apply the same imputer to the test data 
 X_test_rf_imputed = imputer.transform(test_features)
 
-
-# Create a Random Forest Classifier
-rf_classifier = RandomForestClassifier(n_estimators=20)
-
-# Train the classifier on the training data
-rf_classifier.fit(train_features, train_labels)
-
 # Print RF accuracy for testing data
-rf_test_accuracy = predict_with_rf(test_features, test_labels)
+rf_test_accuracy = predict_with_rf(X_test_rf_imputed, test_labels)
 print(f'Random Forest Test Accuracy: {rf_test_accuracy * 100:.2f}%')
-
 
 def segment_data_by_time(timestamps, data, segment_duration=60):
     start_time = timestamps[0]

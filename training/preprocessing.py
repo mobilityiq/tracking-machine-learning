@@ -2,12 +2,8 @@ import os
 import csv
 import math
 import numpy as np
-import random
 from scipy.signal import savgol_filter
-from collections import Counter
-from scipy.interpolate import UnivariateSpline
 from scipy.ndimage import gaussian_filter
-from collections import Counter
 from keras import backend as K
 from datetime import datetime
 from tqdm import tqdm
