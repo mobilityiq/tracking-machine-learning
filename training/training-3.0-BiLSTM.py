@@ -23,11 +23,12 @@ import json
 
 # Define the transportation mode Enum
 class TransportationMode(Enum):
+    BUS = 'bus'
     CYCLING = 'cycling'
     DRIVING = 'driving'
+    STATIONARY = 'stationary'
     TRAIN = 'train'
     WALKING = 'walking'
-    BUS = 'bus'
     # SUBWAY = 'metro'
     # TRAM = 'tram'
     # ESCOOTER = 'e-scooter'
@@ -187,20 +188,27 @@ acc_magnitude = compute_magnitude([x, y, z])
 mag_magnitude = compute_magnitude([mx, my, mz])
 
 # Apply the filters
-smoothed_acc_x = apply_savitzky_golay(x)
-smoothed_acc_y = apply_savitzky_golay(y)
-smoothed_acc_z = apply_savitzky_golay(z)
-smoothed_mag_x = apply_savitzky_golay(mx)
-smoothed_mag_y = apply_savitzky_golay(my)
-smoothed_mag_z = apply_savitzky_golay(mz)
+# smoothed_acc_x = apply_savitzky_golay(x)
+# smoothed_acc_y = apply_savitzky_golay(y)
+# smoothed_acc_z = apply_savitzky_golay(z)
+# smoothed_mag_x = apply_savitzky_golay(mx)
+# smoothed_mag_y = apply_savitzky_golay(my)
+# smoothed_mag_z = apply_savitzky_golay(mz)
 
 # Calculating jerks
-jerk_ax = compute_jerk(smoothed_acc_x)
-jerk_ay = compute_jerk(smoothed_acc_y)
-jerk_az = compute_jerk(smoothed_acc_z)
-jerk_mx = compute_jerk(smoothed_mag_x)
-jerk_my = compute_jerk(smoothed_mag_y)
-jerk_mz = compute_jerk(smoothed_mag_z)
+# jerk_ax = compute_jerk(smoothed_acc_x)
+# jerk_ay = compute_jerk(smoothed_acc_y)
+# jerk_az = compute_jerk(smoothed_acc_z)
+# jerk_mx = compute_jerk(smoothed_mag_x)
+# jerk_my = compute_jerk(smoothed_mag_y)
+# jerk_mz = compute_jerk(smoothed_mag_z)
+
+jerk_ax = compute_jerk(x)
+jerk_ay = compute_jerk(y)
+jerk_az = compute_jerk(z)
+jerk_mx = compute_jerk(mx)
+jerk_my = compute_jerk(my)
+jerk_mz = compute_jerk(mz)
 
 # Encode transportation modes as numerical labels
 label_encoder = LabelEncoder()
@@ -279,7 +287,7 @@ model.summary()
 
 
 # Fit the model
-history = model.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=20, batch_size=1024, verbose=1)
+history = model.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=40, batch_size=1024, verbose=1)
 
 # Save statistics
 with open('../model/bi-lstm/statistics.pkl', 'wb') as f:
@@ -294,7 +302,7 @@ model.save('../model/bi-lstm/trained_bi-lstm_model')
 # Create a dictionary to hold the metadata
 metadata = {
     'statistics': train_statistics,
-    'labels': ['bus','cycling','driving','train','walking']
+    'labels': ['bus','cycling','driving','stationary','train','walking']
 }
 
 # Convert the metadata dictionary to JSON string
