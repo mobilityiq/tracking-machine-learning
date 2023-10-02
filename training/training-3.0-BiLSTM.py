@@ -20,6 +20,7 @@ from scipy.signal import savgol_filter
 from keras import backend as K
 import coremltools as ct
 import json
+import tensorflow as tf
 
 # Define the transportation mode Enum
 class TransportationMode(Enum):
@@ -113,6 +114,8 @@ def preprocess_data(speed, course, x, y, z, jerk_ax, jerk_ay, jerk_az, acc_magni
     # This part was repeated, so removing the redundant calculations
     normalized_speed = normalize_data(speed, mean_speed, std_speed)
     normalized_course = normalize_data(course, mean_course, std_course)
+    # normalized_speed = speed
+    # normalized_course = course
     normalized_x = normalize_data(x, mean_x, std_x)
     normalized_y = normalize_data(y, mean_y, std_y)
     normalized_z = normalize_data(z, mean_z, std_z)
@@ -188,27 +191,27 @@ acc_magnitude = compute_magnitude([x, y, z])
 mag_magnitude = compute_magnitude([mx, my, mz])
 
 # Apply the filters
-# smoothed_acc_x = apply_savitzky_golay(x)
-# smoothed_acc_y = apply_savitzky_golay(y)
-# smoothed_acc_z = apply_savitzky_golay(z)
-# smoothed_mag_x = apply_savitzky_golay(mx)
-# smoothed_mag_y = apply_savitzky_golay(my)
-# smoothed_mag_z = apply_savitzky_golay(mz)
+smoothed_acc_x = apply_savitzky_golay(x)
+smoothed_acc_y = apply_savitzky_golay(y)
+smoothed_acc_z = apply_savitzky_golay(z)
+smoothed_mag_x = apply_savitzky_golay(mx)
+smoothed_mag_y = apply_savitzky_golay(my)
+smoothed_mag_z = apply_savitzky_golay(mz)
 
 # Calculating jerks
-# jerk_ax = compute_jerk(smoothed_acc_x)
-# jerk_ay = compute_jerk(smoothed_acc_y)
-# jerk_az = compute_jerk(smoothed_acc_z)
-# jerk_mx = compute_jerk(smoothed_mag_x)
-# jerk_my = compute_jerk(smoothed_mag_y)
-# jerk_mz = compute_jerk(smoothed_mag_z)
+jerk_ax = compute_jerk(smoothed_acc_x)
+jerk_ay = compute_jerk(smoothed_acc_y)
+jerk_az = compute_jerk(smoothed_acc_z)
+jerk_mx = compute_jerk(smoothed_mag_x)
+jerk_my = compute_jerk(smoothed_mag_y)
+jerk_mz = compute_jerk(smoothed_mag_z)
 
-jerk_ax = compute_jerk(x)
-jerk_ay = compute_jerk(y)
-jerk_az = compute_jerk(z)
-jerk_mx = compute_jerk(mx)
-jerk_my = compute_jerk(my)
-jerk_mz = compute_jerk(mz)
+# jerk_ax = compute_jerk(x)
+# jerk_ay = compute_jerk(y)
+# jerk_az = compute_jerk(z)
+# jerk_mx = compute_jerk(mx)
+# jerk_my = compute_jerk(my)
+# jerk_mz = compute_jerk(mz)
 
 # Encode transportation modes as numerical labels
 label_encoder = LabelEncoder()
@@ -237,11 +240,18 @@ train_labels_one_hot = to_categorical(train_labels, num_classes=num_classes)
 X_train, X_val, y_train, y_val = train_test_split(train_features, train_labels_one_hot, test_size=0.2, random_state=42)
 
 # Initialize the BiLSTM model
-model = Sequential()
-model.add(Bidirectional(LSTM(50, return_sequences=True), input_shape=(X_train.shape[1], 1)))
-model.add(Bidirectional(LSTM(50)))
-model.add(Dropout(0.5))
-model.add(Dense(num_classes, activation='softmax'))
+# model = Sequential()
+# model.add(Bidirectional(LSTM(50, return_sequences=True), input_shape=(X_train.shape[1], 1)))
+# model.add(Bidirectional(LSTM(50)))
+# model.add(Dropout(0.5))
+# model.add(Dense(num_classes, activation='softmax'))
+
+model = tf.keras.models.Sequential([
+    tf.keras.layers.Bidirectional(LSTM(50, return_sequences=True), input_shape=(X_train.shape[1], 1)),
+    tf.keras.layers.Bidirectional(LSTM(50)),
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.Dense(num_classes, activation='softmax')
+])
 
 
 # Define learning rate schedule function
@@ -287,7 +297,7 @@ model.summary()
 
 
 # Fit the model
-history = model.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=40, batch_size=1024, verbose=1)
+history = model.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=10, batch_size=1024, verbose=1)
 
 # Save statistics
 with open('../model/bi-lstm/statistics.pkl', 'wb') as f:
@@ -296,8 +306,10 @@ with open('../model/bi-lstm/statistics.pkl', 'wb') as f:
 # Save the label encoder
 np.save('../model/bi-lstm/label_encoder.npy', label_encoder.classes_)
 
-# Save the model
+# Save the model to path
 model.save('../model/bi-lstm/trained_bi-lstm_model')
+
+
 
 # Create a dictionary to hold the metadata
 metadata = {
@@ -343,6 +355,8 @@ def preprocess_test_data(speed, course, x, y, z, jerk_ax, jerk_ay, jerk_az, acc_
 
     normalized_speed = normalize_data(speed, statistics["mean_speed"], statistics["std_speed"])
     normalized_course = normalize_data(course, statistics["mean_course"], statistics["std_course"])
+    # normalized_speed = speed
+    # normalized_course = course
     normalized_x = normalize_data(x, statistics["mean_x"], statistics["std_x"])
     normalized_y = normalize_data(y, statistics["mean_y"], statistics["std_y"])
     normalized_z = normalize_data(z, statistics["mean_z"], statistics["std_z"])
@@ -388,6 +402,13 @@ jerk_test_mx = compute_jerk(smoothed_mag_test_x)
 jerk_test_my = compute_jerk(smoothed_mag_test_y)
 jerk_test_mz = compute_jerk(smoothed_mag_test_z)
 
+# jerk_test_ax = compute_jerk(test_x)
+# jerk_test_ay = compute_jerk(test_y)
+# jerk_test_az = compute_jerk(test_z)
+# jerk_test_mx = compute_jerk(test_mx)
+# jerk_test_my = compute_jerk(test_my)
+# jerk_test_mz = compute_jerk(test_mz)
+
 # Preprocess the testing data using statistics from the training data
 X_test = preprocess_test_data(test_speed, test_course, test_x, test_y, test_z, jerk_test_ax, jerk_test_ay, jerk_test_az, acc_test_magnitudes, test_mx, test_my, test_mz, jerk_test_mx, jerk_test_my, jerk_test_mz, mag_test_magnitudes)
 
@@ -399,3 +420,14 @@ print(f"F1 Score: {f1_score * 100:.2f}%")
 
 
 
+# Convert the saved model to LITE
+# converter = tf.lite.TFLiteConverter.from_saved_model('../model/bi-lstm/trained_bi-lstm_model') # path to the SavedModel directory
+# tflite_model = converter.convert()
+
+# Convert the model.
+# converter = tf.lite.TFLiteConverter.from_keras_model(model)
+# tflite_model = converter.convert()
+
+# # Save the LITE model
+# with open('../model/bi-lstm/bi-lstm-lite.tflite', 'wb') as f:
+#   f.write(tflite_model)

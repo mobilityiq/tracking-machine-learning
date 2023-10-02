@@ -1,6 +1,7 @@
 import os
 import csv
 import math
+import pickle
 import numpy as np
 from scipy.signal import savgol_filter
 from scipy.ndimage import gaussian_filter
@@ -455,3 +456,235 @@ class Preprocessing:
         # print(f"Data saved to {filename}")
 
         return all_data
+    
+    def compute_magnitude(arrays):
+        squares = [np.square(array) for array in arrays]
+        sum_of_squares = np.sum(squares, axis=0)
+        return np.sqrt(sum_of_squares)
+
+    def compute_jerk(data):
+        return [data[i+1] - data[i] for i in range(len(data)-1)] + [0]
+
+    @staticmethod
+    def load_and_extract_features(file_path):
+        data = np.genfromtxt(file_path, delimiter=',', dtype=str)
+        timestamp = data[:, 0].astype(float)  # This is the new timestamp column
+        speed = data[:, 1].astype(float)
+        course = data[:, 2].astype(float)
+        x = data[:, 3].astype(float)
+        y = data[:, 4].astype(float)
+        z = data[:, 5].astype(float)
+        mx = data[:, 6].astype(float)
+        my = data[:, 7].astype(float)
+        mz = data[:, 8].astype(float)
+        modes = data[:, -1]
+        
+        return timestamp, speed, course, x, y, z, mx, my, mz, modes
+
+    def compute_statistics(data):
+        return np.mean(data), np.std(data)
+
+    def normalize_data(data, mean, std):
+        # To handle zero standard deviation
+        std = std if std != 0 else 1e-10  # 1e-10 or some small number to avoid division by zero
+        return (data - mean) / std
+
+
+    def check_data_types(*arrays):
+        for arr in arrays:
+            if not np.issubdtype(arr.dtype, np.number):
+                print(f"Found non-numeric data: {arr[arr != arr.astype(float).astype(str)]}")
+
+    def preprocess_data(speed, course, x, y, z, jerk_ax, jerk_ay, jerk_az, acc_magnitude, mx, my, mz, jerk_mx, jerk_my, jerk_mz, mag_magnitude):
+        mean_speed, std_speed = Preprocessing.compute_statistics(speed)
+        mean_course, std_course = Preprocessing.compute_statistics(course)
+        mean_x, std_x = Preprocessing.compute_statistics(x)
+        mean_y, std_y = Preprocessing.compute_statistics(y)
+        mean_z, std_z = Preprocessing.compute_statistics(z)
+        mean_mx, std_mx = Preprocessing.compute_statistics(mx)
+        mean_my, std_my = Preprocessing.compute_statistics(my)
+        mean_mz, std_mz = Preprocessing.compute_statistics(mz)
+        mean_acc_magnitude, std_acc_magnitude = Preprocessing.compute_statistics(acc_magnitude)
+        mean_mag_magnitude, std_mag_magnitude = Preprocessing.compute_statistics(mag_magnitude)
+
+        # Add the new jerk statistics
+        mean_jerk_ax, std_jerk_ax = Preprocessing.compute_statistics(jerk_ax)
+        mean_jerk_ay, std_jerk_ay = Preprocessing.compute_statistics(jerk_ay)
+        mean_jerk_az, std_jerk_az = Preprocessing.compute_statistics(jerk_az)
+        mean_jerk_mx, std_jerk_mx = Preprocessing.compute_statistics(jerk_mx)
+        mean_jerk_my, std_jerk_my = Preprocessing.compute_statistics(jerk_my)
+        mean_jerk_mz, std_jerk_mz = Preprocessing.compute_statistics(jerk_mz)
+        
+        # This part was repeated, so removing the redundant calculations
+        normalized_speed = Preprocessing.normalize_data(speed, mean_speed, std_speed)
+        normalized_course = Preprocessing.normalize_data(course, mean_course, std_course)
+        # normalized_speed = speed
+        # normalized_course = course
+        normalized_x = Preprocessing.normalize_data(x, mean_x, std_x)
+        normalized_y = Preprocessing.normalize_data(y, mean_y, std_y)
+        normalized_z = Preprocessing.normalize_data(z, mean_z, std_z)
+        normalized_mx = Preprocessing.normalize_data(mx, mean_mx, std_mx)
+        normalized_my = Preprocessing.normalize_data(my, mean_my, std_my)
+        normalized_mz = Preprocessing.normalize_data(mz, mean_mz, std_mz)
+        normalized_acc_magnitude = Preprocessing.normalize_data(acc_magnitude, mean_acc_magnitude, std_acc_magnitude)
+        normalized_mag_magnitude = Preprocessing.normalize_data(mag_magnitude, mean_mag_magnitude, std_mag_magnitude)
+        normalized_jerk_ax = Preprocessing.normalize_data(jerk_ax, mean_jerk_ax, std_jerk_ax)
+        normalized_jerk_ay = Preprocessing.normalize_data(jerk_ay, mean_jerk_ay, std_jerk_ay)
+        normalized_jerk_az = Preprocessing.normalize_data(jerk_az, mean_jerk_az, std_jerk_az)
+        normalized_jerk_mx = Preprocessing.normalize_data(jerk_mx, mean_jerk_mx, std_jerk_mx)
+        normalized_jerk_my = Preprocessing.normalize_data(jerk_my, mean_jerk_my, std_jerk_my)
+        normalized_jerk_mz = Preprocessing.normalize_data(jerk_mz, mean_jerk_mz, std_jerk_mz)
+
+        features = np.column_stack((normalized_speed, normalized_course, normalized_x, normalized_y, normalized_z, normalized_jerk_ax, normalized_jerk_ay, normalized_jerk_az, normalized_acc_magnitude, 
+                                    normalized_mx, normalized_my, normalized_mz, normalized_jerk_mx, normalized_jerk_my, normalized_jerk_mz, normalized_mag_magnitude))    
+            
+        statistics = {
+            'mean_speed': mean_speed, 'std_speed': std_speed,
+            'mean_course': mean_course, 'std_course': std_course,
+            'mean_x': mean_x, 'std_x': std_x,
+            'mean_y': mean_y, 'std_y': std_y,
+            'mean_z': mean_z, 'std_z': std_z,
+            'mean_mx': mean_mx, 'std_mx': std_mx,
+            'mean_my': mean_my, 'std_my': std_my,
+            'mean_mz': mean_mz, 'std_mz': std_mz,
+            'mean_acc_magnitude': mean_acc_magnitude, 
+            'std_acc_magnitude': std_acc_magnitude,
+            'mean_mag_magnitude': mean_mag_magnitude, 
+            'std_mag_magnitude': std_mag_magnitude,
+            'mean_jerk_ax': mean_jerk_ax, 'std_jerk_ax': std_jerk_ax,
+            'mean_jerk_ay': mean_jerk_ay, 'std_jerk_ay': std_jerk_ay,
+            'mean_jerk_az': mean_jerk_az, 'std_jerk_az': std_jerk_az,
+            'mean_jerk_mx': mean_jerk_mx, 'std_jerk_mx': std_jerk_mx,
+            'mean_jerk_my': mean_jerk_my, 'std_jerk_my': std_jerk_my,
+            'mean_jerk_mz': mean_jerk_mz, 'std_jerk_mz': std_jerk_mz
+        }
+        
+        return features, statistics
+    
+    def preprocess_data_no_jerks(timestamp, speed, course, x, y, z, mx, my, mz, acc_magnitude, mag_magnitude):
+        mean_timestamp, std_timestamp = Preprocessing.compute_statistics(timestamp)
+        mean_speed, std_speed = Preprocessing.compute_statistics(speed)
+        mean_course, std_course = Preprocessing.compute_statistics(course)
+        mean_x, std_x = Preprocessing.compute_statistics(x)
+        mean_y, std_y = Preprocessing.compute_statistics(y)
+        mean_z, std_z = Preprocessing.compute_statistics(z)
+        mean_mx, std_mx = Preprocessing.compute_statistics(mx)
+        mean_my, std_my = Preprocessing.compute_statistics(my)
+        mean_mz, std_mz = Preprocessing.compute_statistics(mz)
+        mean_acc_magnitude, std_acc_magnitude = Preprocessing.compute_statistics(acc_magnitude)
+        mean_mag_magnitude, std_mag_magnitude = Preprocessing.compute_statistics(mag_magnitude)
+        
+        normalized_speed = Preprocessing.normalize_data(speed, mean_speed, std_speed)
+        normalized_course = Preprocessing.normalize_data(course, mean_course, std_course)
+
+        normalized_timestamp = Preprocessing.normalize_data(timestamp, mean_timestamp, std_timestamp)
+        normalized_x = Preprocessing.normalize_data(x, mean_x, std_x)
+        normalized_y = Preprocessing.normalize_data(y, mean_y, std_y)
+        normalized_z = Preprocessing.normalize_data(z, mean_z, std_z)
+        normalized_mx = Preprocessing.normalize_data(mx, mean_mx, std_mx)
+        normalized_my = Preprocessing.normalize_data(my, mean_my, std_my)
+        normalized_mz = Preprocessing.normalize_data(mz, mean_mz, std_mz)
+
+
+        features = np.column_stack((normalized_timestamp, normalized_speed, normalized_course, normalized_x, normalized_y, normalized_z, 
+                                    normalized_mx, normalized_my, normalized_mz, acc_magnitude, mag_magnitude))    
+            
+        statistics = {
+            'mean_timestamp': mean_timestamp, 'std_timestamp': std_timestamp,
+            'mean_speed': mean_speed, 'std_speed': std_speed,
+            'mean_course': mean_course, 'std_course': std_course,
+            'mean_x': mean_x, 'std_x': std_x,
+            'mean_y': mean_y, 'std_y': std_y,
+            'mean_z': mean_z, 'std_z': std_z,
+            'mean_mx': mean_mx, 'std_mx': std_mx,
+            'mean_my': mean_my, 'std_my': std_my,
+            'mean_mz': mean_mz, 'std_mz': std_mz,
+            'mean_acc_magnitude': mean_acc_magnitude, 
+            'std_acc_magnitude': std_acc_magnitude,
+            'mean_mag_magnitude': mean_mag_magnitude, 
+            'std_mag_magnitude': std_mag_magnitude,
+        }
+        
+        return features, statistics
+    
+    @staticmethod
+    def preprocess_test_data(speed, course, x, y, z, jerk_ax, jerk_ay, jerk_az, acc_magnitude, mx, my, mz, jerk_mx, jerk_my, jerk_mz, mag_magnitude, statistics):    
+
+        normalized_speed = Preprocessing.normalize_data(speed, statistics["mean_speed"], statistics["std_speed"])
+        normalized_course = Preprocessing.normalize_data(course, statistics["mean_course"], statistics["std_course"])
+        normalized_x = Preprocessing.normalize_data(x, statistics["mean_x"], statistics["std_x"])
+        normalized_y = Preprocessing.normalize_data(y, statistics["mean_y"], statistics["std_y"])
+        normalized_z = Preprocessing.normalize_data(z, statistics["mean_z"], statistics["std_z"])
+        normalized_mx = Preprocessing.normalize_data(mx, statistics["mean_mx"], statistics["std_mx"])
+        normalized_my = Preprocessing.normalize_data(my, statistics["mean_my"], statistics["std_my"])
+        normalized_mz = Preprocessing.normalize_data(mz, statistics["mean_mz"], statistics["std_mz"])
+        normalized_acc_magnitude = Preprocessing.normalize_data(acc_magnitude, statistics["mean_acc_magnitude"], statistics["std_acc_magnitude"])
+        normalized_mag_magnitude = Preprocessing.normalize_data(mag_magnitude, statistics["mean_mag_magnitude"], statistics["std_mag_magnitude"])
+        normalized_jerk_ax = Preprocessing.normalize_data(jerk_ax, statistics["mean_jerk_ax"], statistics["std_jerk_ax"])
+        normalized_jerk_ay = Preprocessing.normalize_data(jerk_ay, statistics["mean_jerk_ay"], statistics["std_jerk_ay"])
+        normalized_jerk_az = Preprocessing.normalize_data(jerk_az, statistics["mean_jerk_az"], statistics["std_jerk_az"])
+        normalized_jerk_mx = Preprocessing.normalize_data(jerk_mx, statistics["mean_jerk_mx"], statistics["std_jerk_mx"])
+        normalized_jerk_my = Preprocessing.normalize_data(jerk_my, statistics["mean_jerk_my"], statistics["std_jerk_my"])
+        normalized_jerk_mz = Preprocessing.normalize_data(jerk_mz, statistics["mean_jerk_mz"], statistics["std_jerk_mz"])
+
+
+        features = np.column_stack((normalized_speed, normalized_course, normalized_x, normalized_y, normalized_z, normalized_jerk_ax, normalized_jerk_ay, normalized_jerk_az, normalized_acc_magnitude, 
+                                    normalized_mx, normalized_my, normalized_mz, normalized_jerk_mx, normalized_jerk_my, normalized_jerk_mz, normalized_mag_magnitude))    
+
+        return features
+    
+    @staticmethod
+    def preprocess_test_data_no_jerks(timestamp, speed, course, x, y, z, acc_magnitude, mx, my, mz, mag_magnitude, statistics):    
+
+        normalized_speed = Preprocessing.normalize_data(speed, statistics["mean_speed"], statistics["std_speed"])
+        normalized_course = Preprocessing.normalize_data(course, statistics["mean_course"], statistics["std_course"])
+        normalized_x = Preprocessing.normalize_data(x, statistics["mean_x"], statistics["std_x"])
+        normalized_y = Preprocessing.normalize_data(y, statistics["mean_y"], statistics["std_y"])
+        normalized_z = Preprocessing.normalize_data(z, statistics["mean_z"], statistics["std_z"])
+        normalized_mx = Preprocessing.normalize_data(mx, statistics["mean_mx"], statistics["std_mx"])
+        normalized_my = Preprocessing.normalize_data(my, statistics["mean_my"], statistics["std_my"])
+        normalized_mz = Preprocessing.normalize_data(mz, statistics["mean_mz"], statistics["std_mz"])
+        normalized_acc_magnitude = Preprocessing.normalize_data(acc_magnitude, statistics["mean_acc_magnitude"], statistics["std_acc_magnitude"])
+        normalized_mag_magnitude = Preprocessing.normalize_data(mag_magnitude, statistics["mean_mag_magnitude"], statistics["std_mag_magnitude"])
+
+
+        features = np.column_stack((timestamp, normalized_speed, normalized_course, normalized_x, normalized_y, normalized_z,  normalized_acc_magnitude, 
+                                    normalized_mx, normalized_my, normalized_mz, normalized_mag_magnitude))    
+
+        return features
+
+    def apply_savitzky_golay(data, window_length=5, polynomial_order=2):
+        """
+        Apply Savitzky-Golay filter to data.
+        
+        Parameters:
+        - data: The input data (e.g., a list or numpy array)
+        - window_length: The length of the filter window (should be an odd integer). Default is 5.
+        - polynomial_order: The order of the polynomial used to fit the samples. Default is 2.
+        
+        Returns:
+        - Smoothed data
+        """
+        return savgol_filter(data, window_length, polynomial_order)
+    
+    @staticmethod
+    def apply_savitzky_golay_to_all(data, window_length=5, polyorder=2):
+        """
+        Apply Savitzky-Golay smoothing to each series in the provided data.
+        
+        :param data: List of 1D arrays representing different series.
+        :param window_length: The length of the filter window (must be a positive odd integer).
+        :param polyorder: The order of the polynomial used to fit the samples (must be less than window_length).
+        :return: List of smoothed 1D arrays.
+        """
+        if any((window_length % 2 == 0) or (window_length <= polyorder) for _ in data):
+            raise ValueError("window_length must be an odd positive integer and greater than polyorder.")
+            
+        smoothed_data = [savgol_filter(series, window_length, polyorder) for series in data]
+        return smoothed_data
+
+    @staticmethod
+    def compute_magnitudes(smoothed_data):
+        acc_magnitudes = [math.sqrt(x**2 + y**2 + z**2) for x, y, z in zip(*smoothed_data[:3])]
+        mag_magnitudes = [math.sqrt(mx**2 + my**2 + mz**2) for mx, my, mz in zip(*smoothed_data[3:])]
+        return acc_magnitudes, mag_magnitudes

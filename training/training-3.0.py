@@ -11,6 +11,9 @@ from sklearn.impute import SimpleImputer
 from preprocessing import Preprocessing
 from imblearn.over_sampling import SMOTE
 from joblib import dump
+from sklearn.model_selection import GridSearchCV
+from sklearn.feature_selection import SelectFromModel
+
 
 # Define the transportation mode Enum
 class TransportationMode(Enum):
@@ -167,7 +170,7 @@ def preprocess_data(speed, course, x, y, z, jerk_ax, jerk_ay, jerk_az, acc_magni
 
 
 def predict_with_rf(features, true_labels):
-    predicted_labels = rf_classifier.predict(features)
+    predicted_labels = clf_important.predict(features)
     accuracy = accuracy_score(true_labels, predicted_labels)
     return accuracy
 
@@ -185,8 +188,7 @@ print(f"{current_time} - Loading data")
 timestamp, speed, course, x, y, z, mx, my, mz, modes = load_and_extract_features(data_file)
 
  
-acc_magnitude = compute_magnitude([x, y, z])
-mag_magnitude = compute_magnitude([mx, my, mz])
+
 
 # Apply the filters
 smoothed_acc_x = Preprocessing.apply_savitzky_golay(x)
@@ -195,6 +197,9 @@ smoothed_acc_z = Preprocessing.apply_savitzky_golay(z)
 smoothed_mag_x = Preprocessing.apply_savitzky_golay(mx)
 smoothed_mag_y = Preprocessing.apply_savitzky_golay(my)
 smoothed_mag_z = Preprocessing.apply_savitzky_golay(mz)
+
+acc_magnitude = compute_magnitude([smoothed_acc_x, smoothed_acc_y, smoothed_acc_z])
+mag_magnitude = compute_magnitude([smoothed_mag_x, smoothed_mag_y, smoothed_mag_z])
 
 # Calculating jerks
 jerk_ax = compute_jerk(smoothed_acc_x)
@@ -235,18 +240,47 @@ imputer = SimpleImputer(strategy='mean')
 # Apply the imputer to our training data
 X_train_rf_imputed = imputer.fit_transform(train_features)
 
+
+param_grid = {
+    'n_estimators': [50, 100, 200],
+    'max_depth': [None, 10, 20, 30],
+    'min_samples_split': [2, 5, 10],
+    'min_samples_leaf': [1, 2, 4],
+    'max_features': ['auto', 'sqrt', 'log2']
+}
+
+rf_classifier = RandomForestClassifier(random_state=42)
+grid_search = GridSearchCV(estimator=rf_classifier, param_grid=param_grid, 
+                           cv=3, n_jobs=-1, verbose=2, scoring='accuracy')
+
+grid_search.fit(X_train_rf_imputed, train_labels)
+best_rf_classifier = grid_search.best_estimator_
+
 # Create a Random Forest Classifier
-rf_classifier = RandomForestClassifier(n_estimators=20)
+# rf_classifier = RandomForestClassifier(n_estimators=20)
 
 # Train the classifier on the training data
-rf_classifier.fit(X_train_rf_imputed, train_labels)
+print("Fit model on training data")
+best_rf_classifier.fit(X_train_rf_imputed, train_labels)
+
+# Get Feature Importances
+importances = best_rf_classifier.feature_importances_
+
+# Create a model selector
+model = SelectFromModel(best_rf_classifier, prefit=True, threshold=0.01) # 0.01 is an example threshold
+
+# Transform features to the selected features
+X_important_train = model.transform(X_train_rf_imputed)
+
+# Train a new Random Forest Classifier on important features
+clf_important = RandomForestClassifier(n_estimators=50, random_state=0, n_jobs=-1)
+clf_important.fit(X_important_train, train_labels)
+
 
 # Load testing data
 data_test_file = 'testing-3.0.csv'
 test_timestamp, test_speed, test_course, test_x, test_y, test_z, test_mx, test_my, test_mz, test_modes = load_and_extract_features(data_test_file)
 
-acc_test_magnitudes = compute_magnitude([test_x, test_y, test_z])
-mag_test_magnitudes = compute_magnitude([test_mx, test_my, test_mz])
 
 smoothed_acc_test_x = Preprocessing.apply_savitzky_golay(test_x)
 smoothed_acc_test_y = Preprocessing.apply_savitzky_golay(test_y)
@@ -254,6 +288,9 @@ smoothed_acc_test_z = Preprocessing.apply_savitzky_golay(test_z)
 smoothed_mag_test_x = Preprocessing.apply_savitzky_golay(test_mx)
 smoothed_mag_test_y = Preprocessing.apply_savitzky_golay(test_my)
 smoothed_mag_test_z = Preprocessing.apply_savitzky_golay(test_mz)
+
+acc_test_magnitudes = compute_magnitude([smoothed_acc_test_x, smoothed_acc_test_y, smoothed_acc_test_z])
+mag_test_magnitudes = compute_magnitude([smoothed_mag_test_x, smoothed_mag_test_y, smoothed_mag_test_z])
 
 # Assuming you have your accelerometer data as:
 jerk_test_ax = compute_jerk(smoothed_acc_test_x)
@@ -275,7 +312,8 @@ test_labels = label_encoder.transform(test_modes)
 X_test_rf_imputed = imputer.transform(test_features)
 
 # Print RF accuracy for testing data
-rf_test_accuracy = predict_with_rf(X_test_rf_imputed, test_labels)
+X_test_rf_imputed_important = model.transform(X_test_rf_imputed)
+rf_test_accuracy = predict_with_rf(X_test_rf_imputed_important, test_labels)
 print(f'Random Forest Test Accuracy: {rf_test_accuracy * 100:.2f}%')
 
 def segment_data_by_time(timestamps, data, segment_duration=60):
@@ -303,7 +341,7 @@ def predict_with_rf_in_segments(segmented_features, segmented_labels):
         seg_features = np.array(segmented_features[i])
         seg_labels = np.array(segmented_labels[i])
         
-        predicted_labels = rf_classifier.predict(seg_features)
+        predicted_labels = clf_important.predict(seg_features)
         accuracy = accuracy_score(seg_labels, predicted_labels)
         
         accuracies.append(accuracy)
@@ -315,7 +353,7 @@ accuracies = predict_with_rf_in_segments(segmented_features, segmented_labels)
 
 
 # Save model
-dump(rf_classifier, '../model/3.0/rf_trained_model-3.0.joblib')
+dump(clf_important, '../model/3.0/rf_trained_model-3.0.joblib')
 
 # Save imputer
 dump(imputer, '../model/3.0/imputer.joblib')
@@ -329,7 +367,7 @@ with open('../model/3.0/statistics.pkl', 'wb') as f:
 
 
 # Plot feature importances
-importances = rf_classifier.feature_importances_
+importances = clf_important.feature_importances_
 indices = np.argsort(importances)[::-1]
 
 # Create a list of feature names based on their order in the FeaturesNames Enum
